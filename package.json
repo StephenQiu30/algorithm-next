@@ -1,6 +1,7 @@
 {
-  "name": "stephen-qiu-blog",
+  "name": "algorithm-rag-teaching-system",
   "version": "0.1.0",
+  "description": "面向排序算法教学的RAG增强型交互式系统 | RAG-enhanced Interactive System for Sorting Algorithm Teaching",
   "private": true,
   "scripts": {
     "dev": "next dev",

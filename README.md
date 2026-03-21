@@ -1,42 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [
-`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 面向排序算法教学的RAG增强型交互式系统
 
-## Getting Started
+这是一个面向排序算法教学的RAG增强型交互式系统。它旨在通过检索增强生成（RAG）技术，为学习排序算法的用户提供智能化、交互式的教学体验。
 
-First, run the development server:
+## 项目特点
+
+- **算法可视化**: 动态演示多种排序算法（如冒泡排序、快速排序、归并排序等）的执行过程。
+- **RAG 增强**: 集成检索增强生成技术，根据用户提问，从算法知识库中检索相关内容并生成详细解答。
+- **交互式学习**: 提供实时反馈和引导，帮助用户深入理解算法原理和复杂度分析。
+
+## 快速开始
+
+首先，运行开发服务器：
 
 ```bash
 npm run dev
-# or
+# 或
 yarn dev
-# or
+# 或
 pnpm dev
-# or
+# 或
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+在浏览器中打开 [http://localhost:3000](http://localhost:3000) 查看结果。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 许可证
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically
-optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions
-are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for
-more details.
+本项目采用 [Apache 2.0](LICENSE) 开源协议。
