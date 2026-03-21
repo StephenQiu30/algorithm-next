@@ -142,45 +142,51 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     onOpenChange(false)
   }
 
-  useGSAP(() => {
-    if (open) {
-      gsap.from('.auth-modal-content', {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: 'power4.out',
-      })
-    }
-  }, { scope: containerRef, dependencies: [open, view] })
+  useGSAP(
+    () => {
+      if (open) {
+        gsap.from('.auth-modal-content', {
+          y: 40,
+          opacity: 0,
+          duration: 1,
+          ease: 'power4.out',
+        })
+      }
+    },
+    { scope: containerRef, dependencies: [open, view] }
+  )
 
   const getTitle = () => {
     switch (view) {
-      case 'email': return '邮箱登录'
-      case 'wechat': return '扫码登录'
-      default: return '欢迎回来'
+      case 'email':
+        return '邮箱登录'
+      case 'wechat':
+        return '扫码登录'
+      default:
+        return '欢迎回来'
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="overflow-hidden border-none bg-background/50 backdrop-blur-3xl p-0 shadow-2xl sm:max-w-[440px] rounded-[2.5rem] selection:bg-primary/20">
+      <DialogContent className="bg-background/50 selection:bg-primary/20 overflow-hidden rounded-[2.5rem] border-none p-0 shadow-2xl backdrop-blur-3xl sm:max-w-[440px]">
         <div ref={containerRef} className="auth-modal-content relative flex flex-col">
           <DialogHeader className="space-y-6 px-10 pt-16">
             <div className="flex flex-col items-center justify-center gap-6">
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                <Avatar className="relative h-24 w-24 border-[6px] border-background shadow-2xl transition-transform duration-700 group-hover:scale-110">
+              <div className="group relative">
+                <div className="bg-primary/5 absolute -inset-4 rounded-full opacity-0 blur-2xl transition-opacity duration-1000 group-hover:opacity-100" />
+                <Avatar className="border-background relative h-24 w-24 border-[6px] shadow-2xl transition-transform duration-700 group-hover:scale-110">
                   <AvatarImage src={user?.userAvatar} alt={user?.userName || '用户头像'} />
                   <AvatarFallback className="bg-muted backdrop-blur-2xl">
-                    <UserIcon className="h-10 w-10 text-foreground/20" />
+                    <UserIcon className="text-foreground/20 h-10 w-10" />
                   </AvatarFallback>
                 </Avatar>
               </div>
               <div className="space-y-2 text-center">
-                <DialogTitle className="text-3xl font-black tracking-tight text-foreground">
+                <DialogTitle className="text-foreground text-3xl font-black tracking-tight">
                   {getTitle()}
                 </DialogTitle>
-                <DialogDescription className="text-foreground/40 text-sm font-bold tracking-tight px-4">
+                <DialogDescription className="text-foreground/40 px-4 text-sm font-bold tracking-tight">
                   {view === 'choice' ? '选择您偏好的方式登录账户' : '请根据指示完成身份验证'}
                 </DialogDescription>
               </div>
@@ -220,12 +226,22 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             </div>
           </div>
 
-          <div className="bg-muted/20 px-10 py-6 text-center border-t border-border/5">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed text-foreground/20 italic">
+          <div className="bg-muted/20 border-border/5 border-t px-10 py-6 text-center">
+            <p className="text-foreground/20 text-[10px] leading-relaxed font-black tracking-[0.2em] uppercase italic">
               登录即代表您同意
-              <a href="#" className="mx-1 text-foreground/40 hover:text-primary transition-colors underline underline-offset-4 decoration-border/10">服务条款</a>
+              <a
+                href="#"
+                className="text-foreground/40 hover:text-primary decoration-border/10 mx-1 underline underline-offset-4 transition-colors"
+              >
+                服务条款
+              </a>
               与
-              <a href="#" className="mx-1 text-foreground/40 hover:text-primary transition-colors underline underline-offset-4 decoration-border/10">隐私政策</a>
+              <a
+                href="#"
+                className="text-foreground/40 hover:text-primary decoration-border/10 mx-1 underline underline-offset-4 transition-colors"
+              >
+                隐私政策
+              </a>
             </p>
           </div>
         </div>

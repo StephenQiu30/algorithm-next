@@ -10,15 +10,18 @@ import gsap from 'gsap'
 export default function NotFound() {
   const container = useRef<HTMLDivElement>(null)
 
-  useGSAP(() => {
-    gsap.from('.gsap-reveal', {
-      y: 30,
-      opacity: 0,
-      duration: 1.2,
-      stagger: 0.15,
-      ease: 'power4.out',
-    })
-  }, { scope: container })
+  useGSAP(
+    () => {
+      gsap.from('.gsap-reveal', {
+        y: 30,
+        opacity: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: 'power4.out',
+      })
+    },
+    { scope: container }
+  )
 
   return (
     <div ref={container} className="flex min-h-[calc(100vh-12rem)] items-center justify-center">
@@ -36,14 +39,18 @@ export default function NotFound() {
         {/* 标题和描述 */}
         <div className="gsap-reveal space-y-4">
           <h2 className="text-foreground text-2xl font-semibold md:text-3xl">页面未找到</h2>
-          <p className="text-muted-foreground mx-auto max-w-md text-lg text-bold font-black tracking-tight uppercase">
+          <p className="text-muted-foreground text-bold mx-auto max-w-md text-lg font-black tracking-tight uppercase">
             抱歉，您访问的页面不存在或已被移动。
           </p>
         </div>
 
         {/* 操作按钮 */}
         <div className="gsap-reveal flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button asChild size="lg" className="rounded-full px-10 h-14 font-black tracking-widest uppercase transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/20">
+          <Button
+            asChild
+            size="lg"
+            className="shadow-primary/20 h-14 rounded-full px-10 font-black tracking-widest uppercase shadow-xl transition-all hover:scale-105 active:scale-95"
+          >
             <Link href="/">
               <Home className="mr-2 h-4 w-4" />
               返回首页

@@ -98,9 +98,9 @@ export function ImageUploader({
         className={cn(
           'group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed transition-all duration-300 ease-in-out',
           dragActive
-            ? 'border-primary bg-primary/5 ring-8 ring-primary/5'
+            ? 'border-primary bg-primary/5 ring-primary/5 ring-8'
             : 'border-muted-foreground/20 hover:border-primary/40 hover:bg-muted/30 hover:shadow-lg',
-          value ? 'h-56 border-none bg-muted/20' : 'h-40',
+          value ? 'bg-muted/20 h-56 border-none' : 'h-40',
           loading && 'pointer-events-none'
         )}
         onDragEnter={handleDrag}
@@ -118,17 +118,17 @@ export function ImageUploader({
         />
 
         {loading && (
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/60 backdrop-blur-[2px]">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="mt-2 text-sm font-medium text-foreground/60">正在努力上传...</span>
+          <div className="bg-background/60 absolute inset-0 z-20 flex flex-col items-center justify-center backdrop-blur-[2px]">
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            <span className="text-foreground/60 mt-2 text-sm font-medium">正在努力上传...</span>
           </div>
         )}
 
         {value ? (
-          <div className="relative h-full w-full overflow-hidden group">
+          <div className="group relative h-full w-full overflow-hidden">
             {biz === FileUploadBizEnum.USER_AVATAR ? (
               <div className="flex h-full w-full items-center justify-center p-4">
-                <Avatar className="h-32 w-32 shadow-2xl ring-4 ring-background transition-transform duration-500 group-hover:scale-105">
+                <Avatar className="ring-background h-32 w-32 shadow-2xl ring-4 transition-transform duration-500 group-hover:scale-105">
                   <AvatarImage src={value} alt="Uploaded avatar" className="object-cover" />
                   <AvatarFallback className="bg-muted text-2xl font-semibold">
                     {placeholder.charAt(0)}
@@ -143,8 +143,8 @@ export function ImageUploader({
               />
             )}
 
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 opacity-0 transition-all duration-300 backdrop-blur-[4px] group-hover:opacity-100">
-              <div className="flex translate-y-4 gap-3 transition-transform duration-300 group-hover:translate-y-0 text-white">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 opacity-0 backdrop-blur-[4px] transition-all duration-300 group-hover:opacity-100">
+              <div className="flex translate-y-4 gap-3 text-white transition-transform duration-300 group-hover:translate-y-0">
                 <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -188,8 +188,8 @@ export function ImageUploader({
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 p-8 text-center transition-all duration-300 group-hover:scale-105">
-            <div className="bg-muted flex h-16 w-16 items-center justify-center rounded-2xl shadow-inner transition-colors group-hover:bg-primary/10">
-              <ImagePlus className="h-8 w-8 text-muted-foreground/60 transition-colors group-hover:text-primary" />
+            <div className="bg-muted group-hover:bg-primary/10 flex h-16 w-16 items-center justify-center rounded-2xl shadow-inner transition-colors">
+              <ImagePlus className="text-muted-foreground/60 group-hover:text-primary h-8 w-8 transition-colors" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-semibold tracking-tight">{placeholder}</p>

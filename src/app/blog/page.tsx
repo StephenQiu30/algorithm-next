@@ -118,9 +118,9 @@ function BlogList() {
     if (!hasMore || loading || loadingMore) return
 
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         if (entries[0].isIntersecting) {
-          setCurrentPage((prev) => prev + 1)
+          setCurrentPage(prev => prev + 1)
         }
       },
       { threshold: 0.1, rootMargin: '200px' }
@@ -134,12 +134,12 @@ function BlogList() {
   }, [hasMore, loading, loadingMore])
 
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-background selection:bg-primary/10">
-      <div className="mx-auto w-full container px-6 pt-16 relative z-10">
+    <div ref={containerRef} className="bg-background selection:bg-primary/10 relative min-h-screen">
+      <div className="relative z-10 container mx-auto w-full px-6 pt-16">
         {/* Refined Hero Section */}
         <div className="mb-12 space-y-6">
           <div className="space-y-3">
-            <h1 className="animate-in text-foreground text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+            <h1 className="animate-in text-foreground text-4xl leading-tight font-black tracking-tight md:text-5xl lg:text-6xl">
               文章与见解
             </h1>
 
@@ -151,15 +151,15 @@ function BlogList() {
 
         {/* Minimalist Search Bar */}
         <div className="mb-12 max-w-xl">
-          <div className="animate-in relative flex items-center group">
-            <Search className="absolute left-5 h-4 w-4 text-foreground/20 transition-all duration-300 group-focus-within:text-foreground/40 group-focus-within:scale-110" />
+          <div className="animate-in group relative flex items-center">
+            <Search className="text-foreground/20 group-focus-within:text-foreground/40 absolute left-5 h-4 w-4 transition-all duration-300 group-focus-within:scale-110" />
             <form onSubmit={handleSearch} className="w-full">
               <Input
                 type="text"
                 value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
+                onChange={e => setSearchText(e.target.value)}
                 placeholder="搜索文章、主题..."
-                className="w-full pl-12 pr-24 h-14 rounded-full border-border/10 bg-muted/20 focus-visible:ring-[6px] focus-visible:ring-muted/30 focus-visible:border-border/30 transition-all duration-500 placeholder:text-foreground/20 text-sm font-black"
+                className="border-border/10 bg-muted/20 focus-visible:ring-muted/30 focus-visible:border-border/30 placeholder:text-foreground/20 h-14 w-full rounded-full pr-24 pl-12 text-sm font-black transition-all duration-500 focus-visible:ring-[6px]"
               />
             </form>
           </div>
@@ -170,37 +170,42 @@ function BlogList() {
           {loading && currentPage === 1 ? (
             <LoadingSkeleton type="grid" count={6} />
           ) : error ? (
-            <div className="flex min-h-[400px] flex-col items-center justify-center text-center space-y-6">
-              <div className="w-16 h-16 rounded-[24px] bg-destructive/10 flex items-center justify-center">
+            <div className="flex min-h-[400px] flex-col items-center justify-center space-y-6 text-center">
+              <div className="bg-destructive/10 flex h-16 w-16 items-center justify-center rounded-[24px]">
                 <FileWarning className="text-destructive h-7 w-7" />
               </div>
               <div className="space-y-1.5">
                 <h3 className="text-lg font-black tracking-tight">{error}</h3>
-                <p className="text-sm text-foreground/60 font-bold">暂时无法获取内容，请稍后再试</p>
+                <p className="text-foreground/60 text-sm font-bold">暂时无法获取内容，请稍后再试</p>
               </div>
-              <Button variant="outline" onClick={fetchPosts} className="rounded-full px-6 h-10 text-sm font-bold border-2">
+              <Button
+                variant="outline"
+                onClick={fetchPosts}
+                className="h-10 rounded-full border-2 px-6 text-sm font-bold"
+              >
                 重试加载
               </Button>
             </div>
           ) : posts.length === 0 ? (
-            <div className="flex min-h-[400px] flex-col items-center justify-center text-center space-y-5">
-              <div className="w-16 h-16 rounded-[24px] bg-muted/40 flex items-center justify-center">
+            <div className="flex min-h-[400px] flex-col items-center justify-center space-y-5 text-center">
+              <div className="bg-muted/40 flex h-16 w-16 items-center justify-center rounded-[24px]">
                 <BookOpen className="text-muted-foreground/30 h-7 w-7" />
               </div>
               <div className="space-y-1.5">
-                <h3 className="text-lg font-bold tracking-tight text-foreground/80">未找到相关文章</h3>
-                <p className="text-sm text-muted-foreground font-medium">
-                  {searchText ? `没有找到关于 "${searchText}" 的内容` : '这里静悄悄的，开启你的创作之旅吧'}
+                <h3 className="text-foreground/80 text-lg font-bold tracking-tight">
+                  未找到相关文章
+                </h3>
+                <p className="text-muted-foreground text-sm font-medium">
+                  {searchText
+                    ? `没有找到关于 "${searchText}" 的内容`
+                    : '这里静悄悄的，开启你的创作之旅吧'}
                 </p>
               </div>
             </div>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post, index) => (
-                <div
-                  key={post.id}
-                  className="animate-in h-full"
-                >
+                <div key={post.id} className="animate-in h-full">
                   <PostCard post={post} />
                 </div>
               ))}
@@ -209,18 +214,18 @@ function BlogList() {
         </div>
 
         {/* Infinite Scroll & Footer */}
-        <div className="mt-28 pb-40 flex justify-center">
+        <div className="mt-28 flex justify-center pb-40">
           {hasMore ? (
             <div ref={sentinelRef} className="flex items-center gap-3 py-10">
-              <Loader2 className="h-5 w-5 animate-spin text-primary/60" />
-              <p className="text-sm font-black tracking-tight text-foreground/40">
+              <Loader2 className="text-primary/60 h-5 w-5 animate-spin" />
+              <p className="text-foreground/40 text-sm font-black tracking-tight">
                 正在发现更多文章与见解...
               </p>
             </div>
           ) : posts.length > 0 ? (
             <div className="flex flex-col items-center gap-5">
-              <div className="h-px w-20 bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-              <p className="text-[10px] font-black tracking-[0.25em] uppercase text-foreground/30">
+              <div className="via-border/60 h-px w-20 bg-gradient-to-r from-transparent to-transparent" />
+              <p className="text-foreground/30 text-[10px] font-black tracking-[0.25em] uppercase">
                 已加载全部内容
               </p>
             </div>

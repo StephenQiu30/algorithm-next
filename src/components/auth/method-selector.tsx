@@ -19,55 +19,70 @@ export function MethodSelector({
 }: MethodSelectorProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
-  useGSAP(() => {
-    gsap.from('.method-btn', {
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-    })
-  }, { scope: containerRef })
+  useGSAP(
+    () => {
+      gsap.from('.method-btn', {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+      })
+    },
+    { scope: containerRef }
+  )
 
   return (
-    <div ref={containerRef} className="grid grid-cols-3 gap-4 items-center">
+    <div ref={containerRef} className="grid grid-cols-3 items-center gap-4">
       <Button
         variant="outline"
         onClick={onGitHubLogin}
-        className="method-btn group relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] border-border/50 bg-card/30 backdrop-blur-xl p-6 transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:bg-primary/5 hover:shadow-2xl hover:shadow-primary/10"
+        className="method-btn group border-border/50 bg-card/30 hover:border-primary/30 hover:bg-primary/5 hover:shadow-primary/10 relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] p-6 backdrop-blur-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-muted/50 border border-border/10 transition-all duration-500 group-hover:bg-background group-hover:scale-110 group-hover:rotate-6 mb-4">
-          <Github className="h-7 w-7 text-foreground/70 transition-colors group-hover:text-primary" />
+        <div className="bg-muted/50 border-border/10 group-hover:bg-background mb-4 flex h-14 w-14 items-center justify-center rounded-[20px] border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+          <Github className="text-foreground/70 group-hover:text-primary h-7 w-7 transition-colors" />
         </div>
-        <div className="flex flex-col items-center justify-center gap-1 h-12">
-          <span className="text-[15px] font-black tracking-tight text-foreground leading-none">GitHub</span>
-          <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em] leading-none">快捷登录</span>
+        <div className="flex h-12 flex-col items-center justify-center gap-1">
+          <span className="text-foreground text-[15px] leading-none font-black tracking-tight">
+            GitHub
+          </span>
+          <span className="text-foreground/30 text-[10px] leading-none font-bold tracking-[0.2em] uppercase">
+            快捷登录
+          </span>
         </div>
       </Button>
- 
+
       <Button
         variant="outline"
         onClick={onEmailClick}
-        className="method-btn group relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] border-border/50 bg-card/30 backdrop-blur-xl p-6 transition-all duration-500 hover:scale-[1.02] hover:border-primary/30 hover:bg-primary/5 hover:shadow-2xl hover:shadow-primary/10"
+        className="method-btn group border-border/50 bg-card/30 hover:border-primary/30 hover:bg-primary/5 hover:shadow-primary/10 relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] p-6 backdrop-blur-xl transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl"
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-muted/50 border border-border/10 transition-all duration-500 group-hover:bg-background group-hover:scale-110 group-hover:rotate-6 mb-4">
-          <Mail className="h-7 w-7 text-foreground/70 transition-colors group-hover:text-primary" />
+        <div className="bg-muted/50 border-border/10 group-hover:bg-background mb-4 flex h-14 w-14 items-center justify-center rounded-[20px] border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+          <Mail className="text-foreground/70 group-hover:text-primary h-7 w-7 transition-colors" />
         </div>
-        <div className="flex flex-col items-center justify-center gap-1 h-12">
-          <span className="text-[15px] font-black tracking-tight text-foreground leading-none">邮箱</span>
-          <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em] leading-none">验证码</span>
+        <div className="flex h-12 flex-col items-center justify-center gap-1">
+          <span className="text-foreground text-[15px] leading-none font-black tracking-tight">
+            邮箱
+          </span>
+          <span className="text-foreground/30 text-[10px] leading-none font-bold tracking-[0.2em] uppercase">
+            验证码
+          </span>
         </div>
       </Button>
- 
+
       <Button
         variant="outline"
         onClick={onWeChatClick}
-        className="method-btn group relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] border-border/50 bg-card/30 backdrop-blur-xl p-6 transition-all duration-500 hover:scale-[1.02] hover:border-[#07c160]/30 hover:bg-[#07c160]/5 hover:shadow-2xl hover:shadow-[#07c160]/10"
+        className="method-btn group border-border/50 bg-card/30 relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] p-6 backdrop-blur-xl transition-all duration-500 hover:scale-[1.02] hover:border-[#07c160]/30 hover:bg-[#07c160]/5 hover:shadow-2xl hover:shadow-[#07c160]/10"
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-muted/50 border border-border/10 transition-all duration-500 group-hover:bg-background group-hover:scale-110 group-hover:rotate-6 mb-4">
-          <ScanLine className="h-7 w-7 text-foreground/70 transition-colors group-hover:text-[#07c160]" />
+        <div className="bg-muted/50 border-border/10 group-hover:bg-background mb-4 flex h-14 w-14 items-center justify-center rounded-[20px] border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+          <ScanLine className="text-foreground/70 h-7 w-7 transition-colors group-hover:text-[#07c160]" />
         </div>
-        <div className="flex flex-col items-center justify-center gap-1 h-12">
-          <span className="text-[15px] font-black tracking-tight text-foreground leading-none">微信</span>
-          <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em] leading-none">扫码登录</span>
+        <div className="flex h-12 flex-col items-center justify-center gap-1">
+          <span className="text-foreground text-[15px] leading-none font-black tracking-tight">
+            微信
+          </span>
+          <span className="text-foreground/30 text-[10px] leading-none font-bold tracking-[0.2em] uppercase">
+            扫码登录
+          </span>
         </div>
       </Button>
     </div>

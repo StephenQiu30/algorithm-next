@@ -73,22 +73,25 @@ export function MarkdownToc({ content }: TOCProps) {
     return () => observer.disconnect()
   }, [headings])
 
-  useGSAP(() => {
-    if (navRef.current) {
-      gsap.to(navRef.current, {
-        height: isOpen ? 'auto' : 0,
-        opacity: isOpen ? 1 : 0,
-        duration: 0.4,
-        ease: 'power3.inOut',
-        overflow: 'hidden'
-      })
-    }
-  }, { dependencies: [isOpen] })
+  useGSAP(
+    () => {
+      if (navRef.current) {
+        gsap.to(navRef.current, {
+          height: isOpen ? 'auto' : 0,
+          opacity: isOpen ? 1 : 0,
+          duration: 0.4,
+          ease: 'power3.inOut',
+          overflow: 'hidden',
+        })
+      }
+    },
+    { dependencies: [isOpen] }
+  )
 
   if (headings.length === 0) return null
 
   return (
-    <div className="sticky top-24 max-h-[calc(100vh-120px)] w-full transition-all duration-300 pr-2">
+    <div className="sticky top-24 max-h-[calc(100vh-120px)] w-full pr-2 transition-all duration-300">
       <div className="mb-4 flex items-center justify-between px-1">
         <div className="text-muted-foreground flex items-center gap-2 text-[11px] font-[600] tracking-widest uppercase">
           <span>目录</span>
@@ -96,15 +99,19 @@ export function MarkdownToc({ content }: TOCProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6 rounded-md hover:bg-muted"
+          className="hover:bg-muted h-6 w-6 rounded-md"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <EyeOff className="h-3.5 w-3.5 opacity-70" /> : <Eye className="h-3.5 w-3.5 opacity-70" />}
+          {isOpen ? (
+            <EyeOff className="h-3.5 w-3.5 opacity-70" />
+          ) : (
+            <Eye className="h-3.5 w-3.5 opacity-70" />
+          )}
         </Button>
       </div>
 
       <nav ref={navRef} className="overflow-hidden">
-        <div className="relative border-l border-border/40 pl-0">
+        <div className="border-border/40 relative border-l pl-0">
           {headings.map(heading => {
             const isActive = activeId === heading.id
             return (
@@ -119,9 +126,11 @@ export function MarkdownToc({ content }: TOCProps) {
                   })
                 }}
                 className={cn(
-                  'block relative py-1.5 transition-colors -ml-[1px] pr-3 border-l-2',
-                  isActive ? 'border-primary text-foreground font-medium' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground',
-                  heading.level === 1 && 'pl-4 font-semibold mt-1 tracking-tight',
+                  'relative -ml-[1px] block border-l-2 py-1.5 pr-3 transition-colors',
+                  isActive
+                    ? 'border-primary text-foreground font-medium'
+                    : 'text-muted-foreground hover:border-border hover:text-foreground border-transparent',
+                  heading.level === 1 && 'mt-1 pl-4 font-semibold tracking-tight',
                   heading.level === 2 && 'pl-4',
                   heading.level === 3 && 'pl-7 text-[13px]',
                   heading.level === 4 && 'pl-10 text-[12px]'

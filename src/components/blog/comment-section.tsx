@@ -78,14 +78,14 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
   }, [postId, fetchComments])
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-8 space-y-12 duration-1000 bg-card/20 backdrop-blur-sm rounded-[3rem] p-8 md:p-16 border border-border/10">
+    <div className="animate-in fade-in slide-in-from-bottom-8 bg-card/20 border-border/10 space-y-12 rounded-[3rem] border p-8 backdrop-blur-sm duration-1000 md:p-16">
       <div className="flex items-center gap-6">
         <div className="bg-primary h-14 w-2 rounded-full shadow-[0_0_30px_rgba(var(--primary),0.4)]" />
         <div>
-          <h3 className="text-3xl font-black tracking-tight text-foreground uppercase">
-            参与讨论 <span className="text-primary/40 font-mono ml-2">({total})</span>
+          <h3 className="text-foreground text-3xl font-black tracking-tight uppercase">
+            参与讨论 <span className="text-primary/40 ml-2 font-mono">({total})</span>
           </h3>
-          <p className="text-foreground/40 text-[11px] font-black tracking-[0.3em] uppercase mt-2 ml-1">
+          <p className="text-foreground/40 mt-2 ml-1 text-[11px] font-black tracking-[0.3em] uppercase">
             已有 {total} 条深度见解 · 开启你的对话
           </p>
         </div>
@@ -110,8 +110,8 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
             />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-            <MessageSquare className="h-6 w-6 opacity-30 mb-3" />
+          <div className="text-muted-foreground flex flex-col items-center justify-center py-16 text-center">
+            <MessageSquare className="mb-3 h-6 w-6 opacity-30" />
             <p className="text-sm">暂无评论，成为第一个留言的人吧。</p>
           </div>
         )}

@@ -91,7 +91,10 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
           const type = message.type as WebSocketMessageTypeEnum
 
           // Handle notification messages from backend (SYSTEM_NOTICE to FOLLOW_NOTICE)
-          if (type >= WebSocketMessageTypeEnum.SYSTEM_NOTICE && type <= WebSocketMessageTypeEnum.FOLLOW_NOTICE) {
+          if (
+            type >= WebSocketMessageTypeEnum.SYSTEM_NOTICE &&
+            type <= WebSocketMessageTypeEnum.FOLLOW_NOTICE
+          ) {
             const title = typeof message.title === 'string' ? message.title : '新通知'
             const description =
               typeof message.content === 'string'

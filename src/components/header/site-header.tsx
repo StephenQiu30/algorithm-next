@@ -17,38 +17,48 @@ export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
 
-  useGSAP(() => {
-    const tl = gsap.timeline({
-      defaults: { ease: 'expo.out', duration: 1.2 }
-    })
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({
+        defaults: { ease: 'expo.out', duration: 1.2 },
+      })
 
-    // Initial state set immediately
-    gsap.set(headerRef.current, { 
-      y: -40, 
-      opacity: 0,
-      visibility: 'visible'
-    })
+      // Initial state set immediately
+      gsap.set(headerRef.current, {
+        y: -40,
+        opacity: 0,
+        visibility: 'visible',
+      })
 
-    // Animate Header and all its children simultaneously
-    tl.to(headerRef.current, {
-      y: 0,
-      opacity: 1,
-      duration: 1.5,
-    })
+      // Animate Header and all its children simultaneously
+      tl.to(headerRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+      })
 
-    // Simultaneous reveal of children with a subtle scale and lift
-    tl.from(['.site-logo', '.menu-item', '.action-item'], {
-      opacity: 0,
-      y: 5,
-      scale: 0.98,
-      duration: 1.2,
-      stagger: 0, // No stagger - all at once as per user request
-      clearProps: 'all'
-    }, '-=1.2') // Start at exactly the same time as the header animation
-  }, { scope: headerRef })
+      // Simultaneous reveal of children with a subtle scale and lift
+      tl.from(
+        ['.site-logo', '.menu-item', '.action-item'],
+        {
+          opacity: 0,
+          y: 5,
+          scale: 0.98,
+          duration: 1.2,
+          stagger: 0, // No stagger - all at once as per user request
+          clearProps: 'all',
+        },
+        '-=1.2'
+      ) // Start at exactly the same time as the header animation
+    },
+    { scope: headerRef }
+  )
 
   return (
-    <header ref={headerRef} className="bg-background/80 sticky top-0 z-50 w-full border-b border-border/10 backdrop-blur-md">
+    <header
+      ref={headerRef}
+      className="bg-background/80 border-border/10 sticky top-0 z-50 w-full border-b backdrop-blur-md"
+    >
       <div className="container mx-auto grid h-20 grid-cols-3 items-center px-6">
         <div className="flex items-center gap-4">
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -63,8 +73,8 @@ export function SiteHeader() {
             </SheetContent>
           </Sheet>
 
-          <SiteLogo showText={true} className="hidden sm:flex shrink-0" />
-          <SiteLogo showText={false} className="sm:hidden shrink-0" />
+          <SiteLogo showText={true} className="hidden shrink-0 sm:flex" />
+          <SiteLogo showText={false} className="shrink-0 sm:hidden" />
         </div>
 
         <div className="hidden items-center justify-center lg:flex">

@@ -35,11 +35,11 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
     <div className="group animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex gap-5">
         {/* Avatar */}
-        <div className="shrink-0 mt-1">
+        <div className="mt-1 shrink-0">
           <UserAvatar
             user={comment.userVO}
             size="md"
-            className="h-10 w-10 border border-border/10 shadow-sm transition-transform group-hover:scale-105"
+            className="border-border/10 h-10 w-10 border shadow-sm transition-transform group-hover:scale-105"
           />
         </div>
 
@@ -50,7 +50,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
             <span className="text-foreground text-[15px] font-black tracking-tight">
               {comment.userVO?.userName || '匿名用户'}
             </span>
-            <span className="text-foreground/30 text-[11px] font-bold uppercase tracking-wider">
+            <span className="text-foreground/30 text-[11px] font-bold tracking-wider uppercase">
               {comment.createTime ? dayjs(comment.createTime).fromNow() : ''}
             </span>
           </div>
@@ -61,10 +61,10 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
           </div>
 
           {/* Actions */}
-          <div className="text-muted-foreground flex items-center gap-4 text-[13px] pt-1">
+          <div className="text-muted-foreground flex items-center gap-4 pt-1 text-[13px]">
             <button
               onClick={() => setIsReplying(!isReplying)}
-              className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors font-medium"
+              className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 font-medium transition-colors"
             >
               回复
             </button>
@@ -72,7 +72,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
             {user && user.id === comment.userId && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors focus:outline-none font-medium">
+                  <button className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 font-medium transition-colors focus:outline-none">
                     更多
                   </button>
                 </DropdownMenuTrigger>

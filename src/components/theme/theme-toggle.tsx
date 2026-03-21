@@ -15,7 +15,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="text-muted-foreground hover:bg-transparent hover:text-foreground relative inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors">
+      <button className="text-muted-foreground hover:text-foreground relative inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-transparent">
         <Sun className="h-4 w-4" />
         <span className="sr-only">Toggle theme</span>
       </button>
@@ -32,7 +32,7 @@ export function ThemeToggle() {
     <button
       onClick={toggleTheme}
       className={cn(
-        'flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-transparent hover:text-foreground transition-colors relative overflow-hidden'
+        'text-muted-foreground hover:text-foreground relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full transition-colors hover:bg-transparent'
       )}
       aria-label="Toggle theme"
     >
