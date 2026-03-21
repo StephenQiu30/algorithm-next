@@ -19,7 +19,6 @@ import { User as UserIcon, X } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MethodSelector } from './method-selector'
 import { EmailLogin } from './email-login'
-import { WeChatLogin } from './wechat-login'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
@@ -28,7 +27,7 @@ interface AuthModalProps {
   onOpenChange: (open: boolean) => void
 }
 
-type ViewType = 'choice' | 'email' | 'wechat'
+type ViewType = 'choice' | 'email'
 
 export function AuthModal({ open, onOpenChange }: AuthModalProps) {
   const dispatch = useAppDispatch()
@@ -134,13 +133,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     }
   }
 
-  const handleWeChatLoginSuccess = (loginUser: UserAPI.LoginUserVO) => {
-    if (loginUser.token && typeof window !== 'undefined') {
-      localStorage.setItem('token', loginUser.token)
-    }
-    dispatch(setLoginUser(loginUser))
-    onOpenChange(false)
-  }
 
   useGSAP(
     () => {
@@ -160,8 +152,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     switch (view) {
       case 'email':
         return '邮箱登录'
-      case 'wechat':
-        return '扫码登录'
       default:
         return '欢迎回来'
     }
@@ -199,7 +189,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                 <MethodSelector
                   onGitHubLogin={handleGitHubLogin}
                   onEmailClick={() => setView('email')}
-                  onWeChatClick={() => setView('wechat')}
                 />
               )}
               {view === 'email' && (
@@ -213,14 +202,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
                   countdown={countdown}
                   error={error}
                   success={success}
-                />
-              )}
-              {view === 'wechat' && (
-                <WeChatLogin
-                  onBack={() => setView('choice')}
-                  onLoginSuccess={handleWeChatLoginSuccess}
-                  error={error}
-                  setError={setError}
                 />
               )}
             </div>

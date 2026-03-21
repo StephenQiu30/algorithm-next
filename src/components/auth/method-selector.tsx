@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Github, Mail, ScanLine } from 'lucide-react'
+import { Github, Mail } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import * as React from 'react'
@@ -9,13 +9,11 @@ import * as React from 'react'
 interface MethodSelectorProps {
   onGitHubLogin: () => void
   onEmailClick: () => void
-  onWeChatClick: () => void
 }
 
 export function MethodSelector({
   onGitHubLogin,
   onEmailClick,
-  onWeChatClick,
 }: MethodSelectorProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
@@ -31,7 +29,7 @@ export function MethodSelector({
   )
 
   return (
-    <div ref={containerRef} className="grid grid-cols-3 items-center gap-4">
+    <div ref={containerRef} className="grid grid-cols-2 items-center gap-4">
       <Button
         variant="outline"
         onClick={onGitHubLogin}
@@ -68,23 +66,6 @@ export function MethodSelector({
         </div>
       </Button>
 
-      <Button
-        variant="outline"
-        onClick={onWeChatClick}
-        className="method-btn group border-border/50 bg-card/30 relative flex h-36 flex-col items-center justify-center rounded-[2.5rem] p-6 backdrop-blur-xl transition-all duration-500 hover:scale-[1.02] hover:border-[#07c160]/30 hover:bg-[#07c160]/5 hover:shadow-2xl hover:shadow-[#07c160]/10"
-      >
-        <div className="bg-muted/50 border-border/10 group-hover:bg-background mb-4 flex h-14 w-14 items-center justify-center rounded-[20px] border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-          <ScanLine className="text-foreground/70 h-7 w-7 transition-colors group-hover:text-[#07c160]" />
-        </div>
-        <div className="flex h-12 flex-col items-center justify-center gap-1">
-          <span className="text-foreground text-[15px] leading-none font-black tracking-tight">
-            微信
-          </span>
-          <span className="text-foreground/30 text-[10px] leading-none font-bold tracking-[0.2em] uppercase">
-            扫码登录
-          </span>
-        </div>
-      </Button>
     </div>
   )
 }
