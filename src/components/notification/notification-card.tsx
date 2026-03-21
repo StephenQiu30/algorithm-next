@@ -83,15 +83,15 @@ export function NotificationCard({
         }}
         className={cn(
           'ring-offset-background focus-visible:ring-ring relative flex cursor-pointer gap-5 p-5 transition-all duration-500 outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-          'rounded-[2rem] border border-border/5 hover:border-primary/10 hover:shadow-[0_8px_40px_rgba(0,0,0,0.03)]',
+          'border-border/5 hover:border-primary/10 rounded-[2rem] border hover:shadow-[0_8px_40px_rgba(0,0,0,0.03)]',
           notification.isRead === 0
             ? 'bg-card/40 backdrop-blur-2xl'
-            : 'bg-transparent opacity-60 grayscale-[0.5] hover:bg-card/20 hover:opacity-100 hover:grayscale-0'
+            : 'hover:bg-card/20 bg-transparent opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0'
         )}
       >
         {/* Unread Indicator */}
         {notification.isRead === 0 && (
-          <div className="absolute top-3 right-3 h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+          <div className="bg-primary absolute top-3 right-3 h-2 w-2 rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
         )}
 
         {/* Icon Container */}
@@ -99,7 +99,7 @@ export function NotificationCard({
           <div
             className={cn(
               'flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-500',
-              'group-hover:scale-110 group-active:scale-95 border border-border/5',
+              'border-border/5 border group-hover:scale-110 group-active:scale-95',
               notification.isRead === 0
                 ? 'bg-primary/5 text-primary shadow-sm'
                 : 'bg-muted/10 text-foreground/20'
@@ -114,7 +114,7 @@ export function NotificationCard({
           <div className="flex items-center justify-between">
             <h4
               className={cn(
-                'truncate text-[15px] leading-tight tracking-tight px-0.5 transition-all duration-500',
+                'truncate px-0.5 text-[15px] leading-tight tracking-tight transition-all duration-500',
                 notification.isRead === 0
                   ? 'text-foreground font-black'
                   : 'text-foreground font-bold opacity-70'
@@ -129,8 +129,10 @@ export function NotificationCard({
 
           <p
             className={cn(
-              'line-clamp-2 text-[13px] leading-relaxed text-pretty px-0.5 transition-all duration-500',
-              notification.isRead === 0 ? 'text-foreground/80 font-bold' : 'text-foreground/60 font-medium'
+              'line-clamp-2 px-0.5 text-[13px] leading-relaxed text-pretty transition-all duration-500',
+              notification.isRead === 0
+                ? 'text-foreground/80 font-bold'
+                : 'text-foreground/60 font-medium'
             )}
           >
             {cleanContent}
@@ -138,11 +140,11 @@ export function NotificationCard({
         </div>
 
         {/* Hover Actions */}
-        <div className="absolute right-3 bottom-3 flex items-center gap-2 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+        <div className="absolute right-3 bottom-3 flex translate-y-2 items-center gap-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full bg-background/50 backdrop-blur-md hover:bg-destructive shadow-sm hover:text-destructive-foreground transition-all duration-300"
+            className="bg-background/50 hover:bg-destructive hover:text-destructive-foreground h-8 w-8 rounded-full shadow-sm backdrop-blur-md transition-all duration-300"
             onClick={e => {
               e.stopPropagation()
               if (notification.id) onDelete(notification.id, e)

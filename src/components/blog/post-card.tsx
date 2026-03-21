@@ -21,27 +21,30 @@ export function PostCard({ post, className }: PostCardProps) {
   const cardRef = React.useRef<HTMLDivElement>(null)
   const { id, title, content, cover, thumbNum = 0, favourNum = 0, createTime, userVO } = post
 
-  useGSAP(() => {
-    // Entrance Animation
-    gsap.from(cardRef.current, {
-      opacity: 0,
-      y: 20,
-      duration: 1,
-      ease: 'power4.out',
-      scrollTrigger: {
-        trigger: cardRef.current,
-        start: 'top 95%',
-        toggleActions: 'play none none none'
-      }
-    })
-  }, { scope: cardRef })
+  useGSAP(
+    () => {
+      // Entrance Animation
+      gsap.from(cardRef.current, {
+        opacity: 0,
+        y: 20,
+        duration: 1,
+        ease: 'power4.out',
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: 'top 95%',
+          toggleActions: 'play none none none',
+        },
+      })
+    },
+    { scope: cardRef }
+  )
 
   const onMouseEnter = () => {
     gsap.to(cardRef.current, {
       y: -4,
       scale: 1.005,
       duration: 0.4,
-      ease: 'power2.out'
+      ease: 'power2.out',
     })
   }
 
@@ -50,7 +53,7 @@ export function PostCard({ post, className }: PostCardProps) {
       y: 0,
       scale: 1,
       duration: 0.4,
-      ease: 'power2.out'
+      ease: 'power2.out',
     })
   }
 
@@ -70,12 +73,12 @@ export function PostCard({ post, className }: PostCardProps) {
       ref={cardRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={cn('group h-full relative cursor-pointer', className)}
+      className={cn('group relative h-full cursor-pointer', className)}
     >
-      <div className="relative flex h-full flex-col overflow-hidden rounded-[24px] border border-border/10 bg-card/40 transition-all duration-500 hover:border-primary/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] group">
+      <div className="border-border/10 bg-card/40 hover:border-primary/20 group relative flex h-full flex-col overflow-hidden rounded-[24px] border transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
         {/* Cover Area */}
         {cover ? (
-          <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border/10">
+          <div className="border-border/10 relative aspect-[16/10] w-full overflow-hidden border-b">
             <img
               src={cover}
               alt={title || ''}
@@ -84,47 +87,47 @@ export function PostCard({ post, className }: PostCardProps) {
           </div>
         ) : (
           /* Subtle Typography Cover (Minimalist) */
-          <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted/20 border-b border-border/10 flex items-center justify-center p-6">
-            <h2 className="text-foreground/40 font-black text-xl md:text-2xl leading-tight tracking-tight line-clamp-3 text-center transition-colors group-hover:text-primary/40">
+          <div className="bg-muted/20 border-border/10 relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden border-b p-6">
+            <h2 className="text-foreground/40 group-hover:text-primary/40 line-clamp-3 text-center text-xl leading-tight font-black tracking-tight transition-colors md:text-2xl">
               {title || '无标题文章'}
             </h2>
           </div>
         )}
 
         {/* Content Area */}
-        <div className="flex flex-1 flex-col p-6 space-y-3">
-          <div className="flex items-center gap-2 mb-1">
+        <div className="flex flex-1 flex-col space-y-3 p-6">
+          <div className="mb-1 flex items-center gap-2">
             <UserAvatar user={userVO} size="sm" className="h-5 w-5 opacity-80" />
-            <span className="text-[11px] font-bold text-foreground/80 tracking-tight">
+            <span className="text-foreground/80 text-[11px] font-bold tracking-tight">
               {userVO?.userName || '匿名用户'}
             </span>
-            <span className="text-[11px] text-foreground/30">·</span>
-            <span className="text-[11px] font-bold text-foreground/40">{formattedDate}</span>
+            <span className="text-foreground/30 text-[11px]">·</span>
+            <span className="text-foreground/40 text-[11px] font-bold">{formattedDate}</span>
           </div>
 
-          <h3 className="text-foreground group-hover:text-primary leading-snug text-lg font-black tracking-tight transition-all duration-300">
+          <h3 className="text-foreground group-hover:text-primary text-lg leading-snug font-black tracking-tight transition-all duration-300">
             {title || '无标题'}
           </h3>
 
-          <p className="text-foreground/70 line-clamp-2 text-sm font-bold leading-relaxed">
+          <p className="text-foreground/70 line-clamp-2 text-sm leading-relaxed font-bold">
             {excerpt}
           </p>
         </div>
 
         {/* Footer with Stats */}
-        <div className="flex items-center justify-between px-6 pb-5 pt-1">
-          <div className="flex items-center gap-4 text-foreground/40">
-            <div className="flex items-center gap-1.5 transition-colors hover:text-primary/70">
+        <div className="flex items-center justify-between px-6 pt-1 pb-5">
+          <div className="text-foreground/40 flex items-center gap-4">
+            <div className="hover:text-primary/70 flex items-center gap-1.5 transition-colors">
               <Heart className="h-3.5 w-3.5" />
               <span className="text-[11px] font-black">{thumbNum}</span>
             </div>
-            <div className="flex items-center gap-1.5 transition-colors hover:text-primary">
+            <div className="hover:text-primary flex items-center gap-1.5 transition-colors">
               <Bookmark className="h-3.5 w-3.5" />
               <span className="text-[11px] font-black">{favourNum}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[12px] font-black text-primary opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+          <div className="text-primary flex -translate-x-1 items-center gap-1.5 text-[12px] font-black opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
             阅读全文
             <ArrowUpRight className="h-3.5 w-3.5" />
           </div>
@@ -140,20 +143,20 @@ export function PostCard({ post, className }: PostCardProps) {
 
 export function PostCardSkeleton({ index = 0 }: { index?: number }) {
   return (
-    <div 
-      className="shimmer flex h-full flex-col overflow-hidden rounded-[24px] border border-border/10 bg-card/40"
+    <div
+      className="shimmer border-border/10 bg-card/40 flex h-full flex-col overflow-hidden rounded-[24px] border"
       style={{ animationDelay: `${index * 0.15}s` }}
     >
-      <div className="aspect-[16/10] w-full bg-muted/20" />
-      <div className="flex flex-1 flex-col p-6 space-y-4">
+      <div className="bg-muted/20 aspect-[16/10] w-full" />
+      <div className="flex flex-1 flex-col space-y-4 p-6">
         <div className="flex items-center gap-2">
-           <div className="h-5 w-5 rounded-full bg-border/20" />
-           <div className="h-3 w-20 bg-border/20 rounded" />
+          <div className="bg-border/20 h-5 w-5 rounded-full" />
+          <div className="bg-border/20 h-3 w-20 rounded" />
         </div>
-        <div className="h-6 w-3/4 bg-border/20 rounded" />
+        <div className="bg-border/20 h-6 w-3/4 rounded" />
         <div className="space-y-2">
-          <div className="h-3 w-full bg-border/10 rounded" />
-          <div className="h-3 w-2/3 bg-border/10 rounded" />
+          <div className="bg-border/10 h-3 w-full rounded" />
+          <div className="bg-border/10 h-3 w-2/3 rounded" />
         </div>
       </div>
     </div>

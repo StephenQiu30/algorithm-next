@@ -18,11 +18,13 @@ export function Footer({
   icpNumber = process.env.NEXT_PUBLIC_ICP_NUMBER || '',
 }: FooterProps) {
   return (
-    <footer className={cn('bg-background border-t border-border/10 py-12', className)}>
+    <footer className={cn('bg-background border-border/10 border-t py-12', className)}>
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-            <span>© {new Date().getFullYear()} {author}. 保留所有权利.</span>
+        <div className="text-foreground/40 flex flex-col items-center justify-between gap-8 text-[10px] font-black tracking-[0.4em] uppercase md:flex-row">
+          <div className="flex flex-col items-center gap-4 md:flex-row md:gap-8">
+            <span>
+              © {new Date().getFullYear()} {author}. 保留所有权利.
+            </span>
             {icpNumber && (
               <a
                 href="https://beian.miit.gov.cn/"
@@ -36,17 +38,29 @@ export function Footer({
           </div>
 
           <div className="flex items-center gap-6">
-            <Link href={githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-foreground flex items-center gap-2 transition-colors">
+            <Link
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground flex items-center gap-2 transition-colors"
+            >
               GitHub <Github className="h-3 w-3" />
             </Link>
-            <Link href={email} className="hover:text-foreground flex items-center gap-2 transition-colors">
+            <Link
+              href={email}
+              className="hover:text-foreground flex items-center gap-2 transition-colors"
+            >
               Email <Mail className="h-3 w-3" />
             </Link>
           </div>
 
           <div className="flex items-center gap-8">
-             <Link href="/blog" className="hover:text-foreground">博客见解</Link>
-             <Link href="/user/settings" className="hover:text-foreground">账户设置</Link>
+            <Link href="/blog" className="hover:text-foreground">
+              博客见解
+            </Link>
+            <Link href="/user/settings" className="hover:text-foreground">
+              账户设置
+            </Link>
           </div>
         </div>
       </div>

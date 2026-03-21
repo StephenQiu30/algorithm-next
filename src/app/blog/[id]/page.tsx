@@ -172,30 +172,33 @@ export default function PostDetailPage() {
   }
 
   return (
-    <div ref={container} className="bg-background relative min-h-screen pb-40 pt-16 md:pt-20">
+    <div ref={container} className="bg-background relative min-h-screen pt-16 pb-40 md:pt-20">
       <div
         ref={progressBarRef}
-        className="bg-gradient-to-r from-primary to-indigo-500 fixed top-0 right-0 left-0 z-50 h-[3px] origin-left shadow-[0_0_10px_rgba(var(--primary),0.5)] scale-x-0"
+        className="from-primary fixed top-0 right-0 left-0 z-50 h-[3px] origin-left scale-x-0 bg-gradient-to-r to-indigo-500 shadow-[0_0_10px_rgba(var(--primary),0.5)]"
       />
 
       {/* Mobile Navbar */}
-      <div className="relative z-10 flex h-14 items-center px-4 md:hidden border-b border-border/40 bg-background/80 backdrop-blur-2xl mb-4 sticky top-0">
-        <Link href="/blog" className="flex items-center text-[15px] font-medium text-foreground/80 hover:text-foreground transition-colors">
-          <ChevronLeft className="h-5 w-5 mr-0.5" />
+      <div className="border-border/40 bg-background/80 relative sticky top-0 z-10 mb-4 flex h-14 items-center border-b px-4 backdrop-blur-2xl md:hidden">
+        <Link
+          href="/blog"
+          className="text-foreground/80 hover:text-foreground flex items-center text-[15px] font-medium transition-colors"
+        >
+          <ChevronLeft className="mr-0.5 h-5 w-5" />
           返回博客
         </Link>
       </div>
 
-      <div className="relative z-10 mx-auto container px-6">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_300px] xl:gap-12 relative">
+      <div className="relative z-10 container mx-auto px-6">
+        <div className="relative grid grid-cols-1 gap-12 lg:grid-cols-[1fr_300px] xl:gap-12">
           <article className="w-full max-w-[760px]">
             {/* Minimal Back Button (Apple Style) */}
-            <div className="flex mb-16 gsap-reveal">
+            <div className="gsap-reveal mb-16 flex">
               <Link
                 href="/blog"
-                className="group flex items-center text-[11px] font-black uppercase tracking-[0.25em] text-foreground/30 hover:text-foreground transition-all duration-300"
+                className="group text-foreground/30 hover:text-foreground flex items-center text-[11px] font-black tracking-[0.25em] uppercase transition-all duration-300"
               >
-                <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
                 返回文章见解
               </Link>
             </div>
@@ -205,21 +208,21 @@ export default function PostDetailPage() {
             <MarkdownRender content={post.content || ''} className="gsap-reveal" />
 
             {/* Author Bio Footer (Minimalist) */}
-            <hr className="my-16 border-border/40" />
-            <div className="mx-auto w-full gsap-reveal">
-              <div className="flex flex-col sm:flex-row items-center sm:items-stretch justify-between gap-8 rounded-[2rem] border border-border/10 bg-card/30 p-8 backdrop-blur-xl transition-all duration-500 hover:bg-card/40 hover:shadow-2xl hover:shadow-primary/5 group/author">
-                <div className="flex flex-col sm:flex-row items-center sm:items-center gap-8 text-center sm:text-left flex-1">
-                  <Link href={`/user/${post.userVO?.id}`} className="shrink-0 relative">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl opacity-0 group-hover/author:opacity-100 transition-opacity duration-700" />
+            <hr className="border-border/40 my-16" />
+            <div className="gsap-reveal mx-auto w-full">
+              <div className="border-border/10 bg-card/30 hover:bg-card/40 hover:shadow-primary/5 group/author flex flex-col items-center justify-between gap-8 rounded-[2rem] border p-8 backdrop-blur-xl transition-all duration-500 hover:shadow-2xl sm:flex-row sm:items-stretch">
+                <div className="flex flex-1 flex-col items-center gap-8 text-center sm:flex-row sm:items-center sm:text-left">
+                  <Link href={`/user/${post.userVO?.id}`} className="relative shrink-0">
+                    <div className="bg-primary/20 absolute inset-0 rounded-full opacity-0 blur-2xl transition-opacity duration-700 group-hover/author:opacity-100" />
                     <UserAvatar
                       user={post.userVO}
                       size="xl"
-                      className="relative h-24 w-24 border-2 border-background shadow-2xl transition-transform duration-700 ease-out group-hover/author:rotate-3 group-hover/author:scale-105"
+                      className="border-background relative h-24 w-24 border-2 shadow-2xl transition-transform duration-700 ease-out group-hover/author:scale-105 group-hover/author:rotate-3"
                     />
                   </Link>
-                  <div className="space-y-4 flex-1">
+                  <div className="flex-1 space-y-4">
                     <div>
-                      <div className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 mb-3">
+                      <div className="bg-primary/10 mb-3 inline-flex items-center rounded-full px-3 py-1">
                         <p className="text-primary text-[10px] font-black tracking-[0.2em] uppercase">
                           发布见解于轨迹
                         </p>
@@ -230,8 +233,9 @@ export default function PostDetailPage() {
                         </h3>
                       </Link>
                     </div>
-                    <p className="text-foreground/60 text-[15px] font-medium leading-relaxed max-w-[520px]">
-                      {post.userVO?.userProfile || '致力于构建更美好的数字化世界，感谢并见证每一次阅读与成长。'}
+                    <p className="text-foreground/60 max-w-[520px] text-[15px] leading-relaxed font-medium">
+                      {post.userVO?.userProfile ||
+                        '致力于构建更美好的数字化世界，感谢并见证每一次阅读与成长。'}
                     </p>
                   </div>
                 </div>
@@ -239,7 +243,7 @@ export default function PostDetailPage() {
                   <Link href={`/user/${post.userVO?.id}`} className="w-full sm:w-auto">
                     <Button
                       variant="outline"
-                      className="w-full sm:w-auto rounded-full bg-background/50 px-8 h-12 border-border/20 font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 shadow-sm hover:shadow-primary/20 group/btn"
+                      className="bg-background/50 border-border/20 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-primary/20 group/btn h-12 w-full rounded-full px-8 font-bold shadow-sm transition-all duration-300 sm:w-auto"
                     >
                       查看主页
                       <ChevronLeft className="ml-2 h-4 w-4 rotate-180 transition-transform group-hover/btn:translate-x-1" />
@@ -249,14 +253,14 @@ export default function PostDetailPage() {
               </div>
 
               {/* Comment Section */}
-              <div id="comments" className="scroll-mt-32 mt-16 pb-16">
+              <div id="comments" className="mt-16 scroll-mt-32 pb-16">
                 <CommentSection postId={postId} onTotalChange={setCommentNum} />
               </div>
             </div>
           </article>
 
           {/* Desktop MarkdownToc */}
-          <aside className="hidden lg:block relative">
+          <aside className="relative hidden lg:block">
             <div className="sticky top-24 pl-4">
               <MarkdownToc content={post.content || ''} />
             </div>

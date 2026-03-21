@@ -129,7 +129,7 @@ export function MarkdownEditor({
       className={cn(
         'border-border/40 bg-card/30 flex flex-1 flex-col overflow-hidden rounded-xl border shadow-sm transition-all duration-300',
         isFullscreen &&
-        'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
+          'bg-background fixed inset-0 z-50 h-screen w-screen rounded-none border-none',
         className
       )}
     >
@@ -166,11 +166,26 @@ export function MarkdownEditor({
 
         <div className="flex items-center gap-2 pl-4">
           {/* View Switcher using Radix Tabs */}
-          <Tabs value={view} onValueChange={(v) => setView(v as any)} className="hidden lg:block">
+          <Tabs value={view} onValueChange={v => setView(v as any)} className="hidden lg:block">
             <TabsList className="bg-muted/10 h-8 p-1">
-              <TabsTrigger value="edit" className="h-6 px-3 text-[11px] font-bold uppercase tracking-wider">编辑</TabsTrigger>
-              <TabsTrigger value="split" className="h-6 px-3 text-[11px] font-bold uppercase tracking-wider">分栏</TabsTrigger>
-              <TabsTrigger value="preview" className="h-6 px-3 text-[11px] font-bold uppercase tracking-wider">预览</TabsTrigger>
+              <TabsTrigger
+                value="edit"
+                className="h-6 px-3 text-[11px] font-bold tracking-wider uppercase"
+              >
+                编辑
+              </TabsTrigger>
+              <TabsTrigger
+                value="split"
+                className="h-6 px-3 text-[11px] font-bold tracking-wider uppercase"
+              >
+                分栏
+              </TabsTrigger>
+              <TabsTrigger
+                value="preview"
+                className="h-6 px-3 text-[11px] font-bold tracking-wider uppercase"
+              >
+                预览
+              </TabsTrigger>
             </TabsList>
           </Tabs>
 
@@ -243,7 +258,7 @@ export function MarkdownEditor({
               onChange={e => onChange(e.target.value)}
               onPaste={handlePaste}
               placeholder={placeholder || '开始写作...'} // Localized
-              className="h-full w-full resize-none border-none bg-transparent p-6 lg:p-10 font-mono text-[15px] leading-relaxed focus:outline-none placeholder:text-muted-foreground/40"
+              className="placeholder:text-muted-foreground/40 h-full w-full resize-none border-none bg-transparent p-6 font-mono text-[15px] leading-relaxed focus:outline-none lg:p-10"
               style={{ fontFamily: 'var(--font-mono)' }}
             />
           </div>
@@ -267,7 +282,7 @@ export function MarkdownEditor({
         <div className="border-border/40 bg-muted/10 text-muted-foreground/60 flex items-center justify-between border-t px-4 py-1.5 text-[9px] font-black tracking-[0.2em] uppercase">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
-              <div className="h-1 w-1 rounded-full bg-primary/40" />
+              <div className="bg-primary/40 h-1 w-1 rounded-full" />
               字数: {value.length}
             </span>
           </div>

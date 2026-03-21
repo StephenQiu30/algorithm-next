@@ -58,7 +58,7 @@ declare namespace AiAPI {
   type AiChatRequest = {
     /** 问题内容 */
     message?: string
-    /** 模型类型 (dashscope: 通义千问, ollama: 本地模型) */
+    /** 模型类型 (dashscope: 通义千问) */
     modelType?: string
     /** 会话 id */
     sessionId?: string

@@ -22,33 +22,39 @@ interface MarkdownRendererProps {
 export function MarkdownRender({ content, className }: MarkdownRendererProps) {
   return (
     <article
-      className={cn('prose prose-sm md:prose-base prose-neutral dark:prose-invert max-w-none break-words tracking-tight', className)}
+      className={cn(
+        'prose prose-sm md:prose-base prose-neutral dark:prose-invert max-w-none tracking-tight break-words',
+        className
+      )}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[rehypeSlug, rehypeKatex]}
         components={{
           // 自定义标题样式
-              h1: ({ children, ...props }) => (
-                <header className="mb-8 border-b border-border/40 pb-4">
-                  <h1 className="text-3xl font-black tracking-tighter text-foreground md:text-4xl" {...props}>
-                    {children}
-                  </h1>
-                </header>
-              ),
+          h1: ({ children, ...props }) => (
+            <header className="border-border/40 mb-8 border-b pb-4">
+              <h1
+                className="text-foreground text-3xl font-black tracking-tighter md:text-4xl"
+                {...props}
+              >
+                {children}
+              </h1>
+            </header>
+          ),
           h2: ({ id, children }) => (
             <h2
               id={id}
-              className="mt-10 mb-5 scroll-m-24 text-xl md:text-2xl font-black tracking-tight text-foreground first:mt-0 relative group"
+              className="text-foreground group relative mt-10 mb-5 scroll-m-24 text-xl font-black tracking-tight first:mt-0 md:text-2xl"
             >
-              <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1.5 h-5 bg-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-all" />
+              <div className="bg-primary/20 absolute top-1/2 -left-6 h-5 w-1.5 -translate-y-1/2 rounded-full opacity-0 transition-all group-hover:opacity-100" />
               {children}
             </h2>
           ),
           h3: ({ id, children }) => (
             <h3
               id={id}
-              className="mt-8 mb-4 scroll-m-24 text-lg md:text-xl font-black tracking-tight text-foreground"
+              className="text-foreground mt-8 mb-4 scroll-m-24 text-lg font-black tracking-tight md:text-xl"
             >
               {children}
             </h3>
@@ -56,16 +62,15 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
           h4: ({ id, children }) => (
             <h4
               id={id}
-              className="mt-6 mb-3 scroll-m-24 text-base md:text-lg font-black tracking-tight text-foreground"
+              className="text-foreground mt-6 mb-3 scroll-m-24 text-base font-black tracking-tight md:text-lg"
             >
               {children}
             </h4>
           ),
 
-
           // 段落
           p: ({ children }) => (
-            <p className="!text-foreground/80 text-[14px] md:text-[15px] leading-relaxed [&:not(:first-child)]:mt-5">
+            <p className="!text-foreground/80 text-[14px] leading-relaxed md:text-[15px] [&:not(:first-child)]:mt-5">
               {children}
             </p>
           ),
@@ -76,9 +81,9 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
             return (
               <a
                 href={href}
-                target={isRef ? undefined : "_blank"}
-                rel={isRef ? undefined : "noopener noreferrer"}
-                className="font-bold text-primary/80 hover:text-primary transition-colors no-underline border-b border-primary/20 hover:border-primary/50"
+                target={isRef ? undefined : '_blank'}
+                rel={isRef ? undefined : 'noopener noreferrer'}
+                className="text-primary/80 hover:text-primary border-primary/20 hover:border-primary/50 border-b font-bold no-underline transition-colors"
               >
                 {children}
               </a>
@@ -91,7 +96,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
               <img
                 src={src || ''}
                 alt={alt || ''}
-                className="bg-muted max-h-[700px] rounded-2xl object-contain w-full border border-border/10 shadow-sm"
+                className="bg-muted border-border/10 max-h-[700px] w-full rounded-2xl border object-contain shadow-sm"
                 loading="lazy"
               />
               {alt && (
@@ -118,16 +123,18 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
             if (!inline && match) {
               const { ref, ...rest } = props
               return (
-                <div className="group relative my-10 overflow-hidden rounded-2xl border border-border/10 bg-muted/20 first:mt-0 last:mb-0 transition-all duration-300 hover:bg-muted/40 hover:shadow-2xl hover:shadow-primary/5">
-                  <div className="flex h-11 items-center justify-between border-b border-border/5 bg-muted/30 px-5">
+                <div className="group border-border/10 bg-muted/20 hover:bg-muted/40 hover:shadow-primary/5 relative my-10 overflow-hidden rounded-2xl border transition-all duration-300 first:mt-0 last:mb-0 hover:shadow-2xl">
+                  <div className="border-border/5 bg-muted/30 flex h-11 items-center justify-between border-b px-5">
                     <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-primary/20" />
-                      <div className="h-2 w-2 rounded-full bg-primary/10" />
-                      <div className="h-2 w-2 rounded-full bg-primary/5" />
+                      <div className="bg-primary/20 h-2 w-2 rounded-full" />
+                      <div className="bg-primary/10 h-2 w-2 rounded-full" />
+                      <div className="bg-primary/5 h-2 w-2 rounded-full" />
                     </div>
-                    <span className="text-[10px] font-black text-muted-foreground/40 font-mono tracking-[0.3em] uppercase ml-2">{language}</span>
+                    <span className="text-muted-foreground/40 ml-2 font-mono text-[10px] font-black tracking-[0.3em] uppercase">
+                      {language}
+                    </span>
                   </div>
-                  <div className="relative p-6 px-8 overflow-x-auto scrollbar-hide [&_code]:!bg-transparent [&_pre]:!bg-transparent [&_code::before]:!content-none [&_code::after]:!content-none font-mono text-[13px] leading-relaxed">
+                  <div className="scrollbar-hide relative overflow-x-auto p-6 px-8 font-mono text-[13px] leading-relaxed [&_code]:!bg-transparent [&_code::after]:!content-none [&_code::before]:!content-none [&_pre]:!bg-transparent">
                     <SyntaxHighlighter
                       {...rest}
                       style={oneDark as any}
@@ -147,7 +154,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
             }
             return (
               <code
-                className="rounded-md bg-muted px-[0.3rem] py-[0.1rem] font-mono text-[12px] font-bold text-foreground/70 border border-border/5 [&::before]:!content-none [&::after]:!content-none"
+                className="bg-muted text-foreground/70 border-border/5 rounded-md border px-[0.3rem] py-[0.1rem] font-mono text-[12px] font-bold [&::after]:!content-none [&::before]:!content-none"
                 {...props}
               >
                 {children}
@@ -157,57 +164,60 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 引用块
           blockquote: ({ children }) => (
-            <blockquote className="my-10 overflow-hidden rounded-r-2xl border-l-[5px] border-primary/40 bg-primary/[0.03] py-8 pl-10 pr-8 text-foreground/80 shadow-sm ring-1 ring-inset ring-primary/5 transition-all hover:bg-primary/[0.06] hover:shadow-md">
-              <div className="relative text-[15px] md:text-[16px] font-medium leading-loose italic">
+            <blockquote className="border-primary/40 bg-primary/[0.03] text-foreground/80 ring-primary/5 hover:bg-primary/[0.06] my-10 overflow-hidden rounded-r-2xl border-l-[5px] py-8 pr-8 pl-10 shadow-sm ring-1 transition-all ring-inset hover:shadow-md">
+              <div className="relative text-[15px] leading-loose font-medium italic md:text-[16px]">
                 {children}
               </div>
             </blockquote>
           ),
 
-
           // 列表
           ul: ({ children }) => (
-            <ul className="my-5 ml-5 list-disc space-y-2 marker:text-muted-foreground/50">
+            <ul className="marker:text-muted-foreground/50 my-5 ml-5 list-disc space-y-2">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="my-5 ml-5 list-decimal space-y-2 marker:text-muted-foreground/50">
+            <ol className="marker:text-muted-foreground/50 my-5 ml-5 list-decimal space-y-2">
               {children}
             </ol>
           ),
           li: ({ children }) => {
             return (
-              <li className="!text-foreground/80 text-[14px] md:text-[15px] leading-relaxed pl-1">
+              <li className="!text-foreground/80 pl-1 text-[14px] leading-relaxed md:text-[15px]">
                 {children}
               </li>
             )
           },
 
           strong: ({ children }) => (
-            <strong className="font-bold !text-foreground">{children}</strong>
+            <strong className="!text-foreground font-bold">{children}</strong>
           ),
 
           // 表格
           table: ({ children }) => (
-            <div className="group relative my-12 w-full overflow-hidden rounded-2xl border border-border/20 bg-card/30 shadow-sm transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5">
-              <div className="overflow-x-auto scrollbar-hide">
+            <div className="group border-border/20 bg-card/30 hover:shadow-primary/5 relative my-12 w-full overflow-hidden rounded-2xl border shadow-sm transition-all duration-300 hover:shadow-2xl">
+              <div className="scrollbar-hide overflow-x-auto">
                 <table className="w-full min-w-[600px] border-collapse text-[13px] leading-relaxed">
                   {children}
                 </table>
               </div>
             </div>
           ),
-          thead: ({ children }) => <thead className="bg-muted/30 border-b border-border/50">{children}</thead>,
-          tbody: ({ children }) => <tbody className="divide-y divide-border/20 bg-card/[0.02]">{children}</tbody>,
-          tr: ({ children }) => <tr className="transition-colors hover:bg-muted/20">{children}</tr>,
+          thead: ({ children }) => (
+            <thead className="bg-muted/30 border-border/50 border-b">{children}</thead>
+          ),
+          tbody: ({ children }) => (
+            <tbody className="divide-border/20 bg-card/[0.02] divide-y">{children}</tbody>
+          ),
+          tr: ({ children }) => <tr className="hover:bg-muted/20 transition-colors">{children}</tr>,
           th: ({ children }) => (
-            <th className="px-5 py-3 text-left font-black !text-foreground/60 uppercase tracking-[0.2em] text-[10px]">
+            <th className="!text-foreground/60 px-5 py-3 text-left text-[10px] font-black tracking-[0.2em] uppercase">
               {children}
             </th>
           ),
           td: ({ children }) => (
-            <td className="px-5 py-4 align-middle !text-foreground/70 font-medium border-l border-border/10 first:border-l-0">
+            <td className="!text-foreground/70 border-border/10 border-l px-5 py-4 align-middle font-medium first:border-l-0">
               {children}
             </td>
           ),
@@ -218,6 +228,6 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
       >
         {content}
       </ReactMarkdown>
-    </article >
+    </article>
   )
 }

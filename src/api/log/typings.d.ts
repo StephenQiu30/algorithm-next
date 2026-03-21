@@ -205,6 +205,15 @@ declare namespace LogAPI {
     searchText?: string
   }
 
+  type EmailRecordUpdateStatusRequest = {
+    /** 记录ID */
+    id: number
+    /** 发送状态 */
+    status: string
+    /** 错误信息 */
+    errorMessage?: string
+  }
+
   type EmailRecordVO = {
     /** 主键 */
     id?: number

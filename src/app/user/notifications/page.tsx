@@ -199,9 +199,9 @@ export default function NotificationsPage() {
 
       {/* Login Overlay */}
       {isUnauthorized && (
-        <div className="fixed inset-0 z-[40] flex items-center justify-center p-6 mt-20 bg-background/50 backdrop-blur-sm">
-          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
-          <div className="relative z-20 w-full max-w-lg login-overlay-content">
+        <div className="bg-background/50 fixed inset-0 z-[40] mt-20 flex items-center justify-center p-6 backdrop-blur-sm">
+          <div className="from-background pointer-events-none absolute inset-x-0 top-0 z-10 h-32 bg-gradient-to-b to-transparent" />
+          <div className="login-overlay-content relative z-20 w-full max-w-lg">
             <LoginPromptCard
               onLoginClick={() => setAuthModalOpen(true)}
               title="通知中心"
@@ -212,15 +212,17 @@ export default function NotificationsPage() {
       )}
 
       <div
-        className={`bg-background relative min-h-screen w-full selection:bg-primary/20 transition-all duration-1000 ${
-          isUnauthorized ? 'blur-2xl grayscale-[0.5] pointer-events-none opacity-40 select-none' : 'opacity-100'
+        className={`bg-background selection:bg-primary/20 relative min-h-screen w-full transition-all duration-1000 ${
+          isUnauthorized
+            ? 'pointer-events-none opacity-40 blur-2xl grayscale-[0.5] select-none'
+            : 'opacity-100'
         }`}
       >
-        <div className="relative z-10 mx-auto w-full container px-6 py-12 md:py-20">
+        <div className="relative z-10 container mx-auto w-full px-6 py-12 md:py-20">
           {/* Header - Minimalist Typography */}
           <div className="animate-in mb-10 space-y-4">
             <div className="space-y-2">
-              <h1 className="text-foreground text-3xl md:text-4xl font-black tracking-tight leading-none">
+              <h1 className="text-foreground text-3xl leading-none font-black tracking-tight md:text-4xl">
                 通知中心
               </h1>
               <p className="text-foreground/60 text-[15px] font-bold tracking-tight italic">
@@ -228,19 +230,19 @@ export default function NotificationsPage() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-border/10">
+            <div className="border-border/10 flex flex-col justify-between gap-6 border-t pt-8 sm:flex-row sm:items-center">
               <div className="flex items-center gap-4">
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-fit">
-                  <TabsList className="bg-muted/30 h-12 rounded-2xl p-1 backdrop-blur-3xl border border-border/5">
+                  <TabsList className="bg-muted/30 border-border/5 h-12 rounded-2xl border p-1 backdrop-blur-3xl">
                     <TabsTrigger
                       value="all"
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl rounded-xl px-8 h-full text-[12px] font-black tracking-tight transition-all duration-300 text-foreground/80"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-foreground/80 h-full rounded-xl px-8 text-[12px] font-black tracking-tight transition-all duration-300 data-[state=active]:shadow-xl"
                     >
                       全部
                     </TabsTrigger>
                     <TabsTrigger
                       value="unread"
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl rounded-xl px-8 h-full text-[12px] font-black tracking-tight transition-all duration-300"
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-xl px-8 text-[12px] font-black tracking-tight transition-all duration-300 data-[state=active]:shadow-xl"
                     >
                       未读
                     </TabsTrigger>
@@ -251,7 +253,7 @@ export default function NotificationsPage() {
               {activeTab === 'unread' && notifications.some(n => n.isRead === 0) && (
                 <Button
                   variant="default"
-                  className="h-10 rounded-full px-6 text-[12px] font-black tracking-tight shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 bg-primary"
+                  className="shadow-primary/20 bg-primary h-10 rounded-full px-6 text-[12px] font-black tracking-tight shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                   onClick={handleMarkAllRead}
                 >
                   <Check className="mr-1.5 h-3.5 w-3.5" />
@@ -262,22 +264,24 @@ export default function NotificationsPage() {
           </div>
 
           {/* Content Area */}
-          <div className="w-full min-h-[500px] transition-all duration-500">
+          <div className="min-h-[500px] w-full transition-all duration-500">
             {loading ? (
               <div className="animate-in pb-20">
                 <LoadingSkeleton type="list" count={5} />
               </div>
             ) : notifications.length === 0 ? (
               <div className="animate-in flex flex-col items-center justify-center space-y-8 py-32 text-center">
-                <div className="flex h-32 w-32 items-center justify-center rounded-[38px] bg-primary/5 shadow-sm border border-border/5">
+                <div className="bg-primary/5 border-border/5 flex h-32 w-32 items-center justify-center rounded-[38px] border shadow-sm">
                   <BellOff className="text-primary/20 h-14 w-14" />
                 </div>
                 <div className="max-w-md space-y-4 px-6">
                   <h3 className="text-foreground text-3xl font-black tracking-tighter">
                     {activeTab === 'unread' ? '已读完所有通知' : '空空如也'}
                   </h3>
-                  <p className="text-foreground/60 text-lg font-bold tracking-tight leading-relaxed">
-                    {activeTab === 'unread' ? '现在您可以享受专注时光了。' : '当有新的社群互动或系统更新时，我们将第一时间告知您。'}
+                  <p className="text-foreground/60 text-lg leading-relaxed font-bold tracking-tight">
+                    {activeTab === 'unread'
+                      ? '现在您可以享受专注时光了。'
+                      : '当有新的社群互动或系统更新时，我们将第一时间告知您。'}
                   </p>
                 </div>
               </div>
@@ -285,7 +289,7 @@ export default function NotificationsPage() {
               <div className="space-y-16 pb-20">
                 {groupedNotifications.map(([group, items]) => (
                   <div key={group} className="animate-in space-y-6">
-                    <div className="sticky top-[80px] z-20 py-4 bg-background/5 backdrop-blur-md">
+                    <div className="bg-background/5 sticky top-[80px] z-20 py-4 backdrop-blur-md">
                       <h2 className="text-foreground/30 text-[10px] font-black tracking-[0.25em] uppercase">
                         {group}
                       </h2>
@@ -310,11 +314,11 @@ export default function NotificationsPage() {
           {/* Pagination */}
           {total > 15 && (
             <div className="animate-in mt-24 flex justify-center">
-              <div className="flex items-center gap-2 rounded-full border border-border/10 bg-muted/20 p-2 backdrop-blur-2xl">
+              <div className="border-border/10 bg-muted/20 flex items-center gap-2 rounded-full border p-2 backdrop-blur-2xl">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 rounded-full hover:bg-background/80"
+                  className="hover:bg-background/80 h-10 w-10 rounded-full"
                   onClick={() => setCurrent(p => Math.max(1, p - 1))}
                   disabled={current === 1 || loading}
                 >
@@ -326,7 +330,7 @@ export default function NotificationsPage() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 rounded-full hover:bg-background/80"
+                  className="hover:bg-background/80 h-10 w-10 rounded-full"
                   onClick={() => setCurrent(p => p + 1)}
                   disabled={current * 15 >= total || loading}
                 >

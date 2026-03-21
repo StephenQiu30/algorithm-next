@@ -67,26 +67,26 @@ export function CommentInput({
         <UserAvatar
           user={user}
           size="md"
-          className="h-12 w-12 border-2 border-border/10 shadow-sm shrink-0"
+          className="border-border/10 h-12 w-12 shrink-0 border-2 shadow-sm"
         />
         <div className="flex-1 space-y-4">
-          <div className="relative group">
+          <div className="group relative">
             <Textarea
               value={content}
               onChange={e => setContent(e.target.value)}
               placeholder={placeholder}
-              className="bg-card/40 border-border/10 focus:border-primary/30 focus:bg-background/90 focus:ring-0 min-h-[160px] resize-none rounded-[2rem] p-8 text-base shadow-sm transition-all duration-500 placeholder:text-foreground/10 placeholder:font-black leading-relaxed overflow-hidden"
+              className="bg-card/40 border-border/10 focus:border-primary/30 focus:bg-background/90 placeholder:text-foreground/10 min-h-[160px] resize-none overflow-hidden rounded-[2rem] p-8 text-base leading-relaxed shadow-sm transition-all duration-500 placeholder:font-black focus:ring-0"
               autoFocus={autoFocus}
             />
           </div>
-          <div className="flex justify-end items-center gap-4">
+          <div className="flex items-center justify-end gap-4">
             {onCancel && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onCancel}
                 disabled={submitting}
-                className="text-foreground/40 hover:text-foreground hover:bg-muted/50 rounded-full px-6 h-10 font-bold transition-all"
+                className="text-foreground/40 hover:text-foreground hover:bg-muted/50 h-10 rounded-full px-6 font-bold transition-all"
               >
                 取消
               </Button>
@@ -95,7 +95,7 @@ export function CommentInput({
               size="lg"
               onClick={handleSubmit}
               disabled={!content.trim() || submitting}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-10 h-14 shadow-2xl shadow-primary/20 hover:shadow-primary/40 transition-all font-black tracking-tight"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20 hover:shadow-primary/40 h-14 rounded-full px-10 font-black tracking-tight shadow-2xl transition-all"
             >
               {submitting ? (
                 <>

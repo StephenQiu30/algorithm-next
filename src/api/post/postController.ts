@@ -113,7 +113,7 @@ export async function reviewPost(
   })
 }
 
-/** 更新帖子 更新帖子信息（仅管理员可用） POST /post/update */
+/** 管理员更新帖子 系统管理员全量更新指定帖子信息 POST /post/update */
 export async function updatePost(
   body: PostAPI.PostUpdateRequest,
   options?: { [key: string]: any }

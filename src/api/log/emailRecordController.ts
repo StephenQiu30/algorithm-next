@@ -64,7 +64,7 @@ export async function listRecordByPage1(
 
 /** 更新邮件记录状态 更新指定邮件记录的状态 POST /log/email/update/status */
 export async function updateRecordStatus(
-  body: LogAPI.EmailRecordAddRequest,
+  body: LogAPI.EmailRecordUpdateStatusRequest,
   options?: { [key: string]: any }
 ) {
   return request<LogAPI.BaseResponseBoolean>('/log/email/update/status', {

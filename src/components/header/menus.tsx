@@ -88,7 +88,7 @@ export function Menus({ className, vertical = false }: { className?: string; ver
                   href={item.href || '#'}
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'menu-item h-9 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-transparent hover:text-foreground focus:bg-transparent data-[active]:bg-transparent',
+                    'menu-item hover:text-foreground h-9 bg-transparent px-3 text-sm font-medium transition-colors hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent',
                     active ? 'text-foreground font-semibold' : 'text-foreground/60 font-medium'
                   )}
                 >
