@@ -2,10 +2,14 @@
 /* eslint-disable */
 // API 更新时间：
 // API 唯一标识：
-import * as aiChatRecordController from './aiChatRecordController'
-import * as aiChatController from './aiChatController'
+import * as ragController from './ragController'
+import * as knowledgeBaseController from './knowledgeBaseController'
+import * as documentController from './documentController'
+import * as chunkController from './chunkController'
 
 export default {
-  aiChatRecordController,
-  aiChatController,
+    ragController,
+    knowledgeBaseController,
+    documentController,
+    chunkController,
 }

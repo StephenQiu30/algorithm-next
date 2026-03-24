@@ -3,13 +3,22 @@
 import React, { useState } from 'react'
 import { sortingAlgorithms } from '@/lib/algorithms'
 import { SortingVisualizer } from '@/components/sorting/SortingVisualizer'
-import { Card } from '@/components/ui/card'
+import { PostCard } from '@/components/blog'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
-import { Clock, Database } from 'lucide-react'
 import { AlgorithmType } from '@/types/sorting'
+import { getAlgorithmContent } from '@/app/actions/getAlgorithmContent'
+import { MarkdownRender } from '@/components/blog/markdown-render'
 
 export function SortingPageClient() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<AlgorithmType | null>(null)
+  const [markdownContent, setMarkdownContent] = useState<string>('')
+
+  const handleOpenAlgorithm = async (key: AlgorithmType) => {
+    setSelectedAlgorithm(key)
+    setMarkdownContent('> Loading algorithm details...')
+    const content = await getAlgorithmContent(key)
+    setMarkdownContent(content)
+  }
   
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-12 pb-20">
@@ -24,44 +33,51 @@ export function SortingPageClient() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Object.values(sortingAlgorithms).map((algo) => (
-          <Card 
-            key={algo.key}
-            className="p-6 rounded-[2rem] bg-gradient-to-br from-background to-muted/20 border border-border shadow-lg hover:shadow-xl transition-all cursor-pointer hover:-translate-y-1 group"
-            onClick={() => setSelectedAlgorithm(algo.key as AlgorithmType)}
-          >
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                {algo.name}
-              </h3>
-              <p className="text-muted-foreground text-sm line-clamp-2">
-                {algo.description}
-              </p>
-              
-              <div className="pt-4 flex items-center justify-between border-t border-border/50 text-xs text-muted-foreground">
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4" />
-                  <span>{algo.timeComplexity.average}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Database className="w-4 h-4" />
-                  <span>{algo.spaceComplexity}</span>
-                </div>
-              </div>
-            </div>
-          </Card>
+          <div key={algo.key} className="h-[400px]">
+            <PostCard 
+              onClick={() => handleOpenAlgorithm(algo.key as AlgorithmType)}
+              post={{
+                id: algo.key as any,
+                title: algo.name,
+                content: algo.description,
+                userVO: { userName: 'Sorting Algorithm' } as any,
+                createTime: new Date().toISOString(),
+                thumbNum: 0,
+                favourNum: 0
+              }}
+            />
+          </div>
         ))}
       </div>
 
       <Dialog 
         open={selectedAlgorithm !== null} 
-        onOpenChange={(open) => !open && setSelectedAlgorithm(null)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedAlgorithm(null)
+            setMarkdownContent('')
+          }
+        }}
       >
-        <DialogContent className="max-w-[95vw] w-full lg:max-w-7xl h-[90vh] overflow-y-auto p-0 border-none bg-background/95 backdrop-blur-xl">
+        <DialogContent className="max-w-[95vw] w-full lg:max-w-[95vw] h-[90vh] overflow-hidden p-0 border-none bg-background/95 backdrop-blur-xl flex flex-col lg:flex-row gap-0">
           <DialogTitle className="sr-only">排序算法可视化 - {selectedAlgorithm && sortingAlgorithms[selectedAlgorithm]?.name}</DialogTitle>
           {selectedAlgorithm && (
-            <div className="p-4 md:p-6 overflow-hidden">
-              <SortingVisualizer initialAlgorithm={selectedAlgorithm} />
-            </div>
+            <>
+              {/* 左侧/顶部：Markdown 文章区域 */}
+              <div className="flex-1 overflow-y-auto p-6 md:p-8 lg:border-r border-border/50 custom-scrollbar h-full hidden md:block">
+                <MarkdownRender content={markdownContent} />
+              </div>
+              
+              {/* 移动端 Markdown 文章简易显示或可折叠区域（为了不影响全栈可视，暂时在移动端只显示可视化和少量文档，或者上下堆叠） */}
+              <div className="flex-none max-h-[40vh] overflow-y-auto p-4 border-b border-border/50 block md:hidden">
+                <MarkdownRender content={markdownContent} />
+              </div>
+
+              {/* 右侧/底部：可视化控件区域 */}
+              <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-muted/5 h-full flex flex-col custom-scrollbar">
+                <SortingVisualizer initialAlgorithm={selectedAlgorithm} />
+              </div>
+            </>
           )}
         </DialogContent>
       </Dialog>

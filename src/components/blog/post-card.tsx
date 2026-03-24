@@ -13,11 +13,13 @@ import dayjs from '@/lib/dayjs'
 gsap.registerPlugin(ScrollTrigger)
 
 interface PostCardProps {
-  post: PostAPI.PostVO
+  post: Partial<PostAPI.PostVO>
   className?: string
+  href?: string
+  onClick?: () => void
 }
 
-export function PostCard({ post, className }: PostCardProps) {
+export function PostCard({ post, className, href, onClick }: PostCardProps) {
   const cardRef = React.useRef<HTMLDivElement>(null)
   const { id, title, content, cover, thumbNum = 0, favourNum = 0, createTime, userVO } = post
 
@@ -133,9 +135,13 @@ export function PostCard({ post, className }: PostCardProps) {
           </div>
         </div>
 
-        <Link href={`/blog/${id}`} className="absolute inset-0 z-20">
-          <span className="sr-only">查看全文</span>
-        </Link>
+        {onClick ? (
+          <button onClick={onClick} className="absolute inset-0 z-20 w-full h-full cursor-pointer border-none bg-transparent" aria-label="查看详情" />
+        ) : (
+          <Link href={href || `/blog/${id}`} className="absolute inset-0 z-20">
+            <span className="sr-only">查看全文</span>
+          </Link>
+        )}
       </div>
     </div>
   )
