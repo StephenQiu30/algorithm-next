@@ -16,7 +16,7 @@ export async function addKnowledgeBase(body: AiAPI.KnowledgeBaseAddRequest,
     });
 }
 
-/** 删除知识库 POST /ai/kb/delete */
+/** 删除知识库 删除指定知识库，仅本人或管理员可操作 POST /ai/kb/delete */
 export async function deleteKnowledgeBase(body: AiAPI.DeleteRequest,
                                           options ?: { [key: string]: any }
 ) {
@@ -60,7 +60,21 @@ export async function getKnowledgeBaseVoById(
     });
 }
 
-/** 分页获取知识库 POST /ai/kb/list/page/vo */
+/** 分页获取知识库（管理员） POST /ai/kb/list/page */
+export async function listKnowledgeBaseByPage(body: AiAPI.KnowledgeBaseQueryRequest,
+                                              options ?: { [key: string]: any }
+) {
+    return request<AiAPI.BaseResponsePageKnowledgeBase>('/ai/kb/list/page', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: body,
+        ...(options || {}),
+    });
+}
+
+/** 分页获取知识库 分页获取知识库脱敏信息列表 POST /ai/kb/list/page/vo */
 export async function listKnowledgeBaseVoByPage(body: AiAPI.KnowledgeBaseQueryRequest,
                                                 options ?: { [key: string]: any }
 ) {
