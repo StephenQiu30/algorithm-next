@@ -90,11 +90,41 @@ declare namespace AiAPI {
         }
 
 
+    type BaseResponsePageDocument =
+        {
+            /** 状态码 */
+            'code'?: number;
+            'data'?: PageDocument;
+            /** 消息 */
+            'message'?: string;
+        }
+
+
+    type BaseResponsePageDocumentChunk =
+        {
+            /** 状态码 */
+            'code'?: number;
+            'data'?: PageDocumentChunk;
+            /** 消息 */
+            'message'?: string;
+        }
+
+
     type BaseResponsePageDocumentVO =
         {
             /** 状态码 */
             'code'?: number;
             'data'?: PageDocumentVO;
+            /** 消息 */
+            'message'?: string;
+        }
+
+
+    type BaseResponsePageKnowledgeBase =
+        {
+            /** 状态码 */
+            'code'?: number;
+            'data'?: PageKnowledgeBase;
             /** 消息 */
             'message'?: string;
         }
@@ -144,6 +174,10 @@ declare namespace AiAPI {
             'overallHitRate'?: number;
             /** 平均召回率 (Mean Recall) */
             'meanRecall'?: number;
+            /** 平均准确率 (Mean Precision) */
+            'meanPrecision'?: number;
+            /** 平均倒数排名 (Mean MRR) */
+            'meanMRR'?: number;
             /** 测试结果详情 */
             'itemResults'?: RecallItemResultVO[];
         }
@@ -215,6 +249,78 @@ declare namespace AiAPI {
         }
 
 
+    type Document =
+        {
+            /** 文档ID */
+            'id'?: number;
+            /** 知识库ID */
+            'knowledgeBaseId'?: number;
+            /** 文档名称 */
+            'name'?: string;
+            /** 文件路径 */
+            'filePath'?: string;
+            /** 文件大小（字节） */
+            'fileSize'?: number;
+            /** 文件扩展名 */
+            'fileExtension'?: string;
+            /** 处理状态：PENDING/PROCESSING/COMPLETED/FAILED/TIMEOUT */
+            'status'?: string;
+            /** 错误信息 */
+            'errorMessage'?: string;
+            /** 分片数量 */
+            'chunkCount'?: number;
+            /** 来源类型 */
+            'sourceType'?: string;
+            /** 业务标签 */
+            'bizTag'?: string;
+            /** 版本 */
+            'version'?: string;
+            /** 扩展元数据 */
+            'extraMeta'?: string;
+            /** 上传用户ID */
+            'userId'?: number;
+            /** 上传时间 */
+            'uploadTime'?: string;
+            /** 开始处理时间 */
+            'processStartTime'?: string;
+            /** 处理完成时间 */
+            'processEndTime'?: string;
+            /** 创建时间 */
+            'createTime'?: string;
+            /** 更新时间 */
+            'updateTime'?: string;
+            /** 是否删除 */
+            'isDelete'?: number;
+        }
+
+
+    type DocumentChunk =
+        {
+            /** 分片ID */
+            'id'?: number;
+            /** 文档ID */
+            'documentId'?: number;
+            /** 知识库ID */
+            'knowledgeBaseId'?: number;
+            /** 分片索引 */
+            'chunkIndex'?: number;
+            /** 分片内容 */
+            'content'?: string;
+            /** 字符数 */
+            'wordCount'?: number;
+            /** Token数量 */
+            'tokenCount'?: number;
+            /** 向量存储ID */
+            'vectorId'?: string;
+            /** 创建时间 */
+            'createTime'?: string;
+            /** 更新时间 */
+            'updateTime'?: string;
+            /** 是否删除 */
+            'isDelete'?: number;
+        }
+
+
     type DocumentQueryRequest =
         {
             /** 当前页号 */
@@ -279,6 +385,27 @@ declare namespace AiAPI {
     type getKnowledgeBaseVOByIdParams =
         {
             'id': number;
+        }
+
+
+    type KnowledgeBase =
+        {
+            /** 知识库ID */
+            'id'?: number;
+            /** 知识库名称 */
+            'name'?: string;
+            /** 知识库描述 */
+            'description'?: string;
+            /** 创建用户ID */
+            'userId'?: number;
+            /** 文档数量 */
+            'documentCount'?: number;
+            /** 创建时间 */
+            'createTime'?: string;
+            /** 更新时间 */
+            'updateTime'?: string;
+            /** 是否删除 */
+            'isDelete'?: number;
         }
 
 
@@ -375,6 +502,38 @@ declare namespace AiAPI {
         }
 
 
+    type PageDocument =
+        {
+            'records'?: Document[];
+            'total'?: number;
+            'size'?: number;
+            'current'?: number;
+            'orders'?: OrderItem[];
+            'optimizeCountSql'?: PageDocument;
+            'searchCount'?: PageDocument;
+            'optimizeJoinOfCountSql'?: boolean;
+            'maxLimit'?: number;
+            'countId'?: string;
+            'pages'?: number;
+        }
+
+
+    type PageDocumentChunk =
+        {
+            'records'?: DocumentChunk[];
+            'total'?: number;
+            'size'?: number;
+            'current'?: number;
+            'orders'?: OrderItem[];
+            'optimizeCountSql'?: PageDocumentChunk;
+            'searchCount'?: PageDocumentChunk;
+            'optimizeJoinOfCountSql'?: boolean;
+            'maxLimit'?: number;
+            'countId'?: string;
+            'pages'?: number;
+        }
+
+
     type PageDocumentVO =
         {
             'records'?: DocumentVO[];
@@ -384,6 +543,22 @@ declare namespace AiAPI {
             'orders'?: OrderItem[];
             'optimizeCountSql'?: PageDocumentVO;
             'searchCount'?: PageDocumentVO;
+            'optimizeJoinOfCountSql'?: boolean;
+            'maxLimit'?: number;
+            'countId'?: string;
+            'pages'?: number;
+        }
+
+
+    type PageKnowledgeBase =
+        {
+            'records'?: KnowledgeBase[];
+            'total'?: number;
+            'size'?: number;
+            'current'?: number;
+            'orders'?: OrderItem[];
+            'optimizeCountSql'?: PageKnowledgeBase;
+            'searchCount'?: PageKnowledgeBase;
             'optimizeJoinOfCountSql'?: boolean;
             'maxLimit'?: number;
             'countId'?: string;
@@ -501,6 +676,26 @@ declare namespace AiAPI {
             'finalResults'?: RetrievalHitVO[];
             /** 检索耗时（毫秒） */
             'costMs'?: number;
+            /** 改写后的语义查询 */
+            'rewriteQuery'?: string;
+            /** 改写后的关键词查询 */
+            'rewriteKeywordQuery'?: string;
+            /** 最终结果平均相似度 */
+            'avgSimilarity'?: number;
+            /** 最终结果最高相似度 */
+            'maxSimilarity'?: number;
+            /** 使用的检索策略 */
+            'retrievalStrategy'?: string;
+            /** 向量检索命中数 */
+            'vectorHitCount'?: number;
+            /** 关键词检索命中数 */
+            'keywordHitCount'?: number;
+            /** 融合后命中数 */
+            'fusedHitCount'?: number;
+            /** 最终命中数 */
+            'finalHitCount'?: number;
+            /** 向量与关键词交叉命中数（去重分析） */
+            'overlapCount'?: number;
         }
 
 
@@ -512,8 +707,16 @@ declare namespace AiAPI {
             'isHit'?: boolean;
             /** 召回率（期望分片被找回的比例） */
             'recall'?: number;
+            /** 准确率 (Precision) */
+            'precision'?: number;
+            /** 平均倒数排名 (MRR) */
+            'mrr'?: number;
             /** 实际召回的分片内容列表 */
             'retrievedChunks'?: RetrievalHitVO[];
+            /** 平均相似度 */
+            'avgSimilarity'?: number;
+            /** 最高相似度 */
+            'maxSimilarity'?: number;
         }
 
 
@@ -530,6 +733,8 @@ declare namespace AiAPI {
         {
             /** 分片ID */
             'id'?: string;
+            /** 文档ID */
+            'documentId'?: number;
             /** 文档名称 */
             'documentName'?: string;
             /** 分片索引 */
@@ -544,6 +749,10 @@ declare namespace AiAPI {
             'fusionScore'?: number;
             /** 最终评分 */
             'score'?: number;
+            /** 向量 cosine 相似度（0~1） */
+            'similarityScore'?: number;
+            /** 重排分数 */
+            'rerankScore'?: number;
             /** 命中原因 */
             'matchReason'?: string;
         }
@@ -561,6 +770,10 @@ declare namespace AiAPI {
             'content'?: string;
             /** 相似度得分 */
             'score'?: number;
+            /** 向量 cosine 相似度（0~1） */
+            'vectorSimilarity'?: number;
+            /** 关键词相关性分数 */
+            'keywordRelevance'?: number;
             /** 来源类型 */
             'sourceType'?: string;
             /** 版本 */
