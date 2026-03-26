@@ -44,7 +44,6 @@ export async function uploadFile(
             ...params['fileUploadRequest'],
         },
         data: formData,
-        requestType: 'form',
         ...(options || {}),
     });
 }

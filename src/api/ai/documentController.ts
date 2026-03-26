@@ -42,7 +42,6 @@ export async function addDocument(
             ...params,
         },
         data: formData,
-        requestType: 'form',
         ...(options || {}),
     });
 }
