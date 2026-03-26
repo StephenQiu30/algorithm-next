@@ -8,7 +8,7 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeKatex from 'rehype-katex'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import 'katex/dist/katex.min.css'
 import { cn } from '@/lib/utils'
 import { Check, Copy } from 'lucide-react'
@@ -123,21 +123,21 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
             if (!inline && match) {
               const { ref, ...rest } = props
               return (
-                <div className="group border-border/10 bg-muted/20 hover:bg-muted/40 hover:shadow-primary/5 relative my-10 overflow-hidden rounded-2xl border transition-all duration-300 first:mt-0 last:mb-0 hover:shadow-2xl">
-                  <div className="border-border/5 bg-muted/30 flex h-11 items-center justify-between border-b px-5">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/20 h-2 w-2 rounded-full" />
-                      <div className="bg-primary/10 h-2 w-2 rounded-full" />
-                      <div className="bg-primary/5 h-2 w-2 rounded-full" />
+                <div className="group relative my-12 overflow-hidden rounded-[2rem] bg-zinc-950 border border-zinc-800 shadow-2xl transition-all duration-300 first:mt-0 last:mb-0">
+                  <div className="flex h-12 items-center justify-between border-b border-zinc-800/50 bg-zinc-900/50 px-8">
+                    <div className="flex items-center gap-2">
+                       <div className="w-3 h-3 rounded-full bg-zinc-800" />
+                       <div className="w-3 h-3 rounded-full bg-zinc-800" />
+                       <div className="w-3 h-3 rounded-full bg-zinc-800" />
                     </div>
-                    <span className="text-muted-foreground/40 ml-2 font-mono text-[10px] font-black tracking-[0.3em] uppercase">
+                    <span className="font-mono text-[11px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
                       {language}
                     </span>
                   </div>
-                  <div className="scrollbar-hide relative overflow-x-auto p-6 px-8 font-mono text-[13px] leading-relaxed [&_code]:!bg-transparent [&_code::after]:!content-none [&_code::before]:!content-none [&_pre]:!bg-transparent">
+                  <div className="scrollbar-hide relative overflow-x-auto p-8 px-10 font-mono text-[14px] leading-[1.6] [&_code]:!bg-transparent [&_code]:!text-inherit [&_pre]:!bg-transparent">
                     <SyntaxHighlighter
                       {...rest}
-                      style={oneDark as any}
+                      style={vscDarkPlus as any}
                       language={language}
                       PreTag="div"
                       customStyle={{
