@@ -19,7 +19,7 @@ export default async function SortingAlgorithmPage({ params }: { params: Promise
   }
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-10 text-zinc-900 dark:text-zinc-100">
+    <div className="w-full text-zinc-900 dark:text-zinc-100">
       <AlgorithmExplorer algorithm={info} docContent={docContent} />
     </div>
   );

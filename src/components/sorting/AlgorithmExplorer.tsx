@@ -12,7 +12,7 @@ import { MarkdownRender } from '@/components/blog/markdown-render';
 
 export function AlgorithmExplorer({ algorithm, docContent }: { algorithm: SortingAlgorithmInfo, docContent?: string }) {
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-10 md:py-14 space-y-12 md:space-y-14">
+    <div className="container mx-auto w-full px-6 py-10 md:py-14 space-y-10 md:space-y-12">
       {/* Breadcrumb & Core Meta */}
       <nav className="flex items-center gap-2 text-[13px] font-medium text-zinc-400">
         <Link href="/sorting" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">排序算法</Link>

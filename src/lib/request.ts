@@ -4,6 +4,8 @@ import JSONBig from 'json-bigint'
 
 const JSONBigStr = JSONBig({ storeAsString: true })
 
+type RequestExtras = { silent?: boolean }
+
 /**
  * 创建 Axios 实例
  */
@@ -56,15 +58,24 @@ axiosInstance.interceptors.response.use(
   },
   // 非 2xx 响应触发
   function (error) {
+    const config = ((error as any)?.config || {}) as AxiosRequestConfig & RequestExtras
+    const method = (config.method || 'get').toLowerCase()
+    const status = (error as any)?.response?.status as number | undefined
+    const silent =
+      (config.silent ?? true) || method === 'get' || status === 401 || status === 403
+
     // 处理响应错误
     const { response } = error
-    if (response?.data?.message) {
-      toast.error(response.data.message)
-    } else {
-      toast.error('Request failed', {
-        description: error.message || 'Unknown error occurred',
-      })
+    if (!silent) {
+      if (response?.data?.message) {
+        toast.error(response.data.message)
+      } else {
+        toast.error('Request failed', {
+          description: error.message || 'Unknown error occurred',
+        })
+      }
     }
+
     return Promise.reject(error)
   }
 )

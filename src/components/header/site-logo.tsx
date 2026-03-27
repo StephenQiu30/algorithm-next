@@ -8,7 +8,7 @@ interface SiteLogoProps {
 }
 
 export function SiteLogo({ className, showText = true, onClick }: SiteLogoProps) {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Stephen Radix'
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || '排序可视化课堂'
   const logoLetter = siteName.charAt(0).toUpperCase()
 
   return (
@@ -17,7 +17,7 @@ export function SiteLogo({ className, showText = true, onClick }: SiteLogoProps)
       onClick={onClick}
       className={cn('site-logo group flex items-center space-x-2', className)}
     >
-      <div className="from-primary to-primary/80 shadow-primary/10 flex h-9 w-9 items-center justify-center rounded-[12px] bg-gradient-to-br shadow-lg transition-all duration-500 group-hover:scale-105 group-hover:rotate-3 active:scale-95">
+      <div className="bg-primary shadow-primary/10 flex h-9 w-9 items-center justify-center rounded-[12px] shadow-lg transition-all duration-500 group-hover:scale-105 group-hover:rotate-3 active:scale-95">
         <span className="text-primary-foreground text-xl font-black tracking-tight">
           {logoLetter}
         </span>
