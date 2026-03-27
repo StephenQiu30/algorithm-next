@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function SortingPage() {
   return (
     <main className="w-full">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-14 md:py-20">
+      <div className="container mx-auto px-6 py-14 md:py-20">
         <div className="w-full space-y-6 mb-10 md:mb-14">
           <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-900/5 dark:bg-white/5 border border-zinc-900/10 dark:border-white/10 text-zinc-700 dark:text-zinc-200 text-[11px] font-black tracking-widest">
             排序算法可视化

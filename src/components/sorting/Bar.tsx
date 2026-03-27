@@ -6,9 +6,10 @@ export interface BarProps {
   value: number;
   maxValue: number;
   state: BarState;
+  dimmed?: boolean;
 }
 
-export function Bar({ value, maxValue, state }: BarProps) {
+export function Bar({ value, maxValue, state, dimmed = false }: BarProps) {
   const heightPercent = maxValue > 0 ? (value / maxValue) * 100 : 5;
   
   let bgColor = 'bg-blue-600 dark:bg-blue-500';
@@ -32,7 +33,7 @@ export function Bar({ value, maxValue, state }: BarProps) {
   }
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-end px-[1px] relative select-none">
+    <div className={`w-full h-full flex flex-col items-center justify-end px-[1px] relative select-none transition-opacity ${dimmed ? 'opacity-35' : 'opacity-100'}`}>
       {/* Value Label */}
       <motion.span
         animate={{ bottom: `${Math.max(4, heightPercent) + 2}%` }}

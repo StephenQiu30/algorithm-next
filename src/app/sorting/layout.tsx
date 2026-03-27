@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sorting Algorithms | Stephen Radix',
-  description: 'Interactive algorithm visualization and learning platform.',
+  title: '排序可视化课堂 · 排序算法',
+  description: '排序算法的交互式可视化与教学。',
 };
 
 export default function SortingLayout({

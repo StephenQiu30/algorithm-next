@@ -6,8 +6,8 @@ import { SiteHeader } from '@/components/header/site-header'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "StephenQiu's Blog",
-  description: 'A modern Next.js starter template',
+  title: '排序可视化课堂',
+  description: '面向排序算法教学的交互式可视化课堂。',
 }
 
 export default function RootLayout({

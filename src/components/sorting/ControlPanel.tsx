@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
 import * as Slider from '@radix-ui/react-slider';
-import { Play, Pause, Shuffle, StepBack, StepForward } from 'lucide-react';
-import { SortingAlgorithmId } from '@/lib/sortingAlgorithms';
+import { Pause, Play, Shuffle, StepBack, StepForward } from 'lucide-react';
+import { SORTING_ALGORITHM_NAME_BY_ID, SortingAlgorithmId } from '@/lib/sortingAlgorithms';
+import { cn } from '@/lib/utils';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 interface ControlPanelProps {
   algorithms: SortingAlgorithmId[];
@@ -24,6 +27,9 @@ interface ControlPanelProps {
 }
 
 export function ControlPanel({
+  algorithms,
+  selectedAlgorithmId,
+  onSelectAlgorithmId,
   size,
   onSizeChange,
   speed,
@@ -53,10 +59,48 @@ export function ControlPanel({
   const canForward = canStep && currentStep < totalSteps;
 
   return (
-    <div className={`flex flex-col gap-10 p-8 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-all w-full ${compact ? 'max-w-full' : 'max-w-5xl mx-auto'}`}>
+    <div
+      className={cn(
+        'flex w-full flex-col rounded-[2rem] border border-zinc-100 bg-white transition-all dark:border-zinc-800 dark:bg-zinc-900',
+        compact ? 'max-w-full' : 'mx-auto max-w-5xl'
+      )}
+    >
+      <div className={cn('flex flex-col', compact ? 'gap-3 p-6' : 'gap-4 p-8')}>
+        <div className="flex justify-between items-center pl-1">
+          <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">算法选择</label>
+          <span className="text-[10px] font-black tabular-nums py-1 px-2 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+            {SORTING_ALGORITHM_NAME_BY_ID[selectedAlgorithmId]}
+          </span>
+        </div>
+        <Tabs
+          value={selectedAlgorithmId}
+          onValueChange={(v) => onSelectAlgorithmId(v as SortingAlgorithmId)}
+        >
+          <ScrollArea className="-mx-1 px-1">
+            <TabsList className="h-11 w-max rounded-full bg-zinc-100 p-1 dark:bg-zinc-800/50">
+              {algorithms.map((id) => (
+                <TabsTrigger
+                  key={id}
+                  value={id}
+                  disabled={isPlaying}
+                  className={cn(
+                    'h-9 rounded-full px-3 text-[11px] font-black',
+                    'data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm',
+                    'dark:data-[state=active]:bg-zinc-950 dark:data-[state=active]:text-zinc-100',
+                    'disabled:opacity-40'
+                  )}
+                >
+                  {SORTING_ALGORITHM_NAME_BY_ID[id]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </Tabs>
+      </div>
       
       {/* Primary Playback Bar */}
-      <div className="flex items-center gap-4 pb-10 border-b border-zinc-100 dark:border-zinc-800/50">
+      <div className={cn('flex items-center gap-4 border-b border-zinc-100 dark:border-zinc-800/50', compact ? 'px-6 pb-6' : 'px-8 pb-10')}>
         <div className="flex-1 flex items-center gap-3">
           <button
             onClick={onStepBack}
@@ -100,8 +144,8 @@ export function ControlPanel({
       </div>
 
       {/* Main Configuration Grid */}
-      <div className="flex flex-col gap-10">
-        <div className="flex flex-col gap-8">
+      <div className={cn('flex flex-col', compact ? 'gap-6 px-6 pb-6' : 'gap-10 px-8 pb-8')}>
+        <div className={cn('flex flex-col', compact ? 'gap-6' : 'gap-8')}>
           {/* Speed Slider */}
           <div className="flex flex-col gap-4">
              <div className="flex justify-between items-center pl-1">
@@ -154,38 +198,50 @@ export function ControlPanel({
           </div>
         </div>
 
-        {/* Primary Data Input Section */}
-        <div className="pt-10 border-t border-zinc-100 dark:border-zinc-800/50 flex flex-col gap-6">
-           <div className="flex items-center justify-between pl-1">
+        <details
+          className={cn(
+            'border-t border-zinc-100 dark:border-zinc-800/50 pt-4',
+            compact ? 'pt-4' : 'pt-6'
+          )}
+          open={!compact}
+        >
+          <summary className="cursor-pointer list-none select-none">
+            <div className="flex items-center justify-between pl-1">
               <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">自定义数据导入</label>
               <div className="flex gap-1">
-                 <div className="w-1 h-1 rounded-full bg-blue-600" />
-                 <div className="w-1 h-1 rounded-full bg-blue-600/30" />
+                <div className="w-1 h-1 rounded-full bg-blue-600" />
+                <div className="w-1 h-1 rounded-full bg-blue-600/30" />
               </div>
-           </div>
-           
-           <div className="relative group transition-all">
+            </div>
+          </summary>
+
+          <div className={cn('flex flex-col', compact ? 'gap-4 pt-4' : 'gap-6 pt-6')}>
+            <div className="relative group transition-all">
               <input
                 value={arrayText}
                 onChange={(e) => setArrayText(e.target.value)}
                 placeholder="例如: 15, 42, 8, 33, 91"
-                className="w-full bg-zinc-50 dark:bg-zinc-800/50 border-2 border-transparent focus:border-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-2xl px-5 py-5 text-sm outline-none font-bold placeholder:text-zinc-300 dark:placeholder:text-zinc-600 transition-all disabled:opacity-50 shadow-inner"
+                className={cn(
+                  'w-full bg-zinc-50 dark:bg-zinc-800/50 border-2 border-transparent focus:border-blue-500/20 focus:bg-white dark:focus:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-2xl px-5 text-sm outline-none font-bold placeholder:text-zinc-300 dark:placeholder:text-zinc-600 transition-all disabled:opacity-50 shadow-inner',
+                  compact ? 'py-4' : 'py-5'
+                )}
                 disabled={isPlaying}
               />
               {parsedArray && (
                 <button
                   onClick={() => onApplyArrayInput(parsedArray)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 px-5 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] font-black uppercase tracking-wider hover:scale-[1.03] active:scale-95 transition-all shadow-lg"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 px-5 py-2 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] font-black uppercase tracking-wider active:scale-95 transition-all shadow-lg"
                 >
                   Apply
                 </button>
               )}
-           </div>
-           
-           <p className="px-1 text-[9px] text-zinc-400 font-medium italic">
-             支持逗号或空格分隔的数值内容。应用后将自动同步至可视化看板。
-           </p>
-        </div>
+            </div>
+
+            <p className="px-1 text-[9px] text-zinc-400 font-medium italic">
+              逗号/空格分隔；应用后同步到左侧图。
+            </p>
+          </div>
+        </details>
       </div>
     </div>
   );

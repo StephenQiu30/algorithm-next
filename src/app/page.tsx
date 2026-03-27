@@ -37,23 +37,23 @@ const HeroSection = memo(() => {
       <div className="flex-1">
         <div className="hero-reveal bg-primary mb-12 h-1.5 w-16 rounded-full" />
         <h1 className="hero-reveal text-foreground mb-12 text-7xl leading-[0.9] font-black tracking-tighter select-none md:text-8xl lg:text-[10rem]">
-          Day by
+          排序算法
           <br />
-          day.
+          交互式教学
         </h1>
         <div className="hero-reveal text-foreground/30 mb-16 flex items-center gap-6 text-[11px] font-black tracking-[0.5em] uppercase">
-          <span>持续进化</span>
+          <span>可视化</span>
           <span className="bg-border h-1 w-1 rounded-full" />
-          <span>长期主义</span>
+          <span>逐步讲解</span>
           <span className="bg-border h-1 w-1 rounded-full" />
-          <span>极致匠心</span>
+          <span>复杂度理解</span>
         </div>
 
         <div className="hero-reveal max-w-xl">
           <p className="text-foreground/80 text-xl leading-relaxed font-black tracking-tight md:text-2xl">
-            日拱一卒，功不唐捐。
+            面向排序算法学习：用动画、步骤与指标把“为什么”和“怎么做”讲清楚。
             <br />
-            在平凡的日常中，通过持续的进化，构建属于未来的技术版图。
+            聚焦核心体验，按 MVP 原则迭代。
           </p>
         </div>
       </div>
