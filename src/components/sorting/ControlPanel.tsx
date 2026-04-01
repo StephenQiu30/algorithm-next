@@ -61,14 +61,14 @@ export function ControlPanel({
   return (
     <div
       className={cn(
-        'flex w-full flex-col rounded-[2rem] border border-zinc-100 bg-white transition-all dark:border-zinc-800 dark:bg-zinc-900',
+        'flex w-full flex-col rounded-[2.5rem] border border-zinc-200/50 dark:border-zinc-800/50 bg-white/70 dark:bg-zinc-900/40 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.02)] transition-all overflow-hidden',
         compact ? 'max-w-full' : 'mx-auto max-w-5xl'
       )}
     >
       <div className={cn('flex flex-col', compact ? 'gap-3 p-6' : 'gap-4 p-8')}>
         <div className="flex justify-between items-center pl-1">
           <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">算法选择</label>
-          <span className="text-[10px] font-black tabular-nums py-1 px-2 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+          <span className="text-[10px] font-black tabular-nums py-1 px-3 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             {SORTING_ALGORITHM_NAME_BY_ID[selectedAlgorithmId]}
           </span>
         </div>

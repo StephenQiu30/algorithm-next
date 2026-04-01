@@ -4,21 +4,24 @@ import React from 'react';
 import { useSortingVisualizer } from '@/hooks/useSortingVisualizer';
 import { SORTING_ALGORITHMS, SortingAlgorithmId } from '@/lib/sortingAlgorithms';
 import { Bar, BarState } from './Bar';
-import { ControlPanel } from './ControlPanel';
 import { CodeHighlighter } from './CodeHighlighter';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { Info, Code2, Sparkles, Activity, Settings2, Play, Pause, StepForward, StepBack, Shuffle, SlidersHorizontal, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Slider } from '@/components/ui/slider';
 
 const ACTION_LABEL: Record<string, string> = {
   compare: '比较',
   swap: '交换',
   overwrite: '写入',
-  pivot: '枢轴',
+  pivot: '枢轴点',
   markSorted: '归位',
-  done: '完成',
+  done: '排序完成',
 };
 
 export function SortingVisualizer({ initialAlgorithmId }: { initialAlgorithmId?: SortingAlgorithmId }) {
@@ -47,316 +50,219 @@ export function SortingVisualizer({ initialAlgorithmId }: { initialAlgorithmId?:
   } = useSortingVisualizer(10, initialAlgorithmId);
 
   const maxValue = Math.max(...array, 1);
-
   const activeSet = React.useMemo(() => new Set(activeIndices), [activeIndices]);
   const sortedSet = React.useMemo(() => new Set(sortedIndices), [sortedIndices]);
-  const actionLabel = currentStepInfo?.action ? (ACTION_LABEL[currentStepInfo.action] ?? currentStepInfo.action) : null;
+  
   const actionTone = React.useMemo(() => {
     switch (currentStepInfo?.action) {
       case 'compare':
-        return {
-          tag: 'bg-orange-100/80 dark:bg-orange-900/25 text-orange-700 dark:text-orange-300',
-          dot: 'bg-orange-500',
-          rail: 'bg-orange-500/70',
-        };
+        return { tag: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20', rail: 'bg-amber-500' };
       case 'swap':
-        return {
-          tag: 'bg-rose-100/80 dark:bg-rose-900/25 text-rose-700 dark:text-rose-300',
-          dot: 'bg-rose-500',
-          rail: 'bg-rose-500/70',
-        };
-      case 'overwrite':
-        return {
-          tag: 'bg-orange-100/80 dark:bg-orange-900/25 text-orange-700 dark:text-orange-300',
-          dot: 'bg-orange-500',
-          rail: 'bg-orange-500/70',
-        };
+        return { tag: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20', rail: 'bg-rose-500' };
       case 'pivot':
-        return {
-          tag: 'bg-orange-100/80 dark:bg-orange-900/25 text-orange-700 dark:text-orange-300',
-          dot: 'bg-orange-500',
-          rail: 'bg-orange-500/70',
-        };
-      case 'markSorted':
+        return { tag: 'bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-400 border-fuchsia-500/20', rail: 'bg-fuchsia-500' };
       case 'done':
-        return {
-          tag: 'bg-emerald-100/80 dark:bg-emerald-900/25 text-emerald-700 dark:text-emerald-300',
-          dot: 'bg-emerald-500',
-          rail: 'bg-emerald-500/70',
-        };
+        return { tag: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20', rail: 'bg-emerald-500' };
       default:
-        return {
-          tag: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
-          dot: 'bg-zinc-400',
-          rail: 'bg-zinc-300/60',
-        };
+        return { tag: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20', rail: 'bg-blue-500' };
     }
   }, [currentStepInfo?.action]);
-  const progressPercent = Math.round((currentStep / Math.max(1, totalSteps)) * 100);
-  const algoInfo = React.useMemo(() => SORTING_ALGORITHMS.find((a) => a.id === algorithmId), [algorithmId]);
-  const range = currentStepInfo?.range;
-  const oneLiner = React.useMemo(() => {
-    switch (algorithmId) {
-      case 'bubble':
-        return '反复比较相邻两个数，大的往右冒。'
-      case 'selection':
-        return '每一轮从未排序里挑最小的，放到前面。'
-      case 'insertion':
-        return '像整理扑克牌：把新牌插到左侧有序区。'
-      case 'shell':
-        return '先按间隔分组做插入排序，间隔逐渐变小。'
-      case 'merge':
-        return '不断对半拆开，各自排好，再两两合并。'
-      case 'quick':
-        return '选一个枢轴，小的放左边，大的放右边，再递归。'
-      case 'heap':
-        return '把数据变成堆，反复取堆顶放到末尾。'
-      case 'radix':
-        return '从低位到高位按桶分配并收集，逐位排好。'
-      default:
-        return '按步骤把无序变有序。'
-    }
-  }, [algorithmId]);
 
+  const progressPercent = Math.round((currentStep / Math.max(1, totalSteps)) * 100);
+
+  const [arrayText, setArrayText] = React.useState('');
+  const parsedArray = React.useMemo(() => {
+    const raw = arrayText.trim();
+    if (!raw) return null;
+    const nums = raw.split(/[\s,]+/).filter(Boolean).map(Number);
+    return nums.every(n => !isNaN(n)) ? nums : null;
+  }, [arrayText]);
+
+  // Layout Animation
   useGSAP(
     () => {
       gsap.fromTo(
-        ['.sv-board', '.sv-panel'],
-        { y: 14, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', stagger: 0.06, clearProps: 'transform,opacity' }
-      );
-      gsap.fromTo(
-        ['.sv-status', '.sv-metrics'],
-        { y: 8, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out', stagger: 0.04, delay: 0.12, clearProps: 'transform,opacity' }
+        ['.sv-board', '.sv-side-panel'],
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out', stagger: 0.1, clearProps: 'all' }
       );
     },
     { scope: scopeRef }
   );
 
-  useGSAP(
-    () => {
-      if (!currentStepInfo?.action) return;
-      gsap.fromTo(
-        '.sv-status-card',
-        { scale: 0.99 },
-        { scale: 1, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }
-      );
-    },
-    { scope: scopeRef, dependencies: [currentStepInfo?.action, currentStepInfo?.message, currentStep] }
-  );
-
   return (
-    <div ref={scopeRef} className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch lg:h-[calc(100vh-220px)]">
-      {/* Left (lg:col-span-7): Visualization Board with All Overlays */}
-      <div className="lg:col-span-7">
-        <div className="sv-board relative w-full h-full min-h-[420px] lg:min-h-0 bg-zinc-50 dark:bg-zinc-900/10 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800/50 flex flex-col items-center justify-end p-6 sm:p-8 lg:p-10 overflow-hidden shadow-sm">
+    <div ref={scopeRef} className="flex flex-col gap-6 lg:h-[calc(100vh-160px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch h-full">
+        
+        {/* Left Section (8/12): Board + Immersive Controls */}
+        <div className="lg:col-span-8 flex flex-col gap-0 h-full relative">
           
-          {/* Status Message Overlay - Top Left */}
-          <div className="sv-status absolute top-6 left-6 sm:top-8 sm:left-8 z-10 transition-all duration-300 max-w-[70%]">
-            <div className="sv-status-card relative overflow-hidden rounded-2xl border border-zinc-100 dark:border-zinc-800/60 bg-white/80 dark:bg-zinc-950/40 backdrop-blur px-5 py-4 shadow-sm">
-              <div className={`absolute left-0 top-0 h-full w-1.5 ${actionTone.rail}`} />
-              <div className="flex items-start gap-4">
-                <div className="mt-1 flex flex-col items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${isPlaying ? 'bg-blue-600 animate-pulse' : 'bg-zinc-300'}`} />
-                  <span className={`w-2.5 h-2.5 rounded-full ${actionTone.dot}`} />
-                </div>
-
-                <div className="min-w-0">
-                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.18em]">正在做什么</p>
-                  <div className="mt-1 flex items-baseline gap-3">
-                    <h2 className="text-[20px] font-black text-zinc-900 dark:text-zinc-100 leading-tight truncate">
-                      {currentStepInfo?.message ?? '就绪'}
-                    </h2>
-                  </div>
-
-                  <div className="mt-3 flex items-center gap-2">
-                    {currentStepInfo?.action ? (
-                      <span className={`px-2 py-0.5 rounded-md ${actionTone.tag} text-[10px] font-black tracking-wider`}>
-                        {actionLabel ?? '执行'}
-                      </span>
-                    ) : (
-                      <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-900/30 text-zinc-600 dark:text-zinc-300 text-[10px] font-black tracking-wider">
-                        就绪
-                      </span>
-                    )}
-                    <span className="text-[10px] text-zinc-400 font-bold italic tabular-nums">
-                      Step {currentStep}/{totalSteps}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Metrics Overlay - Top Right */}
-          <div className="sv-metrics absolute top-6 right-6 sm:top-8 sm:right-8 flex items-center gap-5 sm:gap-6 z-10 text-right transition-all duration-300">
-             <div className="flex flex-col gap-1">
-                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">比较</p>
-                <p className="text-xl font-black text-zinc-900 dark:text-white tabular-nums leading-none">{metrics.comparisons}</p>
-             </div>
-             <div className="flex flex-col gap-1">
-                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">交换</p>
-                <p className="text-xl font-black text-zinc-900 dark:text-white tabular-nums leading-none">{metrics.swaps}</p>
-             </div>
-             <div className="flex flex-col gap-1">
-                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">写入</p>
-                <p className="text-xl font-black text-zinc-900 dark:text-white tabular-nums leading-none">{metrics.overwrites}</p>
-             </div>
-             <div className="flex flex-col gap-1">
-                <p className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest text-blue-500">已完成</p>
-                <p className="text-xl font-black text-blue-600 dark:text-blue-500 tabular-nums leading-none">
-                   {progressPercent}%
-                </p>
-             </div>
-          </div>
-
-          <div className="w-full h-[66%] flex items-end justify-center gap-2 sm:gap-3 max-w-4xl">
-            {array.map((value, idx) => {
-              let state: BarState = 'default';
-              if (sortedSet.has(idx)) state = 'sorted';
-              else if (activeSet.has(idx)) {
-                const action = currentStepInfo?.action;
-                if (action === 'compare') state = 'compare';
-                else if (action === 'swap') state = 'swap';
-                else if (action === 'overwrite') state = 'overwrite';
-                else if (action === 'pivot') state = 'pivot';
-                else state = 'compare';
-              }
-
-              const dimmed = !!range && (idx < range[0] || idx > range[1]);
-              return <Bar key={idx} value={value} maxValue={maxValue} state={state} dimmed={dimmed} />;
-            })}
-          </div>
-          
-          <div className="absolute bottom-0 left-0 h-1.5 bg-zinc-200 dark:bg-zinc-800 w-full overflow-hidden">
-             <div 
-               className={`h-full ${actionTone.dot} transition-all duration-300`}
-               style={{ width: `${(currentStep / Math.max(1, totalSteps)) * 100}%` }}
-             />
-          </div>
-        </div>
-      </div>
-
-      {/* Right (lg:col-span-5): Simplified Console */}
-      <div className="lg:col-span-5 flex flex-col h-full">
-        <div className="sv-panel h-full overflow-hidden p-6 sm:p-8 lg:p-10 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800/50 flex flex-col shadow-sm lg:sticky lg:top-24">
-          <ScrollArea className="h-full">
-            <div className="space-y-6 pr-2">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">控制面板</h3>
-              </div>
-
-              {algoInfo && (
-                <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800/60 bg-white/70 dark:bg-zinc-950/25 backdrop-blur px-5 py-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <div className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.18em]">当前算法</div>
-                      <div className="mt-1 text-zinc-900 dark:text-zinc-100 text-lg font-black tracking-tight truncate">
-                        {algoInfo.name}
-                      </div>
-                      <div className="mt-1 text-[12px] font-bold text-zinc-600 dark:text-zinc-300">
-                        一句话：{oneLiner}
-                      </div>
-                    </div>
-                    <Badge
-                      variant="outline"
+          {/* Top Bar: Algorithm Selector - Simplified */}
+          <div className="absolute top-6 inset-x-6 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 p-1 flex items-center justify-between shadow-sm lg:max-w-max mx-auto">
+             <ScrollArea className="max-w-[calc(100%-48px)]">
+                <div className="flex items-center gap-1">
+                  {SORTING_ALGORITHMS.map((algo) => (
+                    <button
+                      key={algo.id}
+                      onClick={() => setAlgorithmId(algo.id)}
+                      disabled={isPlaying}
                       className={cn(
-                        'rounded-full text-[11px] font-black px-2.5 py-1',
-                        algoInfo.stability === '稳定'
-                          ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20 dark:text-emerald-300'
-                          : 'bg-rose-500/10 text-rose-700 border-rose-500/20 dark:text-rose-300'
+                        "px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap",
+                        algorithmId === algo.id 
+                          ? "bg-blue-600 text-white shadow-sm" 
+                          : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
                       )}
                     >
-                      {algoInfo.stability}
-                    </Badge>
-                  </div>
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {algoInfo.tags.map((t) => (
-                      <Badge
-                        key={t}
-                        variant="outline"
-                        className={cn(
-                          'rounded-full text-[10px] font-black px-2.5 py-1',
-                          t === '原地' && 'bg-sky-500/10 text-sky-700 border-sky-500/20 dark:text-sky-300',
-                          t === '分治' && 'bg-indigo-500/10 text-indigo-700 border-indigo-500/20 dark:text-indigo-300',
-                          t === '非比较' && 'bg-amber-500/10 text-amber-800 border-amber-500/25 dark:text-amber-300',
-                          t !== '原地' && t !== '分治' && t !== '非比较' && 'bg-muted/15 text-foreground/70 border-border/10'
-                        )}
-                      >
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-3 gap-3">
-                    <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800/50 px-3 py-2">
-                      <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">平均时间</div>
-                      <div className="mt-1 text-[12px] font-black text-zinc-900 dark:text-zinc-100 tabular-nums">
-                        {algoInfo.timeComplexity.average}
-                      </div>
-                    </div>
-                    <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800/50 px-3 py-2">
-                      <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">最差时间</div>
-                      <div className="mt-1 text-[12px] font-black text-zinc-900 dark:text-zinc-100 tabular-nums">
-                        {algoInfo.timeComplexity.worst}
-                      </div>
-                    </div>
-                    <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-100 dark:border-zinc-800/50 px-3 py-2">
-                      <div className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">空间</div>
-                      <div className="mt-1 text-[12px] font-black text-zinc-900 dark:text-zinc-100 tabular-nums">
-                        {algoInfo.spaceComplexity}
-                      </div>
-                    </div>
-                  </div>
-
-                  {(range || currentStepInfo?.action === 'pivot') && (
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      {range && (
-                        <Badge
-                          variant="outline"
-                          className="rounded-full text-[10px] font-black px-2.5 py-1 bg-zinc-100/70 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200"
-                        >
-                          区间 [{range[0]}, {range[1]}]
-                        </Badge>
-                      )}
-                      {currentStepInfo?.action === 'pivot' && (
-                        <Badge
-                          variant="outline"
-                          className="rounded-full text-[10px] font-black px-2.5 py-1 bg-orange-500/10 border-orange-500/20 text-orange-700 dark:text-orange-300"
-                        >
-                          枢轴
-                        </Badge>
-                      )}
-                    </div>
-                  )}
+                      {algo.shortName || algo.name.replace('排序', '')}
+                    </button>
+                  ))}
                 </div>
-              )}
+                <ScrollBar orientation="horizontal" className="hidden" />
+             </ScrollArea>
+             <div className="w-[1px] h-4 bg-zinc-200 dark:bg-zinc-700 mx-2" />
+             <Popover>
+                <PopoverTrigger asChild>
+                   <button className="p-2 rounded-xl text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                      <Settings2 size={16} />
+                   </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 rounded-2xl p-6 shadow-xl bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800" side="bottom" align="end">
+                   <div className="space-y-6">
+                      <div className="space-y-3">
+                         <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-blue-600">速度 {speed}%</span>
+                         </div>
+                         <Slider value={[speed]} onValueChange={([v]) => setSpeed(v)} max={100} min={1} step={1} />
+                      </div>
+                      <div className="space-y-3">
+                         <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">大小 {size}</span>
+                         </div>
+                         <Slider value={[size]} onValueChange={([v]) => setSize(v)} max={100} min={10} step={1} disabled={isPlaying} />
+                      </div>
+                      <div className="space-y-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                         <span className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400">自定义数据</span>
+                         <div className="flex gap-2">
+                           <input 
+                             value={arrayText}
+                             onChange={(e) => setArrayText(e.target.value)}
+                             placeholder="1, 5, 8..."
+                             className="flex-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           />
+                           {parsedArray && (
+                             <button 
+                               onClick={() => setArrayFromInput(parsedArray)}
+                               className="px-3 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-bold"
+                             >
+                               Apply
+                             </button>
+                           )}
+                         </div>
+                      </div>
+                   </div>
+                </PopoverContent>
+             </Popover>
+          </div>
 
-              <ControlPanel
-                algorithms={algorithms}
-                selectedAlgorithmId={algorithmId}
-                onSelectAlgorithmId={setAlgorithmId}
-                size={size}
-                onSizeChange={setSize}
-                speed={speed}
-                onSpeedChange={setSpeed}
-                isPlaying={isPlaying}
-                onPlayPause={handlePlayPause}
-                onReset={reset}
-                currentStep={currentStep}
-                totalSteps={totalSteps}
-                onStepBack={stepBack}
-                onStepForward={stepForward}
-                metrics={metrics}
-                onApplyArrayInput={setArrayFromInput}
-                compact
-              />
+          <div className="sv-board relative flex-1 min-h-[500px] bg-white dark:bg-zinc-950/60 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all overflow-hidden flex flex-col">
+            
+            {/* Real-time Monitor - Simplified */}
+            <div className="absolute top-24 left-8 z-20 pointer-events-none">
+              <div className="flex flex-col gap-1">
+                 <div className="flex items-center gap-6 opacity-60">
+                    <div className="flex flex-col">
+                       <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">比较</span>
+                       <span className="text-lg font-bold tabular-nums text-zinc-900 dark:text-zinc-100">{metrics.comparisons}</span>
+                    </div>
+                    <div className="flex flex-col border-l border-zinc-200 dark:border-zinc-800 pl-4">
+                       <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">交换</span>
+                       <span className="text-lg font-bold tabular-nums text-zinc-900 dark:text-zinc-100">{metrics.swaps}</span>
+                    </div>
+                 </div>
+              </div>
             </div>
-            <ScrollBar />
-          </ScrollArea>
+
+            {/* Visualization Area */}
+            <div className="flex-1 flex items-end justify-center px-10 pb-28 pt-40 gap-1.5 sm:gap-2">
+              {array.map((value, idx) => {
+                let state: BarState = 'default';
+                if (sortedSet.has(idx)) state = 'sorted';
+                else if (activeSet.has(idx)) state = (currentStepInfo?.action as BarState) || 'compare';
+                const dimmed = !!currentStepInfo?.range && (idx < currentStepInfo.range[0] || idx > currentStepInfo.range[1]);
+                return <Bar key={idx} value={value} maxValue={maxValue} state={state} dimmed={dimmed} showValue={size <= 25} />;
+              })}
+            </div>
+
+            {/* Step Narrative - Integrated */}
+            {currentStepInfo?.description && (
+              <div className="absolute bottom-24 inset-x-0 z-30 flex justify-center px-8 pointer-events-none">
+                <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl px-6 py-3 shadow-md flex items-center gap-3 max-w-xl">
+                  <div className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0 animate-pulse", actionTone.rail)} />
+                  <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 leading-snug">
+                    {currentStepInfo.description}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Floating Action Bar (Bottom Center) - Simplified */}
+            <div className="absolute bottom-6 inset-x-0 z-40 flex justify-center pointer-events-none">
+               <div className="bg-zinc-900 dark:bg-white rounded-2xl p-1 flex items-center gap-1 shadow-lg pointer-events-auto border border-white/5 dark:border-zinc-200">
+                  <button 
+                    onClick={reset}
+                    disabled={isPlaying}
+                    className="p-3 rounded-xl text-zinc-400 hover:text-white dark:hover:text-zinc-900 transition-colors disabled:opacity-20"
+                    title="洗牌"
+                  >
+                    <Shuffle size={16} />
+                  </button>
+                  <div className="w-[1px] h-4 bg-zinc-800 dark:bg-zinc-200 mx-1" />
+                  <button 
+                    onClick={stepBack}
+                    disabled={isPlaying || currentStep === 0}
+                    className="p-3 rounded-xl text-zinc-400 hover:text-white dark:hover:text-zinc-900 transition-colors disabled:opacity-20"
+                  >
+                    <StepBack size={16} />
+                  </button>
+                  <button 
+                    onClick={handlePlayPause}
+                    className={cn(
+                      "w-11 h-11 rounded-xl flex items-center justify-center transition-all active:scale-95",
+                      isPlaying 
+                        ? "bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900" 
+                        : "bg-blue-600 text-white shadow-md hover:bg-blue-700"
+                    )}
+                  >
+                    {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
+                  </button>
+                  <button 
+                    onClick={stepForward}
+                    disabled={isPlaying || currentStep === totalSteps}
+                    className="p-3 rounded-xl text-zinc-400 hover:text-white dark:hover:text-zinc-900 transition-colors disabled:opacity-20"
+                  >
+                    <StepForward size={16} />
+                  </button>
+                  <div className="w-[1px] h-4 bg-zinc-800 dark:bg-zinc-200 mx-1" />
+                  <div className="px-4 py-2 flex flex-col items-center min-w-[64px]">
+                     <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{progressPercent}%</span>
+                     <div className="text-[9px] font-bold text-zinc-500 tabular-nums">Step {currentStep}</div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Subtle Progress Bar */}
+            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-zinc-100 dark:bg-zinc-900/50">
+              <div className={cn("h-full transition-all duration-300", actionTone.rail)} style={{ width: `${progressPercent}%` }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Right Section (4/12): Code */}
+        <div className="lg:col-span-4 flex flex-col gap-0 h-full sv-side-panel">
+          <div className="flex items-center gap-2 mb-4 pl-2">
+             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">源码执行同步</span>
+          </div>
+          <CodeHighlighter algorithmId={algorithmId} currentLine={currentStepInfo?.line} />
         </div>
       </div>
     </div>
