@@ -7,6 +7,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PostCard, PostCardSkeleton } from '@/components/blog/post-card'
 import { searchPostByPage } from '@/api/search/searchController'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -18,11 +19,11 @@ const HeroSection = memo(() => {
   useGSAP(
     () => {
       gsap.from('.hero-reveal', {
-        y: 80,
+        y: 30,
         opacity: 0,
-        duration: 1.5,
-        stagger: 0.2,
-        ease: 'power4.out',
+        duration: 1,
+        stagger: 0.1,
+        ease: 'power2.out',
         clearProps: 'all',
       })
     },
@@ -32,81 +33,69 @@ const HeroSection = memo(() => {
   return (
     <section
       ref={container}
-      className="relative mb-32 flex flex-col items-start justify-between gap-16 lg:flex-row"
+      className="relative mb-32 flex flex-col items-center justify-between gap-16 lg:flex-row lg:items-start pt-16"
     >
-      <div className="flex-1">
-        <div className="hero-reveal bg-primary mb-12 h-1.5 w-16 rounded-full" />
-        <h1 className="hero-reveal text-foreground mb-12 text-7xl leading-[0.9] font-black tracking-tighter select-none md:text-8xl lg:text-[10rem]">
-          排序算法
-          <br />
-          交互式教学
-        </h1>
-        <div className="hero-reveal text-foreground/30 mb-16 flex items-center gap-6 text-[11px] font-black tracking-[0.5em] uppercase">
-          <span>可视化</span>
-          <span className="bg-border h-1 w-1 rounded-full" />
-          <span>逐步讲解</span>
-          <span className="bg-border h-1 w-1 rounded-full" />
-          <span>复杂度理解</span>
+      <div className="flex-1 space-y-8 text-center lg:text-left">
+        <div className="hero-reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+           <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+             Next-Gen Algorithm Platform
+           </span>
         </div>
 
-        <div className="hero-reveal max-w-xl">
-          <p className="text-foreground/80 text-xl leading-relaxed font-black tracking-tight md:text-2xl">
+        <h1 className="hero-reveal text-5xl lg:text-6xl font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.1] select-none">
+          排序算法
+          <br />
+          <span className="text-blue-600">交互式教学</span>
+        </h1>
+
+        <div className="hero-reveal max-w-2xl mx-auto lg:mx-0">
+          <p className="text-base lg:text-lg font-medium text-zinc-500 dark:text-zinc-400 leading-relaxed">
             面向排序算法学习：用动画、步骤与指标把“为什么”和“怎么做”讲清楚。
-            <br />
-            聚焦核心体验，按 MVP 原则迭代。
+            沉淀代码直觉，在跨越维度的交互中体验算法之美。
           </p>
+        </div>
+
+        <div className="hero-reveal flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+           <Link href="/sorting" className="px-7 py-3.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-sm hover:scale-105 transition-transform flex items-center gap-2 group">
+              立即探索
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+           </Link>
+           <Link href="/blog" className="px-7 py-3.5 rounded-xl bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white border border-zinc-200 dark:border-zinc-800 font-bold text-sm hover:bg-zinc-50 transition-colors">
+              阅读文章
+           </Link>
         </div>
       </div>
 
-      <div className="hero-reveal w-full shrink-0 lg:w-[450px]">
+      <div className="hero-reveal w-full shrink-0 lg:w-[420px]">
         <div className="group relative">
-          <div className="from-primary/10 absolute -inset-2 bg-gradient-to-tr to-transparent opacity-0 blur-2xl transition duration-1000 group-hover:opacity-100" />
-          <div className="border-border bg-background/80 relative flex flex-col gap-10 rounded-[48px] border p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] backdrop-blur-3xl transition-all duration-700 hover:scale-[1.02] hover:shadow-[0_48px_96px_-24px_hsl(var(--primary)/0.2)]">
-            <div className="flex items-start justify-between">
-              <div className="bg-primary text-primary-foreground shadow-primary/20 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl font-black shadow-xl">
-                S.
-              </div>
-              <div className="pt-2 text-right">
-                <p className="text-foreground/50 mb-1 font-mono text-[10px] font-black tracking-[0.3em] uppercase">
-                  Status
-                </p>
-                <div className="flex items-center justify-end gap-2">
-                  <div className="h-2 w-2 animate-pulse rounded-full bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.8)]" />
-                  <p className="text-foreground text-xs font-black">当前在线</p>
-                </div>
-              </div>
+          <div className="relative overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 p-8 shadow-sm transition-all duration-500 group-hover:border-blue-500/30">
+            <div className="flex items-start justify-between mb-8">
+               <div className="w-12 h-12 rounded-xl bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-white dark:text-zinc-900 text-xl font-bold">
+                 S.
+               </div>
+               <div className="text-right">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10">
+                     <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                     <span className="text-[9px] font-bold uppercase tracking-widest">Active</span>
+                  </div>
+               </div>
             </div>
 
-            <div className="space-y-12 pl-1">
-              <p className="text-foreground text-2xl leading-tight font-black tracking-tight">
-                在跨越维度的代码中，寻求纯粹的直觉。
-                <br />
-                在每一次细微的迭代中，沉淀灵感的厚度。
-              </p>
+            <div className="space-y-8">
+               <div className="space-y-3">
+                  <p className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
+                    在跨越维度的代码中，寻求纯粹的直觉。
+                  </p>
+               </div>
 
-              <Link
-                href="/blog"
-                className="group/btn border-border/60 flex items-center justify-between border-t pt-8"
-              >
-                <span className="text-foreground/80 group-hover:text-primary text-[11px] font-black tracking-[0.3em] uppercase transition-colors">
-                  探索全部见解
-                </span>
-                <div className="bg-primary group-hover:shadow-primary/30 flex h-14 w-14 items-center justify-center rounded-full transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg group-hover/btn:rotate-45">
-                  <svg
-                    className="text-primary-foreground h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    />
-                  </svg>
-                </div>
-              </Link>
+               <Link href="/blog" className="flex items-center justify-between pt-6 border-t border-zinc-100 dark:border-zinc-800 group/btn">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 group-hover/btn:text-blue-600 transition-colors">
+                     Recent Insights
+                  </span>
+                  <div className="w-10 h-10 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-100 group-hover/btn:scale-110 group-hover/btn:rotate-45 transition-all">
+                     <ArrowUpRight size={18} />
+                  </div>
+               </Link>
             </div>
           </div>
         </div>
@@ -122,17 +111,16 @@ const PhilosophySection = memo(() => {
 
   useGSAP(
     () => {
-      gsap.from(sectionRef.current, {
-        y: 100,
+      gsap.from('.phi-reveal', {
+        y: 40,
         opacity: 0,
-        duration: 1.2,
-        ease: 'power3.out',
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top 85%',
-          toggleActions: 'play none none none',
         },
-        clearProps: 'all',
       })
     },
     { scope: sectionRef }
@@ -141,20 +129,19 @@ const PhilosophySection = memo(() => {
   return (
     <section
       ref={sectionRef}
-      className="section-reveal border-border/10 mb-32 w-full border-y py-24"
+      className="relative mb-32 w-full border-y border-zinc-100 dark:border-zinc-800/50 py-24"
     >
-      <h2 className="text-foreground text-4xl leading-[1.1] font-black tracking-tight md:text-6xl lg:text-7xl">
-        「所谓极致，
-        <br />
-        是把微不足道的细节做到
-        <span className="text-foreground decoration-border/40 underline decoration-4 underline-offset-[20px]">
-          完美
-        </span>
-        。」
-      </h2>
-      <p className="text-foreground/60 mt-12 text-[11px] font-black tracking-[0.6em] uppercase">
-        — 见解哲学
-      </p>
+      <div className="phi-reveal max-w-4xl space-y-8">
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
+          「所谓极致，是把细节做到 
+          <span className="text-blue-600"> 完美</span>
+          。」
+        </h2>
+        <div className="inline-flex items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-zinc-400">
+           <div className="w-10 h-[1px] bg-zinc-200 dark:bg-zinc-800" />
+           <span>見解哲学</span>
+        </div>
+      </div>
     </section>
   )
 })
@@ -179,10 +166,9 @@ const FeaturedPosts = () => {
           setPosts(res.data.records as unknown as PostAPI.PostVO[])
         }
       } catch (err) {
-        console.error('Failed to fetch posts from ES:', err)
+        console.error('Failed to fetch posts:', err)
       } finally {
         setIsLoading(false)
-        // Refresh ScrollTrigger after content load
         setTimeout(() => ScrollTrigger.refresh(), 100)
       }
     }
@@ -193,11 +179,11 @@ const FeaturedPosts = () => {
     () => {
       if (!isLoading) {
         gsap.from('.post-reveal', {
-          y: 60,
+          y: 30,
           opacity: 0,
-          duration: 1,
+          duration: 0.8,
           stagger: 0.1,
-          ease: 'power3.out',
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 80%',
@@ -211,27 +197,29 @@ const FeaturedPosts = () => {
 
   return (
     <section ref={containerRef} className="mb-32 w-full">
-      <div className="mb-24 flex items-center justify-between">
-        <div className="flex items-baseline gap-4">
-          <h3 className="text-foreground/60 text-[11px] font-black tracking-[0.8em] uppercase">
-            精选见解
-          </h3>
-          <span className="text-foreground/40 text-xs font-bold italic">/ 06</span>
+      <div className="mb-16 flex items-end justify-between">
+        <div className="space-y-3">
+           <div className="text-[10px] font-bold tracking-widest uppercase text-zinc-400">
+              Latest Thoughts
+           </div>
+           <h3 className="text-2xl lg:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              精选见解
+           </h3>
         </div>
         <Link
           href="/blog"
-          className="text-foreground/80 hover:text-foreground group flex items-center gap-2 text-[10px] font-black tracking-widest uppercase transition-all"
+          className="text-zinc-400 hover:text-blue-600 transition-colors flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase"
         >
-          <span className="transition-all group-hover:mr-2">所有见解 archive</span>
-          <span>→</span>
+          <span>Explore Archive</span>
+          <ArrowRight size={14} />
         </Link>
       </div>
 
-      <div className="mb-20 grid min-h-[400px] grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => <PostCardSkeleton key={i} index={i} />)
           : posts.map(post => (
-              <div key={post.id} className="post-reveal">
+              <div key={post.id} className="post-reveal h-full">
                 <PostCard post={post} />
               </div>
             ))}
@@ -244,10 +232,12 @@ const FeaturedPosts = () => {
 
 export default function LandingPage() {
   return (
-    <main className="selection:bg-foreground selection:text-background relative container mx-auto min-h-screen px-6 pt-32 pb-24">
-      <HeroSection />
-      <PhilosophySection />
-      <FeaturedPosts />
+    <main className="min-h-screen bg-white dark:bg-zinc-950">
+      <div className="container relative mx-auto px-6 py-24">
+        <HeroSection />
+        <PhilosophySection />
+        <FeaturedPosts />
+      </div>
     </main>
   )
 }
