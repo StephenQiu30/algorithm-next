@@ -2,8 +2,8 @@ export type SortStepType = 'compare' | 'swap' | 'overwrite' | 'sorted' | 'pivot'
 
 export interface SortStep {
   type: SortStepType
-  indices: number[]    // indices involved in this step (e.g., comparing i and j)
-  snapshot: number[]   // the state of the array AFTER this step is applied
+  indices: number[] // indices involved in this step (e.g., comparing i and j)
+  snapshot: number[] // the state of the array AFTER this step is applied
   description?: string // optional description for teaching purposes
 }
 

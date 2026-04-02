@@ -35,64 +35,68 @@ export function PostCard({ post, className, href, onClick }: PostCardProps) {
   const formattedDate = createTime ? dayjs(createTime).format('MMM D, YYYY') : ''
 
   return (
-    <div
-      ref={cardRef}
-      className={cn('group relative h-full cursor-pointer', className)}
-    >
-      <div className={cn(
-        "relative h-full flex flex-col overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-all duration-300",
-        "group-hover:border-blue-500/50 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)]"
-      )}>
+    <div ref={cardRef} className={cn('group relative h-full cursor-pointer', className)}>
+      <div
+        className={cn(
+          'relative flex h-full flex-col overflow-hidden rounded-3xl border border-zinc-200 bg-white transition-all duration-300 dark:border-zinc-800 dark:bg-zinc-950',
+          'group-hover:border-blue-500/50 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)]'
+        )}
+      >
         {/* Cover Image Area */}
         <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-zinc-100 dark:border-zinc-800">
           {cover ? (
-             <img
-               src={cover}
-               alt={title || ''}
-               className="h-full w-full object-cover grayscale-[0.2] transition-transform duration-500 group-hover:scale-105 group-hover:grayscale-0"
-             />
+            <img
+              src={cover}
+              alt={title || ''}
+              className="h-full w-full object-cover grayscale-[0.2] transition-transform duration-500 group-hover:scale-105 group-hover:grayscale-0"
+            />
           ) : (
-             <div className="h-full w-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center">
-                <span className="text-zinc-300 dark:text-zinc-700 font-bold text-xs uppercase tracking-widest">No Cover</span>
-             </div>
+            <div className="flex h-full w-full items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+              <span className="text-xs font-bold tracking-widest text-zinc-300 uppercase dark:text-zinc-700">
+                No Cover
+              </span>
+            </div>
           )}
         </div>
 
         {/* Content Area */}
-        <div className="flex flex-1 flex-col p-5 space-y-4">
+        <div className="flex flex-1 flex-col space-y-4 p-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-               <UserAvatar user={userVO} size="sm" className="h-4 w-4" />
-               <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                 {userVO?.userName || 'Anonymous'}
-               </span>
+              <UserAvatar user={userVO} size="sm" className="h-4 w-4" />
+              <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                {userVO?.userName || 'Anonymous'}
+              </span>
             </div>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-300 dark:text-zinc-600 font-mono italic">
-               {formattedDate}
+            <span className="font-mono text-[9px] font-bold tracking-widest text-zinc-300 uppercase italic dark:text-zinc-600">
+              {formattedDate}
             </span>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+            <h3 className="line-clamp-2 text-base leading-tight font-bold text-zinc-900 transition-colors group-hover:text-blue-600 dark:text-zinc-100">
               {title || 'Untitled'}
             </h3>
-            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+            <p className="line-clamp-2 text-xs leading-relaxed font-medium text-zinc-500 dark:text-zinc-400">
               {excerpt}
             </p>
           </div>
 
-          <div className="mt-auto pt-4 flex items-center justify-between opacity-60">
+          <div className="mt-auto flex items-center justify-between pt-4 opacity-60">
             <div className="flex items-center gap-3 text-zinc-400">
-               <div className="flex items-center gap-1.5 transition-colors group-hover:text-amber-500">
-                  <Heart size={12} className={thumbNum > 0 ? "fill-current" : ""} />
-                  <span className="text-[10px] font-bold tabular-nums">{thumbNum}</span>
-               </div>
-               <div className="flex items-center gap-1.5 transition-colors group-hover:text-blue-500">
-                  <Bookmark size={12} className={favourNum > 0 ? "fill-current" : ""} />
-                  <span className="text-[10px] font-bold tabular-nums">{favourNum}</span>
-               </div>
+              <div className="flex items-center gap-1.5 transition-colors group-hover:text-amber-500">
+                <Heart size={12} className={thumbNum > 0 ? 'fill-current' : ''} />
+                <span className="text-[10px] font-bold tabular-nums">{thumbNum}</span>
+              </div>
+              <div className="flex items-center gap-1.5 transition-colors group-hover:text-blue-500">
+                <Bookmark size={12} className={favourNum > 0 ? 'fill-current' : ''} />
+                <span className="text-[10px] font-bold tabular-nums">{favourNum}</span>
+              </div>
             </div>
-            <ArrowUpRight size={14} className="text-zinc-300 group-hover:text-blue-500 transition-colors" />
+            <ArrowUpRight
+              size={14}
+              className="text-zinc-300 transition-colors group-hover:text-blue-500"
+            />
           </div>
         </div>
 
@@ -114,16 +118,16 @@ export function PostCardSkeleton({ index = 0 }: { index?: number }) {
       className="shimmer border-border/10 bg-card/40 flex h-full flex-col overflow-hidden rounded-[2.5rem] border"
       style={{ animationDelay: `${index * 0.15}s` }}
     >
-      <div className="bg-zinc-100 dark:bg-zinc-900/50 aspect-[16/10] w-full" />
+      <div className="aspect-[16/10] w-full bg-zinc-100 dark:bg-zinc-900/50" />
       <div className="flex flex-1 flex-col space-y-5 p-7">
         <div className="flex items-center gap-2">
-          <div className="bg-zinc-200 dark:bg-zinc-800 h-5 w-5 rounded-full" />
-          <div className="bg-zinc-200 dark:bg-zinc-800 h-2 w-20 rounded" />
+          <div className="h-5 w-5 rounded-full bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-2 w-20 rounded bg-zinc-200 dark:bg-zinc-800" />
         </div>
-        <div className="bg-zinc-200 dark:bg-zinc-800 h-6 w-3/4 rounded-xl" />
+        <div className="h-6 w-3/4 rounded-xl bg-zinc-200 dark:bg-zinc-800" />
         <div className="space-y-3 pt-2">
-          <div className="bg-zinc-100 dark:bg-zinc-900 h-3 w-full rounded-full" />
-          <div className="bg-zinc-100 dark:bg-zinc-900 h-3 w-2/3 rounded-full" />
+          <div className="h-3 w-full rounded-full bg-zinc-100 dark:bg-zinc-900" />
+          <div className="h-3 w-2/3 rounded-full bg-zinc-100 dark:bg-zinc-900" />
         </div>
       </div>
     </div>

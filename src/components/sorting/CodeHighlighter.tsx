@@ -1,14 +1,14 @@
-import React from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark, prism } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { SortingAlgorithmId } from '@/lib/sortingAlgorithms';
-import { cn } from '@/lib/utils';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import React from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { atomDark, prism } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { SortingAlgorithmId } from '@/lib/sortingAlgorithms'
+import { cn } from '@/lib/utils'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 interface CodeHighlighterProps {
-  algorithmId: SortingAlgorithmId;
-  currentLine?: number;
-  theme?: 'dark' | 'light';
+  algorithmId: SortingAlgorithmId
+  currentLine?: number
+  theme?: 'dark' | 'light'
 }
 
 const ALGORITHM_CODE: Record<SortingAlgorithmId, string> = {
@@ -118,26 +118,32 @@ function maxHeapify(arr, i, size) {
     countSort(arr, exp);
   }
 }`,
-};
+}
 
-export function CodeHighlighter({ algorithmId, currentLine, theme = 'dark' }: CodeHighlighterProps) {
-  const code = ALGORITHM_CODE[algorithmId] || '// No code available';
+export function CodeHighlighter({
+  algorithmId,
+  currentLine,
+  theme = 'dark',
+}: CodeHighlighterProps) {
+  const code = ALGORITHM_CODE[algorithmId] || '// No code available'
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col rounded-[2rem] overflow-hidden border border-zinc-200/80 dark:border-zinc-800/50 bg-white dark:bg-zinc-950 shadow-[0_20px_50px_rgba(0,0,0,0.04)] dark:shadow-none transition-all duration-500">
-      <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-900 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-900/20">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.04)] transition-all duration-500 dark:border-zinc-800/50 dark:bg-zinc-950 dark:shadow-none">
+      <div className="flex items-center justify-between border-b border-zinc-100 bg-zinc-50/50 px-6 py-4 dark:border-zinc-900 dark:bg-zinc-900/20">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+            <div className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+            <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+            <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
           </div>
-          <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-2">伪代码实现</span>
+          <span className="ml-2 text-[10px] font-black tracking-[0.2em] text-zinc-400 uppercase">
+            伪代码实现
+          </span>
         </div>
       </div>
-      
+
       {/* Forcing a dark, high-contrast container for the code for professional "Editor" look */}
-      <div className="flex-1 bg-[#1e1e1e] dark:bg-zinc-950 flex flex-col min-h-0">
+      <div className="flex min-h-0 flex-1 flex-col bg-[#1e1e1e] dark:bg-zinc-950">
         <ScrollArea className="flex-1">
           <div className="relative py-4">
             <SyntaxHighlighter
@@ -153,8 +159,8 @@ export function CodeHighlighter({ algorithmId, currentLine, theme = 'dark' }: Co
               }}
               showLineNumbers
               wrapLines
-              lineProps={(lineNumber) => {
-                const isHigh = lineNumber === currentLine;
+              lineProps={lineNumber => {
+                const isHigh = lineNumber === currentLine
                 return {
                   style: {
                     display: 'block',
@@ -163,9 +169,9 @@ export function CodeHighlighter({ algorithmId, currentLine, theme = 'dark' }: Co
                     paddingLeft: isHigh ? 'calc(1.25rem - 3px)' : '1.25rem',
                     transition: 'all 0.3s ease',
                     // Removed the aggressive fading/blurring that caused unreadability
-                    opacity: isHigh ? 1 : 0.85, 
+                    opacity: isHigh ? 1 : 0.85,
                   },
-                };
+                }
               }}
             >
               {code}
@@ -175,5 +181,5 @@ export function CodeHighlighter({ algorithmId, currentLine, theme = 'dark' }: Co
         </ScrollArea>
       </div>
     </div>
-  );
+  )
 }

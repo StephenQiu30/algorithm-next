@@ -14,7 +14,7 @@ export const shellSort = (arr: number[]): SortStep[] => {
           type: 'compare',
           indices: [j - gap, i], // Visual focus
           snapshot: [...array],
-          description: `以步长 ${gap} 进行比较：元素 ${array[j - gap]} 和待插入值 ${temp}`
+          description: `以步长 ${gap} 进行比较：元素 ${array[j - gap]} 和待插入值 ${temp}`,
         })
 
         if (array[j - gap] > temp) {
@@ -23,20 +23,20 @@ export const shellSort = (arr: number[]): SortStep[] => {
             type: 'overwrite',
             indices: [j],
             snapshot: [...array],
-            description: `将 ${array[j]} 向右移动 ${gap} 个位置`
+            description: `将 ${array[j]} 向右移动 ${gap} 个位置`,
           })
         } else {
           break
         }
       }
-      
+
       if (j !== i) {
         array[j] = temp
         steps.push({
           type: 'overwrite',
           indices: [j],
           snapshot: [...array],
-          description: `将 ${temp} 插入到间隙位置 ${j}`
+          description: `将 ${temp} 插入到间隙位置 ${j}`,
         })
       }
     }
@@ -47,8 +47,8 @@ export const shellSort = (arr: number[]): SortStep[] => {
     type: 'sorted',
     indices: allIndices,
     snapshot: [...array],
-    description: `希尔排序完成！`
+    description: `希尔排序完成！`,
   })
-  
+
   return steps
 }

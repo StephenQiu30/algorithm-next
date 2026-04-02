@@ -11,10 +11,7 @@ interface MethodSelectorProps {
   onEmailClick: () => void
 }
 
-export function MethodSelector({
-  onGitHubLogin,
-  onEmailClick,
-}: MethodSelectorProps) {
+export function MethodSelector({ onGitHubLogin, onEmailClick }: MethodSelectorProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   useGSAP(
@@ -65,7 +62,6 @@ export function MethodSelector({
           </span>
         </div>
       </Button>
-
     </div>
   )
 }

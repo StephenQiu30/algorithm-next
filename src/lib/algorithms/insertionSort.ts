@@ -37,7 +37,7 @@ export const insertionSort = (arr: number[]): SortStep[] => {
         break
       }
     }
-    
+
     array[j + 1] = key
     steps.push({
       type: 'overwrite',

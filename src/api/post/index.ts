@@ -9,9 +9,9 @@ import * as postCommentController from './postCommentController'
 import * as postExportController from './postExportController'
 
 export default {
-    postController,
-    postThumbController,
-    postFavourController,
-    postCommentController,
-    postExportController,
+  postController,
+  postThumbController,
+  postFavourController,
+  postCommentController,
+  postExportController,
 }

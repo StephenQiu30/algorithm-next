@@ -5,5 +5,5 @@
 import * as mailController from './mailController'
 
 export default {
-    mailController,
+  mailController,
 }

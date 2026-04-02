@@ -5,5 +5,5 @@
 import * as searchController from './searchController'
 
 export default {
-    searchController,
+  searchController,
 }

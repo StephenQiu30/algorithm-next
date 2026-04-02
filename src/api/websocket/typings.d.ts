@@ -1,2 +1,1 @@
-declare namespace WebSocketAPI {
-}
+declare namespace WebSocketAPI {}
