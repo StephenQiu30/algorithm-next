@@ -9,6 +9,7 @@ import { BookOpen, Activity, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
 import { MarkdownRender } from '@/components/blog/markdown-render'
+import { RAGChatPanel } from './RAGChatPanel'
 
 export function AlgorithmExplorer({
   algorithm,
@@ -31,80 +32,106 @@ export function AlgorithmExplorer({
         <span className="font-semibold text-zinc-900 dark:text-zinc-100">{algorithm.name}</span>
       </nav>
 
-      <section className="space-y-8 md:space-y-10">
-        <div className="space-y-4">
-          <div className="inline-flex items-center rounded-full border border-zinc-900/10 bg-zinc-900/5 px-3 py-1 text-[11px] font-black tracking-widest text-zinc-700 dark:border-white/10 dark:bg-white/5 dark:text-zinc-200">
-            算法详情
-          </div>
-          <h1 className="text-4xl leading-[1.05] font-black tracking-tight text-zinc-900 md:text-6xl dark:text-white">
-            {algorithm.name}
-          </h1>
-          <p className="max-w-3xl text-base leading-relaxed font-medium text-zinc-600 md:text-lg dark:text-zinc-400">
-            {algorithm.description}
-          </p>
-        </div>
+      <section className="flex flex-col items-center space-y-6 pt-8 pb-4 text-center md:pt-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center rounded-full border border-zinc-900/10 bg-zinc-900/5 px-4 py-1.5 text-xs font-bold tracking-[0.2em] text-zinc-600 uppercase shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-zinc-300"
+        >
+          Algorithm Design
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-br from-zinc-900 to-zinc-600 bg-clip-text text-5xl font-black tracking-tighter text-transparent md:text-7xl dark:from-white dark:to-zinc-500"
+        >
+          {algorithm.name}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="max-w-2xl text-lg font-medium leading-relaxed text-zinc-500 md:text-xl dark:text-zinc-400"
+        >
+          {algorithm.description}
+        </motion.p>
+      </section>
 
-        {/* Minimalist Complexity Row */}
-        <div className="flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-zinc-100 pt-4 dark:border-zinc-800/50">
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold tracking-[0.1em] text-zinc-400 uppercase">
-              时间复杂度 (平均)
-            </span>
-            <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              {algorithm.timeComplexity.average}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold tracking-[0.1em] text-zinc-400 uppercase">
-              空间复杂度
-            </span>
-            <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              {algorithm.spaceComplexity}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold tracking-[0.1em] text-zinc-400 uppercase">
-              稳定性
-            </span>
-            <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              {algorithm.stability}
-            </span>
-          </div>
-          <div className="ml-auto flex gap-4">
+      {/* Apple-Style Bento Box Metrics */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="grid grid-cols-2 gap-4 pb-12 md:grid-cols-4 lg:gap-6"
+      >
+        <div className="flex flex-col justify-between overflow-hidden rounded-[24px] bg-white p-6 shadow-xl shadow-zinc-200/50 ring-1 inset-ring inset-ring-white/50 ring-zinc-900/5 transition-transform hover:scale-[1.02] dark:bg-zinc-900/50 dark:shadow-none dark:ring-white/10">
+          <span className="text-[11px] font-bold tracking-[0.1em] text-zinc-400 uppercase">
+            时间复杂度 (平均)
+          </span>
+          <span className="mt-4 text-3xl font-black tracking-tighter text-zinc-900 dark:text-white">
+            {algorithm.timeComplexity.average}
+          </span>
+        </div>
+        <div className="flex flex-col justify-between overflow-hidden rounded-[24px] bg-white p-6 shadow-xl shadow-zinc-200/50 ring-1 inset-ring inset-ring-white/50 ring-zinc-900/5 transition-transform hover:scale-[1.02] dark:bg-zinc-900/50 dark:shadow-none dark:ring-white/10">
+          <span className="text-[11px] font-bold tracking-[0.1em] text-zinc-400 uppercase">
+            空间复杂度
+          </span>
+          <span className="mt-4 text-3xl font-black tracking-tighter text-zinc-900 dark:text-white">
+            {algorithm.spaceComplexity}
+          </span>
+        </div>
+        <div className="flex flex-col justify-between overflow-hidden rounded-[24px] bg-white p-6 shadow-xl shadow-zinc-200/50 ring-1 inset-ring inset-ring-white/50 ring-zinc-900/5 transition-transform hover:scale-[1.02] dark:bg-zinc-900/50 dark:shadow-none dark:ring-white/10">
+          <span className="text-[11px] font-bold tracking-[0.1em] text-zinc-400 uppercase">
+            稳定性
+          </span>
+          <span className="mt-4 text-3xl font-black tracking-tighter text-zinc-900 dark:text-white">
+            {algorithm.stability}
+          </span>
+        </div>
+        <div className="flex flex-col justify-between overflow-hidden rounded-[24px] bg-blue-600 p-6 shadow-xl shadow-blue-600/30 ring-1 ring-zinc-900/5 transition-transform hover:scale-[1.02] dark:bg-blue-600/90 dark:ring-white/10">
+          <span className="text-[11px] font-bold tracking-[0.1em] text-blue-200 uppercase">
+            算法标签
+          </span>
+          <div className="mt-4 flex flex-wrap gap-2">
             {algorithm.tags.map(tag => (
               <span
                 key={tag}
-                className="rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-bold text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+                className="rounded-full bg-white/20 px-3 py-1 text-[13px] font-bold text-white backdrop-blur-md"
               >
                 {tag}
               </span>
             ))}
           </div>
         </div>
-      </section>
+      </motion.div>
 
-      {/* Radix UI Tabs */}
+      {/* Segmented Control Tabs */}
       <Tabs.Root defaultValue="explanation" className="w-full">
-        <Tabs.List className="mb-12 flex gap-8 border-b border-zinc-100 dark:border-zinc-800">
-          <Tabs.Trigger
-            value="explanation"
-            className="pb-4 text-sm font-bold text-zinc-400 transition-all outline-none hover:text-zinc-900 data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 dark:hover:text-zinc-100 dark:data-[state=active]:border-blue-500 dark:data-[state=active]:text-blue-500"
-          >
-            <div className="flex items-center gap-2">
-              <BookOpen size={18} />
-              <span>算法讲解</span>
-            </div>
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value="visualization"
-            className="pb-4 text-sm font-bold text-zinc-400 transition-all outline-none hover:text-zinc-900 data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 dark:hover:text-zinc-100 dark:data-[state=active]:border-blue-500 dark:data-[state=active]:text-blue-500"
-          >
-            <div className="flex items-center gap-2">
-              <Activity size={18} />
-              <span>算法可视化</span>
-            </div>
-          </Tabs.Trigger>
-        </Tabs.List>
+        <div className="mb-12 flex justify-center">
+          <Tabs.List className="inline-flex items-center justify-center rounded-full bg-zinc-100 p-1.5 shadow-inner dark:bg-zinc-800/50">
+            <Tabs.Trigger
+              value="explanation"
+              className="group relative flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-zinc-500 transition-all outline-none data-[state=active]:text-zinc-900 dark:text-zinc-400 dark:data-[state=active]:text-white"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <BookOpen size={18} />
+                <span>算法讲解</span>
+              </span>
+              <div className="absolute inset-0 z-0 scale-95 rounded-full bg-white opacity-0 shadow-sm transition-all group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 dark:bg-zinc-900"></div>
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="visualization"
+              className="group relative flex items-center gap-2 rounded-full px-8 py-2.5 text-sm font-bold text-zinc-500 transition-all outline-none data-[state=active]:text-zinc-900 dark:text-zinc-400 dark:data-[state=active]:text-white"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <Activity size={18} />
+                <span>算法可视化</span>
+              </span>
+              <div className="absolute inset-0 z-0 scale-95 rounded-full bg-white opacity-0 shadow-sm transition-all group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 dark:bg-zinc-900"></div>
+            </Tabs.Trigger>
+          </Tabs.List>
+        </div>
 
         <Tabs.Content value="explanation" className="outline-none">
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-4">
@@ -157,6 +184,9 @@ export function AlgorithmExplorer({
           </motion.div>
         </Tabs.Content>
       </Tabs.Root>
+
+      {/* MVP RAG 聊天面板 */}
+      <RAGChatPanel algorithmName={algorithm.name} />
     </div>
   )
 }
