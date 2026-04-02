@@ -130,8 +130,8 @@ export function SortingVisualizer({
       <div className="grid h-full grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
         {/* Left Section (8/12): Board + Immersive Controls */}
         <div className="relative flex h-full flex-col gap-0 lg:col-span-8">
-          {/* Top Bar: Algorithm Selector - Simplified */}
-          <div className="absolute inset-x-6 top-6 z-40 mx-auto flex items-center justify-between rounded-2xl border border-zinc-200 bg-white/80 p-1 shadow-sm backdrop-blur-md lg:max-w-max dark:border-zinc-800 dark:bg-zinc-950/80">
+          {/* Top Bar: Algorithm Selector - Apple Style */}
+          <div className="absolute inset-x-6 top-6 z-40 mx-auto flex items-center justify-between rounded-full bg-white/60 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl ring-1 ring-zinc-900/5 lg:max-w-max dark:bg-zinc-900/60 dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] dark:ring-white/10">
             <ScrollArea className="max-w-[calc(100%-48px)]">
               <div className="flex items-center gap-1">
                 {SORTING_ALGORITHMS.map(algo => (
@@ -220,7 +220,7 @@ export function SortingVisualizer({
             </Popover>
           </div>
 
-          <div className="sv-board relative flex min-h-[500px] flex-1 flex-col overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm transition-all dark:border-zinc-800 dark:bg-zinc-950/60">
+          <div className="sv-board relative flex min-h-[500px] flex-1 flex-col overflow-hidden rounded-[32px] bg-white shadow-2xl shadow-zinc-200/50 ring-1 inset-ring inset-ring-white/50 ring-zinc-900/5 transition-all dark:bg-zinc-950/60 dark:shadow-none dark:ring-zinc-800">
             {/* Real-time Monitor - Simplified */}
             <div className="pointer-events-none absolute top-24 left-8 z-20">
               <div className="flex flex-col gap-1">
@@ -271,7 +271,7 @@ export function SortingVisualizer({
             {/* Step Narrative - Integrated */}
             {currentStepInfo?.description && (
               <div className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-center px-8">
-                <div className="flex max-w-xl items-center gap-3 rounded-2xl border border-zinc-200 bg-white/90 px-6 py-3 shadow-md backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/90">
+                <div className="flex max-w-xl items-center gap-3 rounded-full border border-zinc-200/50 bg-white/80 px-6 py-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-2xl dark:border-zinc-800/50 dark:bg-zinc-900/80">
                   <div
                     className={cn(
                       'h-1.5 w-1.5 flex-shrink-0 animate-pulse rounded-full',
@@ -285,9 +285,9 @@ export function SortingVisualizer({
               </div>
             )}
 
-            {/* Floating Action Bar (Bottom Center) - Simplified */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-6 z-40 flex justify-center">
-              <div className="pointer-events-auto flex items-center gap-1 rounded-2xl border border-white/5 bg-zinc-900 p-1 shadow-lg dark:border-zinc-200 dark:bg-white">
+            {/* Dynamic Island Action Bar */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-8 z-40 flex justify-center">
+              <div className="pointer-events-auto flex items-center gap-1 rounded-full bg-zinc-900/80 p-2 shadow-[0_20px_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl dark:bg-white/90 dark:shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
                 <button
                   onClick={reset}
                   disabled={isPlaying}
@@ -300,35 +300,35 @@ export function SortingVisualizer({
                 <button
                   onClick={stepBack}
                   disabled={isPlaying || currentStep === 0}
-                  className="rounded-xl p-3 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:hover:text-zinc-900"
+                  className="rounded-full p-3.5 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:text-zinc-500 dark:hover:text-zinc-900"
                 >
-                  <StepBack size={16} />
+                  <StepBack size={18} />
                 </button>
                 <button
                   onClick={handlePlayPause}
                   className={cn(
-                    'flex h-11 w-11 items-center justify-center rounded-xl transition-all active:scale-95',
+                    'flex h-12 w-12 items-center justify-center rounded-full transition-all active:scale-95',
                     isPlaying
-                      ? 'bg-zinc-800 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                      : 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
+                      ? 'bg-zinc-700 text-white dark:bg-zinc-200 dark:text-zinc-900'
+                      : 'bg-white text-zinc-900 shadow-md hover:scale-105 dark:bg-zinc-900 dark:text-white'
                   )}
                 >
                   {isPlaying ? (
-                    <Pause size={18} fill="currentColor" />
+                    <Pause size={20} fill="currentColor" />
                   ) : (
-                    <Play size={18} fill="currentColor" className="ml-0.5" />
+                    <Play size={20} fill="currentColor" className="ml-0.5" />
                   )}
                 </button>
                 <button
                   onClick={stepForward}
                   disabled={isPlaying || currentStep === totalSteps}
-                  className="rounded-xl p-3 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:hover:text-zinc-900"
+                  className="rounded-full p-3.5 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:text-zinc-500 dark:hover:text-zinc-900"
                 >
-                  <StepForward size={16} />
+                  <StepForward size={18} />
                 </button>
-                <div className="mx-1 h-4 w-[1px] bg-zinc-800 dark:bg-zinc-200" />
-                <div className="flex min-w-[64px] flex-col items-center px-4 py-2">
-                  <span className="text-[10px] font-bold tracking-widest text-blue-600 uppercase">
+                <div className="mx-2 h-5 w-[1px] bg-zinc-700/50 dark:bg-zinc-300/50" />
+                <div className="flex min-w-[72px] flex-col items-center px-4 py-1">
+                  <span className="text-[11px] font-bold tracking-widest text-zinc-100 dark:text-zinc-800 uppercase">
                     {progressPercent}%
                   </span>
                   <div className="text-[9px] font-bold text-zinc-500 tabular-nums">
