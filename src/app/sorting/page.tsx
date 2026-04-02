@@ -27,21 +27,28 @@ export default function SortingPage() {
   )
 
   return (
-    <main ref={containerRef} className="min-h-screen bg-white pt-24 pb-24 dark:bg-zinc-950">
-      <div className="container mx-auto px-6">
-        {/* Header Section - Clean & Minimalist */}
-        <header className="mb-20 max-w-3xl pt-16">
-          <div className="reveal mb-4 flex items-center gap-2">
-            <div className="h-[1px] w-8 bg-blue-600" />
-            <span className="text-[10px] font-bold tracking-widest text-blue-600 uppercase">
-              Educational Tools
-            </span>
+    <main ref={containerRef} className="relative min-h-screen bg-white pb-24 pt-24 dark:bg-zinc-950 overflow-hidden">
+      {/* Primary Tinted Grid Background */}
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,hsl(var(--primary)/0.05)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      
+      {/* Vibrant Ambient Glows */}
+      <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[600px] w-[600px] rounded-full bg-primary/10 opacity-50 blur-[120px] dark:bg-primary/15" />
+
+      <div className="relative z-10 container mx-auto px-6">
+        {/* Fluid Primary Header Section */}
+        <header className="mb-20 max-w-4xl pt-16">
+          <div className="reveal mb-6 flex items-center gap-2">
+            <div className="flex h-7 items-center rounded-full border border-primary/20 bg-primary/5 px-3 shadow-sm transition-colors hover:bg-primary/10">
+              <span className="text-[11px] font-bold tracking-wide text-primary">
+                Educational Tools
+              </span>
+            </div>
           </div>
-          <h1 className="reveal mb-6 text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            排序算法可视化
+          <h1 className="reveal mb-6 text-5xl font-black tracking-tight text-zinc-900 md:text-6xl dark:text-white">
+            引擎级算法沙盘
           </h1>
-          <p className="reveal text-base leading-relaxed font-medium text-zinc-500 dark:text-zinc-400">
-            深入探索经典排序算法。通过交互式演示，直观理解每一行代码背后的逻辑演变与性能权衡。
+          <p className="reveal text-lg font-medium leading-relaxed text-zinc-500 md:text-xl dark:text-zinc-400">
+            通过高频阵列堆栈刷新，实时拦截每一种排序算法调度带来的微小性能起伏。
           </p>
         </header>
 
