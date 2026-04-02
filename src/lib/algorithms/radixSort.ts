@@ -8,7 +8,7 @@ export const radixSort = (arr: number[]): SortStep[] => {
   const getMax = (arr: number[]) => {
     let max = arr[0]
     for (let i = 1; i < n; i++) {
-        if (arr[i] > max) max = arr[i]
+      if (arr[i] > max) max = arr[i]
     }
     return max
   }
@@ -18,34 +18,34 @@ export const radixSort = (arr: number[]): SortStep[] => {
     const count = new Array(10).fill(0)
 
     for (let i = 0; i < n; i++) {
-        steps.push({
-            type: 'compare',
-            indices: [i],
-            snapshot: [...array],
-            description: `读取元素 ${arr[i]} 在当前数位上的值`
-        })
-        const digit = Math.floor(arr[i] / exp) % 10
-        count[digit]++
+      steps.push({
+        type: 'compare',
+        indices: [i],
+        snapshot: [...array],
+        description: `读取元素 ${arr[i]} 在当前数位上的值`,
+      })
+      const digit = Math.floor(arr[i] / exp) % 10
+      count[digit]++
     }
 
     for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1]
+      count[i] += count[i - 1]
     }
 
     for (let i = n - 1; i >= 0; i--) {
-        const digit = Math.floor(arr[i] / exp) % 10
-        output[count[digit] - 1] = arr[i]
-        count[digit]--
+      const digit = Math.floor(arr[i] / exp) % 10
+      output[count[digit] - 1] = arr[i]
+      count[digit]--
     }
 
     for (let i = 0; i < n; i++) {
-        array[i] = output[i]
-        steps.push({
-            type: 'overwrite',
-            indices: [i],
-            snapshot: [...array],
-            description: `将元素 ${array[i]} 从桶中取出并按顺序写回数组`
-        })
+      array[i] = output[i]
+      steps.push({
+        type: 'overwrite',
+        indices: [i],
+        snapshot: [...array],
+        description: `将元素 ${array[i]} 从桶中取出并按顺序写回数组`,
+      })
     }
   }
 
@@ -55,13 +55,13 @@ export const radixSort = (arr: number[]): SortStep[] => {
   for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
     countSort(array, exp)
   }
-  
+
   const allIndices = array.map((_, i) => i)
   steps.push({
     type: 'sorted',
     indices: allIndices,
     snapshot: [...array],
-    description: `基数排序完成！`
+    description: `基数排序完成！`,
   })
 
   return steps

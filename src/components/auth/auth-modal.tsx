@@ -133,7 +133,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     }
   }
 
-
   useGSAP(
     () => {
       if (open) {

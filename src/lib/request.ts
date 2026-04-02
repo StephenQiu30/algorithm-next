@@ -61,8 +61,7 @@ axiosInstance.interceptors.response.use(
     const config = ((error as any)?.config || {}) as AxiosRequestConfig & RequestExtras
     const method = (config.method || 'get').toLowerCase()
     const status = (error as any)?.response?.status as number | undefined
-    const silent =
-      (config.silent ?? true) || method === 'get' || status === 401 || status === 403
+    const silent = (config.silent ?? true) || method === 'get' || status === 401 || status === 403
 
     // 处理响应错误
     const { response } = error

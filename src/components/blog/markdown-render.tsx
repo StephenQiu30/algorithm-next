@@ -123,12 +123,12 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
             if (!inline && match) {
               const { ref, ...rest } = props
               return (
-                <div className="group relative my-12 overflow-hidden rounded-[2rem] bg-zinc-950 border border-zinc-800 shadow-2xl transition-all duration-300 first:mt-0 last:mb-0">
+                <div className="group relative my-12 overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-950 shadow-2xl transition-all duration-300 first:mt-0 last:mb-0">
                   <div className="flex h-12 items-center justify-between border-b border-zinc-800/50 bg-zinc-900/50 px-8">
                     <div className="flex items-center gap-2">
-                       <div className="w-3 h-3 rounded-full bg-zinc-800" />
-                       <div className="w-3 h-3 rounded-full bg-zinc-800" />
-                       <div className="w-3 h-3 rounded-full bg-zinc-800" />
+                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
+                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
+                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
                     </div>
                     <span className="font-mono text-[11px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
                       {language}

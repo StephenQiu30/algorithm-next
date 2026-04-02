@@ -15,7 +15,7 @@ export const heapSort = (arr: number[]): SortStep[] => {
         type: 'compare',
         indices: [largest, l],
         snapshot: [...array],
-        description: `比较根节点 ${array[largest]} 和左子节点 ${array[l]}`
+        description: `比较根节点 ${array[largest]} 和左子节点 ${array[l]}`,
       })
       if (array[l] > array[largest]) {
         largest = l
@@ -27,7 +27,7 @@ export const heapSort = (arr: number[]): SortStep[] => {
         type: 'compare',
         indices: [largest, r],
         snapshot: [...array],
-        description: `比较当前最大值 ${array[largest]} 和右子节点 ${array[r]}`
+        description: `比较当前最大值 ${array[largest]} 和右子节点 ${array[r]}`,
       })
       if (array[r] > array[largest]) {
         largest = r
@@ -38,12 +38,12 @@ export const heapSort = (arr: number[]): SortStep[] => {
       const swap = array[i]
       array[i] = array[largest]
       array[largest] = swap
-      
+
       steps.push({
         type: 'swap',
         indices: [i, largest],
         snapshot: [...array],
-        description: `交换根节点 ${array[largest]} 和较大的子节点 ${array[i]}`
+        description: `交换根节点 ${array[largest]} 和较大的子节点 ${array[i]}`,
       })
 
       heapify(size, largest)
@@ -58,19 +58,19 @@ export const heapSort = (arr: number[]): SortStep[] => {
     const temp = array[0]
     array[0] = array[i]
     array[i] = temp
-    
+
     steps.push({
       type: 'swap',
       indices: [0, i],
       snapshot: [...array],
-      description: `将当前最大元素 ${array[i]} 移动到数组末尾`
+      description: `将当前最大元素 ${array[i]} 移动到数组末尾`,
     })
-    
+
     steps.push({
       type: 'sorted',
       indices: [i],
       snapshot: [...array],
-      description: `元素 ${array[i]} 已到达最终排序位置`
+      description: `元素 ${array[i]} 已到达最终排序位置`,
     })
 
     heapify(i, 0)

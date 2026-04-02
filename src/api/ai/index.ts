@@ -8,8 +8,8 @@ import * as documentController from './documentController'
 import * as chunkController from './chunkController'
 
 export default {
-    ragController,
-    knowledgeBaseController,
-    documentController,
-    chunkController,
+  ragController,
+  knowledgeBaseController,
+  documentController,
+  chunkController,
 }
