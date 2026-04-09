@@ -4,6 +4,13 @@ import React from 'react'
 import { RootProviders } from '@/components/providers/root-providers'
 import { SiteHeader } from '@/components/header/site-header'
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: '排序可视化课堂',
@@ -16,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
-      <body>
+    <html lang="zh-CN" suppressHydrationWarning className={`${inter.variable}`}>
+      <body className="font-sans antialiased bg-background text-foreground min-h-screen">
         <RootProviders>
           <div className="flex min-h-screen flex-col">
             <SiteHeader />

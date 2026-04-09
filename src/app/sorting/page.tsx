@@ -14,48 +14,49 @@ export default function SortingPage() {
 
   useGSAP(
     () => {
-      gsap.from('.reveal', {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out',
-        clearProps: 'all',
-      })
+      gsap.fromTo('.reveal', 
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          stagger: 0.1,
+          ease: 'power3.out',
+          clearProps: 'all',
+        }
+      )
     },
     { scope: containerRef }
   )
 
   return (
-    <main ref={containerRef} className="relative min-h-screen bg-white pb-24 pt-24 dark:bg-zinc-950 overflow-hidden">
-      {/* Primary Tinted Grid Background */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,hsl(var(--primary)/0.05)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      
-      {/* Vibrant Ambient Glows */}
-      <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[600px] w-[600px] rounded-full bg-primary/10 opacity-50 blur-[120px] dark:bg-primary/15" />
+    <main ref={containerRef} className="relative min-h-screen bg-background text-foreground pb-32 pt-24 overflow-hidden transition-colors duration-500">
+      {/* Pure solid background, no grid per user request */}
+      <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[600px] w-[600px] rounded-full bg-[#007AFF]/5 opacity-80 blur-[130px] dark:bg-[#007AFF]/10" />
 
       <div className="relative z-10 container mx-auto px-6">
         {/* Fluid Primary Header Section */}
-        <header className="mb-20 max-w-4xl pt-16">
-          <div className="reveal mb-6 flex items-center gap-2">
-            <div className="flex h-7 items-center rounded-full border border-primary/20 bg-primary/5 px-3 shadow-sm transition-colors hover:bg-primary/10">
-              <span className="text-[11px] font-bold tracking-wide text-primary">
-                Educational Tools
+        <header className="mb-24 pt-16 w-full flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div>
+            <div className="reveal mb-8 inline-flex items-center gap-2 rounded-full border border-[#007AFF]/20 bg-[#007AFF]/5 px-4 py-1.5 shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-[#007AFF] shadow-[0_0_8px_rgba(0,122,255,0.8)]" />
+              <span className="text-[12px] font-semibold tracking-wide text-[#007AFF]">
+                Algorithm Index
               </span>
             </div>
+            <h1 className="reveal text-[3.5rem] leading-[1.05] font-black tracking-tight text-foreground sm:text-[4.5rem] lg:text-[5rem]">
+              引擎级算法沙盘。
+            </h1>
           </div>
-          <h1 className="reveal mb-6 text-5xl font-black tracking-tight text-zinc-900 md:text-6xl dark:text-white">
-            引擎级算法沙盘
-          </h1>
-          <p className="reveal text-lg font-medium leading-relaxed text-zinc-500 md:text-xl dark:text-zinc-400">
-            通过高频阵列堆栈刷新，实时拦截每一种排序算法调度带来的微小性能起伏。
+          <p className="reveal max-w-lg mb-2 text-lg font-medium leading-relaxed text-zinc-500 dark:text-zinc-400">
+            通过高频阵列堆栈刷新，实时拦截并展现每一种排序算法底层调度所带来的微小性能起伏。
           </p>
         </header>
 
-        {/* Algorithm Grid - Standard Spacing */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {SORTING_ALGORITHMS.map(algo => (
-            <div key={algo.id} className="reveal h-full">
+        {/* Algorithm Structured Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+          {SORTING_ALGORITHMS.map((algo) => (
+            <div key={algo.id} className="reveal">
               <AlgorithmCard algorithm={algo} href={`/sorting/${algo.id}`} />
             </div>
           ))}

@@ -128,7 +128,7 @@ export function CodeHighlighter({
   const code = ALGORITHM_CODE[algorithmId] || '// No code available'
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.04)] transition-all duration-500 dark:border-zinc-800/50 dark:bg-zinc-950 dark:shadow-none">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[32px] bg-card border border-transparent shadow-[0_8px_40px_rgba(0,0,0,0.03)] transition-all duration-500 dark:border-white/5 dark:shadow-none">
       <div className="flex items-center justify-between border-b border-zinc-100 bg-zinc-50/50 px-6 py-4 dark:border-zinc-900 dark:bg-zinc-900/20">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
@@ -164,8 +164,8 @@ export function CodeHighlighter({
                 return {
                   style: {
                     display: 'block',
-                    backgroundColor: isHigh ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                    borderLeft: isHigh ? '3px solid #3b82f6' : '3px solid transparent',
+                    backgroundColor: isHigh ? 'rgba(0, 122, 255, 0.15)' : 'transparent',
+                    borderLeft: isHigh ? '3px solid #007AFF' : '3px solid transparent',
                     paddingLeft: isHigh ? 'calc(1.25rem - 3px)' : '1.25rem',
                     transition: 'all 0.3s ease',
                     // Removed the aggressive fading/blurring that caused unreadability

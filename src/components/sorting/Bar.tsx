@@ -18,16 +18,16 @@ export function Bar({ value, maxValue, state, dimmed = false, showValue = true }
   // Premium HSL-based color system
   const colorMap: Record<BarState, string> = {
     default:
-      'bg-gradient-to-t from-blue-600/80 to-blue-500/90 dark:from-blue-600/60 dark:to-blue-400/80',
+      'bg-primary/25 dark:bg-primary/30 border-primary/20',
     compare:
-      'bg-gradient-to-t from-amber-500 to-amber-400 dark:from-amber-600 dark:to-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.35)]',
-    swap: 'bg-gradient-to-t from-rose-600 to-rose-400 dark:from-rose-700 dark:to-rose-500 shadow-[0_0_20px_rgba(225,29,72,0.35)]',
+      'bg-gradient-to-t from-primary to-blue-400 dark:from-primary dark:to-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.35)]',
+    swap: 'bg-gradient-to-t from-rose-500 to-rose-400 dark:from-rose-600 dark:to-rose-500 shadow-[0_0_20px_rgba(225,29,72,0.35)]',
     overwrite:
-      'bg-gradient-to-t from-indigo-600 to-indigo-400 dark:from-indigo-700 dark:to-indigo-500',
+      'bg-gradient-to-t from-indigo-500 to-indigo-400 dark:from-indigo-600 dark:to-indigo-500',
     pivot:
-      'bg-gradient-to-t from-fuchsia-600 to-fuchsia-400 dark:from-fuchsia-700 dark:to-fuchsia-500 shadow-[0_0_25px_rgba(192,38,211,0.4)]',
+      'bg-gradient-to-t from-amber-500 to-amber-400 dark:from-amber-600 dark:to-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.3)]',
     sorted:
-      'bg-gradient-to-t from-emerald-600/90 to-emerald-400/90 dark:from-emerald-700/70 dark:to-emerald-400/70 shadow-[0_4px_15px_rgba(16,185,129,0.15)]',
+      'bg-emerald-500/90 dark:bg-emerald-600/70 shadow-[0_4px_15px_rgba(16,185,129,0.15)]',
   }
 
   const isSpec = state !== 'default' && state !== 'sorted'
@@ -63,10 +63,10 @@ export function Bar({ value, maxValue, state, dimmed = false, showValue = true }
         >
           <span
             className={cn(
-              'text-[10px] font-black tracking-tighter tabular-nums transition-colors duration-300 sm:text-[11px]',
+              'text-[10px] font-black font-mono tracking-tighter tabular-nums transition-colors duration-300 sm:text-[11px]',
               isSpec
-                ? 'scale-110 text-zinc-900 drop-shadow-md dark:text-white'
-                : 'text-zinc-400 dark:text-zinc-500'
+                ? 'scale-110 text-foreground drop-shadow-md'
+                : 'text-muted-foreground'
             )}
           >
             {value}
@@ -80,8 +80,10 @@ export function Bar({ value, maxValue, state, dimmed = false, showValue = true }
                 state === 'swap'
                   ? 'bg-rose-500'
                   : state === 'compare'
-                    ? 'bg-amber-500'
-                    : 'bg-blue-500'
+                    ? 'bg-primary'
+                    : state === 'pivot'
+                      ? 'bg-amber-500'
+                      : 'bg-muted-foreground'
               )}
             />
           )}
