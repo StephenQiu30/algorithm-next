@@ -9,9 +9,9 @@ import * as emailRecordController from './emailRecordController'
 import * as apiAccessLogController from './apiAccessLogController'
 
 export default {
-  operationLogController,
-  userLoginLogController,
-  fileUploadRecordController,
-  emailRecordController,
-  apiAccessLogController,
+    operationLogController,
+    userLoginLogController,
+    fileUploadRecordController,
+    emailRecordController,
+    apiAccessLogController,
 }
