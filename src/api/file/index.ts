@@ -5,5 +5,5 @@
 import * as fileController from './fileController'
 
 export default {
-  fileController,
+    fileController,
 }
