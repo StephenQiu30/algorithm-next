@@ -23,7 +23,7 @@ export default async function SortingAlgorithmPage({
   }
 
   return (
-    <div className="w-full text-zinc-900 dark:text-zinc-100">
+    <div className="w-full">
       <AlgorithmExplorer algorithm={info} docContent={docContent} />
     </div>
   )

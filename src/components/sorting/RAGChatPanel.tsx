@@ -182,17 +182,17 @@ export function RAGChatPanel({ algorithmName }: { algorithmName: string }) {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="fixed bottom-8 right-8 z-50 flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-blue-500/20 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 dark:bg-blue-500 dark:hover:bg-blue-600"
+          className="fixed bottom-8 right-8 z-50 flex items-center gap-2 rounded-full bg-[#007AFF] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_rgba(0,122,255,0.3)] transition-all hover:bg-[#0066CC] dark:bg-[#007AFF] dark:hover:bg-[#0066CC]"
         >
           <Sparkles className="h-4 w-4" />
           <span>AI 答疑</span>
         </motion.button>
       </SheetTrigger>
 
-      {/* Promax 级别的磨砂玻璃毛玻璃感 */}
-      <SheetContent className="flex w-[450px] flex-col border-l border-zinc-200/50 bg-white/80 p-0 shadow-2xl backdrop-blur-xl sm:w-[600px] sm:max-w-xl dark:border-zinc-800/50 dark:bg-zinc-950/80">
-        <SheetHeader className="flex flex-row items-center justify-between border-b border-zinc-100/50 px-6 py-4 dark:border-zinc-800/50">
-          <SheetTitle className="flex items-center gap-2.5 text-base font-bold text-zinc-900 dark:text-zinc-100">
+      {/* Promax 级别的磨砂玻璃边界 */}
+      <SheetContent className="flex w-[450px] flex-col border-l border-border/50 bg-background p-0 shadow-2xl sm:w-[600px] sm:max-w-xl">
+        <SheetHeader className="flex flex-row items-center justify-between border-b border-border/50 bg-card/80 backdrop-blur-xl px-6 py-4">
+          <SheetTitle className="flex items-center gap-2.5 text-base font-bold text-foreground">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
               <Bot className="h-4 w-4" />
             </div>
@@ -222,16 +222,16 @@ export function RAGChatPanel({ algorithmName }: { algorithmName: string }) {
                   }`}
                 >
                 <div
-                  className={`group relative max-w-[85%] rounded-3xl px-6 py-4 text-[15px] leading-relaxed transition-all ${
+                  className={`group relative max-w-[85%] px-5 py-3.5 text-[15px] leading-relaxed transition-all ${
                     msg.role === 'user'
-                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-br-sm shadow-xl shadow-blue-500/30 ring-1 ring-white/10 dark:from-blue-600 dark:to-blue-700'
-                      : 'bg-white text-zinc-800 rounded-bl-sm ring-1 ring-zinc-900/5 shadow-xl shadow-zinc-200/50 dark:bg-zinc-900/80 dark:text-zinc-200 dark:ring-white/10 dark:shadow-none'
+                      ? 'bg-primary text-primary-foreground rounded-[22px] rounded-br-[6px] shadow-sm'
+                      : 'bg-card text-foreground rounded-[22px] rounded-bl-[6px] shadow-[0_2px_10px_rgba(0,0,0,0.02)] ring-1 ring-black/5 dark:ring-white/5 dark:shadow-none'
                   }`}
                 >
                   {msg.role === 'user' ? (
                     <div className="font-medium tracking-wide">{cleanContent}</div>
                   ) : (
-                    <div className="prose prose-zinc prose-sm dark:prose-invert max-w-none prose-p:leading-[1.8] prose-p:mb-5 prose-pre:bg-zinc-50 dark:prose-pre:bg-zinc-950/50 prose-pre:ring-1 prose-pre:ring-zinc-900/5 prose-headings:font-bold prose-headings:mt-6 prose-headings:mb-3">
+                    <div className="prose prose-zinc prose-sm dark:prose-invert max-w-none prose-p:leading-[1.6] prose-p:my-3 prose-pre:bg-muted prose-pre:ring-1 prose-pre:ring-black/5 dark:prose-pre:ring-white/10 prose-headings:font-bold prose-headings:mt-5 prose-headings:mb-2 text-foreground">
                       <MarkdownRender content={cleanContent} />
                     </div>
                   )}
@@ -244,8 +244,8 @@ export function RAGChatPanel({ algorithmName }: { algorithmName: string }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex justify-start"
               >
-                <div className="flex max-w-[85%] items-center gap-3 rounded-2xl rounded-bl-sm bg-zinc-100/80 px-5 py-4 dark:bg-zinc-900/80">
-                  <Loader2 className="h-4 w-4 animate-spin text-zinc-500" />
+                <div className="flex max-w-[85%] items-center gap-3 rounded-[22px] rounded-bl-[6px] bg-card px-5 py-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] ring-1 ring-black/5 dark:ring-white/5">
+                  <Loader2 className="h-4 w-4 animate-spin text-zinc-400" />
                   <span className="text-sm font-medium text-zinc-500">正在思考...</span>
                 </div>
               </motion.div>
@@ -254,23 +254,23 @@ export function RAGChatPanel({ algorithmName }: { algorithmName: string }) {
         </div>
 
         {/* 底部输入框 */}
-        <div className="border-t border-zinc-100/50 bg-white/50 p-4 backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/50">
+        <div className="border-t border-border/50 bg-background/50 p-4 backdrop-blur-md">
           <div className="relative flex items-end gap-2">
-            <Textarea
+              <Textarea
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="请输入相关问题... (Shift + Enter 换行)"
-              className="max-h-32 min-h-[52px] w-full resize-none rounded-xl border-zinc-200 bg-zinc-50/50 pl-4 pr-12 pt-3.5 text-[15px] focus-visible:ring-blue-500/20 dark:border-zinc-800 dark:bg-zinc-900/50"
+              placeholder="发送给 AI 算法导师..."
+              className="max-h-32 min-h-[50px] w-full resize-none rounded-[18px] border border-border/80 bg-card pl-4 pr-12 pt-3.5 text-[15px] shadow-sm text-foreground focus-visible:ring-1 focus-visible:ring-primary/30"
               rows={1}
             />
             <Button
               size="icon"
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
-              className="absolute bottom-1.5 right-1.5 h-10 w-10 shrink-0 rounded-lg bg-blue-600 text-white shadow-sm transition-all hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 hover:dark:bg-blue-600"
+              className="absolute bottom-1 right-1 h-9 w-9 shrink-0 rounded-full bg-primary text-primary-foreground transition-all hover:opacity-90 disabled:opacity-30"
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-[15px] w-[15px]" />
             </Button>
           </div>
         </div>

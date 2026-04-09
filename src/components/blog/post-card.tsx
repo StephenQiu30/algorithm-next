@@ -38,8 +38,8 @@ export function PostCard({ post, className, href, onClick }: PostCardProps) {
     <div ref={cardRef} className={cn('group relative h-full cursor-pointer', className)}>
       <div
         className={cn(
-          'relative flex h-full flex-col overflow-hidden rounded-3xl border border-zinc-200 bg-white transition-all duration-300 dark:border-zinc-800 dark:bg-zinc-950',
-          'group-hover:border-blue-500/50 group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:group-hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)]'
+          'relative flex h-full flex-col overflow-hidden rounded-[32px] bg-card transition-all duration-500 will-change-transform border border-transparent dark:border-white/5',
+          'shadow-[0_8px_40px_rgba(0,0,0,0.03)] dark:shadow-none group-hover:scale-[1.01] group-hover:shadow-[0_16px_60px_rgba(0,0,0,0.06)]'
         )}
       >
         {/* Cover Image Area */}
@@ -73,8 +73,8 @@ export function PostCard({ post, className, href, onClick }: PostCardProps) {
             </span>
           </div>
 
-          <div className="space-y-2">
-            <h3 className="line-clamp-2 text-base leading-tight font-bold text-zinc-900 transition-colors group-hover:text-blue-600 dark:text-zinc-100">
+          <div className="space-y-3">
+            <h3 className="line-clamp-2 text-xl font-black tracking-tight text-foreground transition-colors group-hover:text-[#007AFF]">
               {title || 'Untitled'}
             </h3>
             <p className="line-clamp-2 text-xs leading-relaxed font-medium text-zinc-500 dark:text-zinc-400">
@@ -88,17 +88,17 @@ export function PostCard({ post, className, href, onClick }: PostCardProps) {
                 <Heart size={12} className={thumbNum > 0 ? 'fill-current' : ''} />
                 <span className="text-[10px] font-bold tabular-nums">{thumbNum}</span>
               </div>
-              <div className="flex items-center gap-1.5 transition-colors group-hover:text-blue-500">
+              <div className="flex items-center gap-1.5 transition-colors group-hover:text-primary">
                 <Bookmark size={12} className={favourNum > 0 ? 'fill-current' : ''} />
                 <span className="text-[10px] font-bold tabular-nums">{favourNum}</span>
               </div>
             </div>
-            <ArrowUpRight
-              size={14}
-              className="text-zinc-300 transition-colors group-hover:text-blue-500"
-            />
+              <ArrowUpRight
+                size={16}
+                className="text-zinc-300 transition-colors group-hover:text-[#007AFF] group-hover:scale-110"
+              />
+            </div>
           </div>
-        </div>
 
         {onClick ? (
           <button onClick={onClick} className="absolute inset-0 z-20" aria-label="Details" />

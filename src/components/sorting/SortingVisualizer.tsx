@@ -131,7 +131,7 @@ export function SortingVisualizer({
         {/* Left Section (8/12): Board + Immersive Controls */}
         <div className="relative flex h-full flex-col gap-0 lg:col-span-8">
           {/* Top Bar: Algorithm Selector - Apple Style */}
-          <div className="absolute inset-x-6 top-6 z-40 mx-auto flex items-center justify-between rounded-full bg-white/60 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl ring-1 ring-zinc-900/5 lg:max-w-max dark:bg-zinc-900/60 dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] dark:ring-white/10">
+          <div className="absolute inset-x-6 top-6 z-40 mx-auto flex items-center justify-between rounded-full bg-card/80 p-1.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl ring-1 ring-black/5 lg:max-w-max dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] dark:ring-white/10">
             <ScrollArea className="max-w-[calc(100%-48px)]">
               <div className="flex items-center gap-1">
                 {SORTING_ALGORITHMS.map(algo => (
@@ -143,7 +143,7 @@ export function SortingVisualizer({
                       'rounded-xl px-3 py-1.5 text-[11px] font-bold whitespace-nowrap transition-all',
                       algorithmId === algo.id
                         ? 'bg-blue-600 text-white shadow-sm'
-                        : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
+                        : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
                     {algo.shortName || algo.name.replace('排序', '')}
@@ -152,22 +152,22 @@ export function SortingVisualizer({
               </div>
               <ScrollBar orientation="horizontal" className="hidden" />
             </ScrollArea>
-            <div className="mx-2 h-4 w-[1px] bg-zinc-200 dark:bg-zinc-700" />
+            <div className="mx-2 h-4 w-[1px] bg-border" />
             <Popover>
               <PopoverTrigger asChild>
-                <button className="rounded-xl p-2 text-zinc-400 transition-colors hover:text-zinc-900 dark:hover:text-white">
+                <button className="rounded-xl p-2 text-muted-foreground transition-colors hover:text-foreground">
                   <Settings2 size={16} />
                 </button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-80 rounded-2xl border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-950"
+                className="w-80 rounded-2xl border-border bg-card p-6 shadow-xl"
                 side="bottom"
                 align="end"
               >
                 <div className="space-y-6">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold tracking-widest text-blue-600 text-zinc-400 uppercase">
+                      <span className="text-[10px] font-bold tracking-widest text-primary uppercase">
                         速度 {speed}%
                       </span>
                     </div>
@@ -181,7 +181,7 @@ export function SortingVisualizer({
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                      <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                         大小 {size}
                       </span>
                     </div>
@@ -194,8 +194,8 @@ export function SortingVisualizer({
                       disabled={isPlaying}
                     />
                   </div>
-                  <div className="space-y-3 border-t border-zinc-100 pt-4 dark:border-zinc-800">
-                    <span className="block text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                  <div className="space-y-3 border-t border-border pt-4">
+                    <span className="block text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                       自定义数据
                     </span>
                     <div className="flex gap-2">
@@ -203,7 +203,7 @@ export function SortingVisualizer({
                         value={arrayText}
                         onChange={e => setArrayText(e.target.value)}
                         placeholder="1, 5, 8..."
-                        className="flex-1 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-bold focus:ring-1 focus:ring-blue-500 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900"
+                        className="flex-1 rounded-xl border border-border bg-muted px-3 py-2 text-xs font-bold text-foreground focus:ring-1 focus:ring-blue-500 focus:outline-none"
                       />
                       {parsedArray && (
                         <button
@@ -220,24 +220,24 @@ export function SortingVisualizer({
             </Popover>
           </div>
 
-          <div className="sv-board relative flex min-h-[500px] flex-1 flex-col overflow-hidden rounded-[32px] bg-white shadow-2xl shadow-zinc-200/50 ring-1 inset-ring inset-ring-white/50 ring-zinc-900/5 transition-all dark:bg-zinc-950/60 dark:shadow-none dark:ring-zinc-800">
+          <div className="sv-board relative flex min-h-[500px] flex-1 flex-col overflow-hidden rounded-[32px] bg-card shadow-[0_8px_40px_rgba(0,0,0,0.03)] ring-1 ring-black/5 transition-all dark:ring-white/10 dark:shadow-none">
             {/* Real-time Monitor - Simplified */}
             <div className="pointer-events-none absolute top-24 left-8 z-20">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-6 opacity-60">
                   <div className="flex flex-col">
-                    <span className="text-[9px] font-bold tracking-widest text-zinc-400 uppercase">
+                    <span className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">
                       比较
                     </span>
-                    <span className="text-lg font-bold text-zinc-900 tabular-nums dark:text-zinc-100">
+                    <span className="text-lg font-bold text-foreground tabular-nums">
                       {metrics.comparisons}
                     </span>
                   </div>
-                  <div className="flex flex-col border-l border-zinc-200 pl-4 dark:border-zinc-800">
-                    <span className="text-[9px] font-bold tracking-widest text-zinc-400 uppercase">
+                  <div className="flex flex-col border-l border-border pl-4">
+                    <span className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">
                       交换
                     </span>
-                    <span className="text-lg font-bold text-zinc-900 tabular-nums dark:text-zinc-100">
+                    <span className="text-lg font-bold text-foreground tabular-nums">
                       {metrics.swaps}
                     </span>
                   </div>
@@ -271,14 +271,14 @@ export function SortingVisualizer({
             {/* Step Narrative - Integrated */}
             {currentStepInfo?.description && (
               <div className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-center px-8">
-                <div className="flex max-w-xl items-center gap-3 rounded-full border border-zinc-200/50 bg-white/80 px-6 py-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-2xl dark:border-zinc-800/50 dark:bg-zinc-900/80">
+                <div className="flex max-w-xl items-center gap-3 rounded-full border border-border/50 bg-card/80 px-6 py-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-2xl">
                   <div
                     className={cn(
                       'h-1.5 w-1.5 flex-shrink-0 animate-pulse rounded-full',
                       actionTone.rail
                     )}
                   />
-                  <p className="text-xs leading-snug font-semibold text-zinc-700 dark:text-zinc-300">
+                  <p className="text-xs leading-snug font-semibold text-foreground">
                     {currentStepInfo.description}
                   </p>
                 </div>
@@ -287,20 +287,20 @@ export function SortingVisualizer({
 
             {/* Dynamic Island Action Bar */}
             <div className="pointer-events-none absolute inset-x-0 bottom-8 z-40 flex justify-center">
-              <div className="pointer-events-auto flex items-center gap-1 rounded-full bg-zinc-900/80 p-2 shadow-[0_20px_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl dark:bg-white/90 dark:shadow-[0_20px_40px_rgba(255,255,255,0.1)]">
+              <div className="pointer-events-auto flex items-center gap-1 rounded-full bg-foreground/90 p-2 shadow-2xl backdrop-blur-2xl text-background">
                 <button
                   onClick={reset}
                   disabled={isPlaying}
-                  className="rounded-xl p-3 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:hover:text-zinc-900"
+                  className="rounded-xl p-3 text-background/60 transition-colors hover:text-background disabled:opacity-20"
                   title="洗牌"
                 >
                   <Shuffle size={16} />
                 </button>
-                <div className="mx-1 h-4 w-[1px] bg-zinc-800 dark:bg-zinc-200" />
+                <div className="mx-1 h-4 w-[1px] bg-background/20" />
                 <button
                   onClick={stepBack}
                   disabled={isPlaying || currentStep === 0}
-                  className="rounded-full p-3.5 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:text-zinc-500 dark:hover:text-zinc-900"
+                  className="rounded-full p-3.5 text-background/60 transition-colors hover:text-background disabled:opacity-20"
                 >
                   <StepBack size={18} />
                 </button>
@@ -309,8 +309,8 @@ export function SortingVisualizer({
                   className={cn(
                     'flex h-12 w-12 items-center justify-center rounded-full transition-all active:scale-95',
                     isPlaying
-                      ? 'bg-zinc-700 text-white dark:bg-zinc-200 dark:text-zinc-900'
-                      : 'bg-white text-zinc-900 shadow-md hover:scale-105 dark:bg-zinc-900 dark:text-white'
+                      ? 'bg-background/20 text-background'
+                      : 'bg-background text-foreground shadow-md hover:scale-105'
                   )}
                 >
                   {isPlaying ? (
@@ -322,16 +322,16 @@ export function SortingVisualizer({
                 <button
                   onClick={stepForward}
                   disabled={isPlaying || currentStep === totalSteps}
-                  className="rounded-full p-3.5 text-zinc-400 transition-colors hover:text-white disabled:opacity-20 dark:text-zinc-500 dark:hover:text-zinc-900"
+                  className="rounded-full p-3.5 text-background/60 transition-colors hover:text-background disabled:opacity-20"
                 >
                   <StepForward size={18} />
                 </button>
-                <div className="mx-2 h-5 w-[1px] bg-zinc-700/50 dark:bg-zinc-300/50" />
+                <div className="mx-2 h-5 w-[1px] bg-background/20" />
                 <div className="flex min-w-[72px] flex-col items-center px-4 py-1">
-                  <span className="text-[11px] font-bold tracking-widest text-zinc-100 dark:text-zinc-800 uppercase">
+                  <span className="text-[11px] font-bold tracking-widest text-background uppercase">
                     {progressPercent}%
                   </span>
-                  <div className="text-[9px] font-bold text-zinc-500 tabular-nums">
+                  <div className="text-[9px] font-bold text-background/50 tabular-nums">
                     Step {currentStep}
                   </div>
                 </div>
@@ -351,7 +351,7 @@ export function SortingVisualizer({
         {/* Right Section (4/12): Code */}
         <div className="sv-side-panel flex h-full flex-col gap-0 lg:col-span-4">
           <div className="mb-4 flex items-center gap-2 pl-2">
-            <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase">
+            <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">
               源码执行同步
             </span>
           </div>

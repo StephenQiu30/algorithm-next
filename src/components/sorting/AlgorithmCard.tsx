@@ -21,9 +21,10 @@ export interface AlgorithmInfo {
 interface AlgorithmCardProps {
   algorithm: AlgorithmInfo
   href: string
+  className?: string
 }
 
-export function AlgorithmCard({ algorithm, href }: AlgorithmCardProps) {
+export function AlgorithmCard({ algorithm, href, className }: AlgorithmCardProps) {
   const Icon =
     algorithm.id === 'quick'
       ? Split
@@ -35,93 +36,92 @@ export function AlgorithmCard({ algorithm, href }: AlgorithmCardProps) {
             ? Gauge
             : Shuffle
 
+  // Dynamic CSS animation for the mini bars (unique animation timings so they don't sync uniformly)
   return (
     <Link
       href={href}
-      className="group block h-full outline-none"
+      className={cn("group block outline-none w-full h-full", className)}
       aria-label={`进入 ${algorithm.name}`}
     >
       <div
         className={cn(
-          'relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-zinc-200/60 bg-white p-6 shadow-sm transition-all duration-500 will-change-transform dark:border-zinc-800/60 dark:bg-zinc-950/50',
-          'hover:-translate-y-2 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/15'
+          'relative flex h-full flex-col justify-between overflow-hidden rounded-[32px] bg-card p-8 lg:p-10 transition-transform duration-500 will-change-transform',
+          'shadow-[0_8px_40px_rgba(0,0,0,0.03)] hover:scale-[1.01] hover:shadow-[0_16px_60px_rgba(0,0,0,0.06)] dark:shadow-none dark:border dark:border-white/5'
         )}
       >
         {/* Subtle Ambient Glow inside Card */}
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-primary/0 via-transparent to-primary/0 opacity-0 transition-opacity duration-500 group-hover:from-primary/5 group-hover:to-primary/10 group-hover:opacity-100" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[#007AFF]/0 transition-colors duration-500 group-hover:bg-[#007AFF]/[0.02] dark:group-hover:bg-[#007AFF]/[0.05]" />
 
         {/* Top Section */}
-        <div className="space-y-5">
-          <div className="flex items-start justify-between">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/30">
-              <Icon size={20} />
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge
-                variant="outline"
-                className={cn(
-                  'h-6 rounded-full border-0 px-3 py-0 text-[10px] font-bold tracking-widest',
-                  algorithm.stability === '稳定'
-                    ? 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
-                    : 'bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400'
-                )}
-              >
-                {algorithm.stability}
-              </Badge>
-            </div>
+        <div className="space-y-6 relative z-10 w-full max-w-[85%]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-zinc-50 shadow-sm transition-transform duration-500 group-hover:-translate-y-2 dark:bg-black">
+            <Icon size={24} className="text-[#007AFF]" />
           </div>
 
           <div>
-            <h3 className="mb-1 text-2xl font-black tracking-tight text-zinc-900 transition-colors group-hover:text-primary dark:text-white">
+            <h3 className="mb-2 text-3xl font-black tracking-tight text-foreground transition-colors">
               {algorithm.shortName || algorithm.name}
             </h3>
-            <span className="text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase transition-colors group-hover:text-primary/70">
-              {algorithm.id} SORT
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] font-black tracking-widest text-[#007AFF]/80 uppercase">
+                {algorithm.id} SORT
+              </span>
+              <div className="h-3 w-[1px] bg-zinc-200 dark:bg-zinc-800" />
+              <span className={cn(
+                "text-[10px] font-bold tracking-wider uppercase",
+                algorithm.stability === '稳定' ? "text-emerald-500" : "text-rose-400"
+              )}>
+                {algorithm.stability === '稳定' ? 'STABLE' : 'UNSTABLE'}
+              </span>
+            </div>
           </div>
 
-          <p className="line-clamp-2 text-sm font-medium leading-relaxed text-zinc-500 dark:text-zinc-400">
+          <p className="line-clamp-2 text-base font-medium leading-relaxed text-zinc-500 dark:text-zinc-400 max-w-sm">
             {algorithm.description}
           </p>
         </div>
 
+        {/* Faux Visualizer Micro Interaction */}
+        <div className="absolute right-8 top-10 flex h-10 w-16 items-end justify-between gap-1 opacity-40 transition-opacity duration-300 group-hover:opacity-100">
+           <style>{`
+             .group:hover .bar-1 { animation: mini-bob 0.8s ease-in-out infinite alternate; }
+             .group:hover .bar-2 { animation: mini-bob 1.1s ease-in-out infinite alternate; }
+             .group:hover .bar-3 { animation: mini-bob 0.9s ease-in-out infinite alternate; }
+             .group:hover .bar-4 { animation: mini-bob 1.2s ease-in-out infinite alternate; }
+             @keyframes mini-bob {
+               0% { height: 30%; }
+               100% { height: 100%; }
+             }
+           `}</style>
+           <div className="bar-1 w-full rounded-t flex-1 bg-zinc-200 dark:bg-zinc-800" style={{ height: '40%' }} />
+           <div className="bar-2 w-full rounded-t flex-1 bg-zinc-300 dark:bg-zinc-700" style={{ height: '70%' }} />
+           <div className="bar-3 w-full rounded-t flex-1 bg-[#007AFF]" style={{ height: '30%' }} />
+           <div className="bar-4 w-full rounded-t flex-1 bg-zinc-200 dark:bg-zinc-800" style={{ height: '50%' }} />
+        </div>
+
         {/* Bottom Section */}
-        <div className="mt-8 flex flex-col justify-between space-y-5">
-          <div className="flex items-center gap-8 rounded-2xl bg-zinc-50/80 p-4 transition-colors group-hover:bg-primary/5 dark:bg-zinc-900/80 dark:group-hover:bg-primary/10">
+        <div className="mt-12 flex items-end justify-between relative z-10 w-full">
+          <div className="flex gap-8">
             <div className="flex flex-col">
-              <span className="mb-1 text-[10px] font-bold tracking-widest text-zinc-500 uppercase transition-colors group-hover:text-primary/60">
-                Avg Time
+              <span className="mb-2 text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                Time (Avg)
               </span>
-              <span className="font-mono text-sm font-bold text-zinc-900 transition-colors group-hover:text-primary dark:text-zinc-100">
+              <span className="font-mono text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 {algorithm.timeComplexity.average}
               </span>
             </div>
-            <div className="h-8 w-[2px] bg-zinc-200/60 transition-colors group-hover:bg-primary/20 dark:bg-zinc-800/60" />
             <div className="flex flex-col">
-              <span className="mb-1 text-[10px] font-bold tracking-widest text-zinc-500 uppercase transition-colors group-hover:text-primary/60">
+              <span className="mb-2 text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
                 Space
               </span>
-              <span className="font-mono text-sm font-bold text-zinc-900 transition-colors group-hover:text-primary dark:text-zinc-100">
+              <span className="font-mono text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 {algorithm.spaceComplexity}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex flex-wrap gap-2">
-              {algorithm.tags.slice(0, 2).map(tag => (
-                <span
-                  key={tag}
-                  className="rounded-xl bg-zinc-100 px-3 py-1 text-[10px] font-bold text-zinc-600 transition-colors group-hover:bg-primary/10 group-hover:text-primary dark:bg-zinc-800 dark:text-zinc-400"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:bg-primary/10 group-hover:text-primary dark:bg-zinc-800">
-              <ArrowUpRight size={16} />
-            </div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-50 text-[#007AFF] transition-all duration-500 group-hover:scale-110 group-hover:shadow-[0_4px_20px_rgba(0,122,255,0.2)] dark:bg-black dark:text-[#007AFF]">
+            <ArrowUpRight size={20} />
           </div>
         </div>
       </div>

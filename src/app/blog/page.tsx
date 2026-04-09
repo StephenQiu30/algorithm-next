@@ -134,44 +134,44 @@ function BlogList() {
   }, [hasMore, loading, loadingMore])
 
   return (
-    <div ref={containerRef} className="relative min-h-screen bg-white pb-24 dark:bg-zinc-950 overflow-hidden">
-      {/* Primary Tinted Grid Background */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,hsl(var(--primary)/0.05)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      
+    <div ref={containerRef} className="relative min-h-screen bg-background text-foreground pb-24 overflow-hidden transition-colors duration-500">
+      {/* Solid smooth background, removed jagged grid */}
       {/* Vibrant Ambient Glows */}
-      <div className="pointer-events-none absolute top-40 left-0 -z-10 h-[600px] w-[600px] rounded-full bg-primary/10 opacity-50 blur-[120px] dark:bg-primary/15" />
+      <div className="pointer-events-none absolute top-40 right-0 -z-10 h-[600px] w-[600px] rounded-full bg-[#007AFF]/5 opacity-80 blur-[130px] dark:bg-[#007AFF]/10" />
 
-      <div className="relative z-10 container mx-auto w-full px-6 pt-24">
+      <div className="relative z-10 container mx-auto px-6 pt-24">
         {/* Fluid Primary Header Section */}
-        <div className="mb-14 max-w-3xl space-y-6">
+        <div className="mb-20 max-w-4xl space-y-8">
           <div className="animate-in flex items-center gap-2">
-            <div className="flex h-7 items-center rounded-full border border-primary/20 bg-primary/5 px-3 shadow-sm transition-colors hover:bg-primary/10">
-              <span className="text-[11px] font-bold tracking-wide text-primary">
-                Insights & Updates
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#007AFF]/20 bg-[#007AFF]/5 px-4 py-1.5 shadow-sm">
+              <span className="flex h-2 w-2 rounded-full bg-[#007AFF] shadow-[0_0_8px_rgba(0,122,255,0.8)]" />
+              <span className="text-[12px] font-semibold tracking-wide text-[#007AFF]">
+                Developer Logs
               </span>
             </div>
           </div>
           
-          <h1 className="animate-in text-5xl font-black tracking-tight text-zinc-900 md:text-6xl dark:text-white">
-            高级工程技术日志
+          <h1 className="animate-in text-[3.5rem] leading-[1.05] font-black tracking-tight text-foreground sm:text-[4.5rem] lg:text-[5rem]">
+            高级工程技术日志。
           </h1>
 
-          <p className="animate-in text-lg font-medium leading-relaxed text-zinc-500 md:text-xl dark:text-zinc-400">
-            涵盖大规模渲染、RAG检索优化，以及现代化算法交互平台背后所有的微小代码变迁记录。
+          <p className="animate-in max-w-2xl text-lg font-medium leading-relaxed text-zinc-500 dark:text-zinc-400">
+            涵盖大规模渲染引擎、RAG架构深度检索优化，以及现代化算法交互平台背后所有的微粒化代码变迁记录。
           </p>
         </div>
 
-        {/* Minimalist Search Bar with Primary Focus */}
-        <div className="mb-16 max-w-xl">
-          <div className="animate-in group relative flex items-center rounded-2xl shadow-sm transition-all focus-within:shadow-md focus-within:ring-2 focus-within:ring-primary/20">
-            <Search className="absolute left-5 h-5 w-5 text-zinc-400 transition-colors group-focus-within:text-primary dark:text-zinc-500" />
+        <div className="mb-20 max-w-xl">
+          <div className="animate-in group relative flex items-center rounded-[24px] bg-card shadow-[0_8px_40px_rgba(0,0,0,0.03)] transition-all focus-within:shadow-[0_16px_60px_rgba(0,122,255,0.06)] dark:shadow-none">
+            <div className="absolute left-6 text-zinc-400 transition-colors group-focus-within:text-[#007AFF] dark:text-zinc-500">
+              <Search size={22} />
+            </div>
             <form onSubmit={handleSearch} className="w-full">
               <Input
                 type="text"
                 value={searchText}
                 onChange={e => setSearchText(e.target.value)}
-                placeholder="搜索日志与见解..."
-                className="h-14 w-full rounded-2xl border border-zinc-200 bg-white pl-14 pr-6 text-base font-medium text-zinc-900 placeholder:text-zinc-400 outline-none transition-all focus-visible:border-primary focus-visible:ring-0 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-600 dark:focus-visible:border-primary"
+                placeholder="搜索全局技术日志..."
+                className="h-16 w-full rounded-[24px] border-0 bg-transparent pl-16 pr-6 text-lg font-medium text-foreground placeholder:text-zinc-400 outline-none transition-all ring-0 focus-visible:ring-0 dark:placeholder:text-zinc-600"
               />
             </form>
           </div>
