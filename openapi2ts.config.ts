@@ -1,3 +1,4 @@
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
@@ -53,7 +54,7 @@ export default [
     projectName: 'ai',
     namespace: 'AiAPI',
     requestLibPath: "import request from '@/lib/request'",
-    schemaPath: 'http://localhost:8089/api/v3/api-docs',
+    schemaPath: 'http://localhost:8088/api/v3/api-docs',
     serversPath: './src/api',
   },
 ]
