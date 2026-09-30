@@ -1,111 +1,75 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-
 interface UseWebSocketOptions {
   url?: string
-  onMessage?: (data: any) => void
+  onMessage?: (data: unknown) => void
   reconnectInterval?: number
   heartbeatInterval?: number
 }
-
 export function useWebSocket({
   url,
   onMessage,
   reconnectInterval = 5000,
   heartbeatInterval = 30000,
 }: UseWebSocketOptions) {
-  const ws = useRef<WebSocket | null>(null)
+  const ws = useRef<WebSocket | null>(null),
+    handler = useRef(onMessage)
   const [isConnected, setIsConnected] = useState(false)
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout>(undefined)
-  const heartbeatTimeoutRef = useRef<NodeJS.Timeout>(undefined)
-
-  const connect = useCallback(() => {
+  useEffect(() => {
+    handler.current = onMessage
+  }, [onMessage])
+  useEffect(() => {
     if (!url) return
-
-    // Clean up existing connection
-    if (ws.current) {
-      ws.current.close()
+    let active = true,
+      retry: ReturnType<typeof setTimeout> | undefined,
+      heartbeat: ReturnType<typeof setInterval> | undefined
+    const stopHeartbeat = () => {
+      if (heartbeat) clearInterval(heartbeat)
+      heartbeat = undefined
     }
-
-    try {
-      const socket = new WebSocket(url)
+    function connect() {
+      if (!active) return
+      const socket = new WebSocket(url!)
       ws.current = socket
-
       socket.onopen = () => {
-        console.log('WebSocket connected')
+        if (!active) {
+          socket.close()
+          return
+        }
         setIsConnected(true)
-        startHeartbeat()
-      }
-
-      socket.onclose = () => {
-        console.log('WebSocket disconnected')
-        setIsConnected(false)
         stopHeartbeat()
-        // Attempt reconnect
-        reconnectTimeoutRef.current = setTimeout(connect, reconnectInterval)
+        heartbeat = setInterval(() => {
+          if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'ping' }))
+        }, heartbeatInterval)
       }
-
-      socket.onerror = error => {
-        console.error('WebSocket error:', error)
-        socket.close()
+      socket.onclose = () => {
+        stopHeartbeat()
+        if (!active) return
+        setIsConnected(false)
+        retry = setTimeout(connect, reconnectInterval)
       }
-
+      socket.onerror = () => socket.close()
       socket.onmessage = event => {
+        if (!active) return
         try {
-          const data = JSON.parse(event.data)
-          onMessage?.(data)
-        } catch (e) {
-          console.error('Failed to parse WebSocket message:', e)
+          const data: unknown = JSON.parse(event.data)
+          handler.current?.(data)
+        } catch {
+          console.error('Failed to parse WebSocket message')
         }
       }
-    } catch (error) {
-      console.error('Failed to create WebSocket connection:', error)
     }
-  }, [url, onMessage, reconnectInterval])
-
-  const disconnect = useCallback(() => {
-    if (ws.current) {
-      ws.current.close()
+    const start = setTimeout(connect, 0)
+    return () => {
+      active = false
+      clearTimeout(start)
+      if (retry) clearTimeout(retry)
+      stopHeartbeat()
+      ws.current?.close()
       ws.current = null
     }
-    setIsConnected(false)
-    stopHeartbeat()
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current)
-    }
+  }, [url, reconnectInterval, heartbeatInterval])
+  const sendMessage = useCallback((data: unknown) => {
+    if (ws.current?.readyState === WebSocket.OPEN) ws.current.send(JSON.stringify(data))
   }, [])
-
-  const sendMessage = useCallback((data: any) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify(data))
-    } else {
-      console.warn('WebSocket is not connected')
-    }
-  }, [])
-
-  const startHeartbeat = () => {
-    stopHeartbeat()
-    heartbeatTimeoutRef.current = setInterval(() => {
-      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-        ws.current.send(JSON.stringify({ type: 'ping' }))
-      }
-    }, heartbeatInterval)
-  }
-
-  const stopHeartbeat = () => {
-    if (heartbeatTimeoutRef.current) {
-      clearInterval(heartbeatTimeoutRef.current)
-    }
-  }
-
-  useEffect(() => {
-    connect()
-    return () => {
-      disconnect()
-    }
-  }, [connect, disconnect])
-
-  return {
-    isConnected,
-    sendMessage,
-  }
+  return { isConnected, sendMessage }
 }

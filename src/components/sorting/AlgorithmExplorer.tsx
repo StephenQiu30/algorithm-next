@@ -1,6 +1,10 @@
 'use client'
 
 import React from 'react'
+import { useSortingVisualizer } from '@/hooks/useSortingVisualizer'
+import { SORTING_CODE } from '@/lib/sortingAlgorithms'
+import { COURSE_VERSION } from '@/lib/courseVersion'
+import { SortingPractice } from './SortingPractice'
 import * as Tabs from '@radix-ui/react-tabs'
 import { SortingVisualizer } from './SortingVisualizer'
 import { SortingAlgorithmInfo } from '@/lib/sortingAlgorithms'
@@ -18,6 +22,7 @@ export function AlgorithmExplorer({
   algorithm: SortingAlgorithmInfo
   docContent?: string
 }) {
+  const visualizer = useSortingVisualizer(10, algorithm.id)
   return (
     <div className="container mx-auto w-full space-y-10 px-6 py-10 md:space-y-12 md:py-14">
       {/* Breadcrumb & Core Meta */}
@@ -180,13 +185,38 @@ export function AlgorithmExplorer({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <SortingVisualizer initialAlgorithmId={algorithm.id} />
+            <SortingVisualizer visualizer={visualizer} />
+            <SortingPractice visualizer={visualizer} />
           </motion.div>
         </Tabs.Content>
       </Tabs.Root>
 
       {/* MVP RAG 聊天面板 */}
-      <RAGChatPanel algorithmName={algorithm.name} />
+      <RAGChatPanel algorithmName={algorithm.name}
+            teachingContext={{
+              algorithmId: algorithm.id,
+              courseVersion: COURSE_VERSION,
+              originalArray: visualizer.inputArray,
+              currentArray: visualizer.array,
+              currentStep: visualizer.currentStep,
+              totalSteps: visualizer.totalSteps,
+              action: visualizer.currentStepInfo?.action,
+              activeIndices: visualizer.activeIndices,
+              codeLine: visualizer.currentStepInfo?.line,
+              metrics: visualizer.metrics,
+              auxiliary: visualizer.currentStepInfo?.auxiliary,
+              elementIds: visualizer.elementIds,
+              sortedIndices: visualizer.sortedIndices,
+              localSortedIndices: visualizer.currentStepInfo?.localSortedIndices,
+              pivotIndex: visualizer.currentStepInfo?.pivotIndex,
+              range: visualizer.currentStepInfo?.range,
+              heapSize: visualizer.currentStepInfo?.heapSize,
+              gap: visualizer.currentStepInfo?.gap,
+              buckets: visualizer.currentStepInfo?.buckets,
+              digitPlace: visualizer.currentStepInfo?.digitPlace,
+              codeSnippet: SORTING_CODE[algorithm.id],
+            }}
+      />
     </div>
   )
 }

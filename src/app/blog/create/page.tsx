@@ -145,8 +145,8 @@ export default function CreatePostPage() {
       } else {
         toast.error(`发布失败: ${res.message || '未知错误'}`, { id: toastId })
       }
-    } catch (error: any) {
-      toast.error(`网络请求失败: ${error.message || '连接失败'}`, { id: toastId })
+    } catch (error: unknown) {
+      toast.error(`网络请求失败: ${(error instanceof Error ? error.message : '') || '连接失败'}`, { id: toastId })
     } finally {
       setLoading(false)
     }

@@ -56,7 +56,7 @@ function BlogList() {
         // Map ES response to state. The nested userObj from ES is often named 'user' or 'userVO'
         records = records.map(record => ({
           ...record,
-          userVO: record.userVO || (record as any).user,
+          userVO: record.userVO || (record as PostAPI.PostVO & { user?: PostAPI.PostVO['userVO'] }).user,
         }))
 
         if (currentPage === 1) {
@@ -71,7 +71,7 @@ function BlogList() {
       } else {
         setError(res?.message || '加载文章列表失败')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('获取文章列表失败:', err)
       setError('网络请求失败，请尝试刷新页面')
     } finally {

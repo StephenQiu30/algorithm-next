@@ -109,58 +109,7 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
 
           // 代码块
           pre: ({ children }) => <>{children}</>,
-          code: ({ node, inline, className, children, ...props }: any) => {
-            const match = /language-(\w+)/.exec(className || '')
-            const language = match ? match[1] : 'text'
-            const [copied, setCopied] = React.useState(false)
-
-            const onCopy = () => {
-              navigator.clipboard.writeText(String(children).replace(/\n$/, ''))
-              setCopied(true)
-              setTimeout(() => setCopied(false), 2000)
-            }
-
-            if (!inline && match) {
-              const { ref, ...rest } = props
-              return (
-                <div className="group relative my-12 overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-950 shadow-2xl transition-all duration-300 first:mt-0 last:mb-0">
-                  <div className="flex h-12 items-center justify-between border-b border-zinc-800/50 bg-zinc-900/50 px-8">
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
-                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
-                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
-                    </div>
-                    <span className="font-mono text-[11px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
-                      {language}
-                    </span>
-                  </div>
-                  <div className="scrollbar-hide relative overflow-x-auto p-8 px-10 font-mono text-[14px] leading-[1.6] [&_code]:!bg-transparent [&_code]:!text-inherit [&_pre]:!bg-transparent">
-                    <SyntaxHighlighter
-                      {...rest}
-                      style={vscDarkPlus as any}
-                      language={language}
-                      PreTag="div"
-                      customStyle={{
-                        margin: 0,
-                        padding: 0,
-                        background: 'transparent',
-                      }}
-                    >
-                      {String(children).replace(/\n$/, '')}
-                    </SyntaxHighlighter>
-                  </div>
-                </div>
-              )
-            }
-            return (
-              <code
-                className="bg-muted text-foreground/70 border-border/5 rounded-md border px-[0.3rem] py-[0.1rem] font-mono text-[12px] font-bold [&::after]:!content-none [&::before]:!content-none"
-                {...props}
-              >
-                {children}
-              </code>
-            )
-          },
+          code: MarkdownCode,
 
           // 引用块
           blockquote: ({ children }) => (
@@ -231,3 +180,54 @@ export function MarkdownRender({ content, className }: MarkdownRendererProps) {
     </article>
   )
 }
+
+
+function MarkdownCode({ className, children, ...props }: React.ComponentProps<'code'>) {
+            const match = /language-(\w+)/.exec(className || '')
+            const language = match ? match[1] : 'text'
+
+            const onCopy = () => {
+              navigator.clipboard.writeText(String(children).replace(/\n$/, ''))
+            }
+
+            if (match || String(children).includes('\n')) {
+              const { ref, ...rest } = props
+              return (
+                <div className="group relative my-12 overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-950 shadow-2xl transition-all duration-300 first:mt-0 last:mb-0">
+                  <div className="flex h-12 items-center justify-between border-b border-zinc-800/50 bg-zinc-900/50 px-8">
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
+                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
+                      <div className="h-3 w-3 rounded-full bg-zinc-800" />
+                    </div>
+                    <span className="font-mono text-[11px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
+                      {language}
+                    </span>
+                  </div>
+                  <div className="scrollbar-hide relative overflow-x-auto p-8 px-10 font-mono text-[14px] leading-[1.6] [&_code]:!bg-transparent [&_code]:!text-inherit [&_pre]:!bg-transparent">
+                    <SyntaxHighlighter
+                      {...rest}
+                      style={vscDarkPlus}
+                      language={language}
+                      PreTag="div"
+                      customStyle={{
+                        margin: 0,
+                        padding: 0,
+                        background: 'transparent',
+                      }}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  </div>
+                </div>
+              )
+            }
+            return (
+              <code
+                className="bg-muted text-foreground/70 border-border/5 rounded-md border px-[0.3rem] py-[0.1rem] font-mono text-[12px] font-bold [&::after]:!content-none [&::before]:!content-none"
+                {...props}
+              >
+                {children}
+              </code>
+            )
+          }

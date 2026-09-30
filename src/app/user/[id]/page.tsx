@@ -46,7 +46,7 @@ export default function UserDetailPage() {
       try {
         // Use ES search to find user by ID
         const userRes = (await searchUserByPage({
-          id: userId as any,
+          id: userId as unknown as number,
           current: 1,
           pageSize: 1,
         })) as unknown as SearchAPI.BaseResponsePage
@@ -54,15 +54,15 @@ export default function UserDetailPage() {
         if (
           userRes.code === 0 &&
           userRes.data?.records &&
-          (userRes.data.records as any).length > 0
+          userRes.data.records.length > 0
         ) {
-          const userData = (userRes.data.records as any)[0] as UserAPI.UserVO
+          const userData = (userRes.data.records as UserAPI.UserVO[])[0] as UserAPI.UserVO
           setUser(userData)
 
           // Fetch user's posts from ES
           setLoadingPosts(true)
           const postsRes = await searchPostByPage({
-            userId: userId as any,
+            userId: userId as unknown as number,
             current: 1,
             pageSize: 20,
           })

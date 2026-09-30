@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    --font-inter: 'Inter';
     /* Background: Apple Light Gray (zinc-50: #FAFAFA) */
     --background: 0 0% 98%;
     --foreground: 240 10% 3.9%;
@@ -173,3 +174,7 @@
     color: hsl(var(--foreground)) !important;
   }
 }
+
+/* Keyboard access remains available after the visual rollback. */
+.skip-link { position: fixed; left: 16px; top: 16px; z-index: 100; transform: translateY(-200%); padding: 12px 16px; background: hsl(var(--background)); color: hsl(var(--foreground)); }
+.skip-link:focus { transform: none; }

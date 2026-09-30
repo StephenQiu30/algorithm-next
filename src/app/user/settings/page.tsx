@@ -71,7 +71,7 @@ export default function SettingsPage() {
       setFormData(prev => ({ ...prev, [field]: newValue }))
       setChanges(prev => {
         const newChanges = new Set(prev)
-        if (newValue !== (user as any)[field]) {
+        if (newValue !== user?.[field as keyof typeof user]) {
           newChanges.add(field)
         } else {
           newChanges.delete(field)
@@ -155,8 +155,8 @@ export default function SettingsPage() {
       } else {
         setMessage({ type: 'error', text: res.message || '更新失败' })
       }
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || '发生错误' })
+    } catch (error: unknown) {
+      setMessage({ type: 'error', text: (error instanceof Error ? error.message : '') || '发生错误' })
     } finally {
       setTimeout(() => setLoading(false), 500)
     }
@@ -259,11 +259,11 @@ export default function SettingsPage() {
                     : '正式成员'}
               </Badge>
               <p className="text-foreground/40 text-base leading-relaxed font-bold tracking-tight italic">
-                "
+                &quot;
                 {isUnauthorized
                   ? '致力于构建更美好的数字化世界...'
                   : formData.userProfile || '致力于构建更美好的数字化世界...'}
-                "
+                &quot;
               </p>
             </div>
           </div>

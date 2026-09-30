@@ -67,9 +67,9 @@ function GitHubCallbackContent() {
         setMessage(res.message || 'GitHub 登录失败')
         toast.error(res.message || '登录失败')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error')
-      setMessage(err.message || '连接超时或网络异常')
+      setMessage((err instanceof Error ? err.message : '') || '连接超时或网络异常')
       toast.error('登录异常')
     }
   }, [searchParams, dispatch, router])

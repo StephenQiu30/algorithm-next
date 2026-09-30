@@ -51,12 +51,12 @@ export default function PostDetailPage() {
       setError(null)
       try {
         const res = await searchPostByPage({
-          id: postId as any,
+          id: postId as unknown as number,
           current: 1,
           pageSize: 1,
         })
-        if (res && res.code === 0 && res.data?.records && (res.data.records as any).length > 0) {
-          const postData = (res.data.records as any)[0] as PostAPI.PostVO
+        if (res && res.code === 0 && res.data?.records && res.data.records.length > 0) {
+          const postData = (res.data.records as PostAPI.PostVO[])[0] as PostAPI.PostVO
           setPost(postData)
           setHasThumb(postData.hasThumb || false)
           setHasFavour(postData.hasFavour || false)
@@ -66,7 +66,7 @@ export default function PostDetailPage() {
           setError(`${res?.message || '见解已飞往星际'} (ID: ${postId})`)
           setPost(null)
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to load story:', err)
         setError('Network error, please try again later.')
       } finally {
@@ -81,7 +81,7 @@ export default function PostDetailPage() {
     if (!user) return router.push('/')
     try {
       const res = (await doThumb({
-        postId: postId as any,
+        postId: postId as unknown as number,
       })) as unknown as PostAPI.BaseResponseInteger
       if (res.code === 0) {
         const delta = res.data || 0
@@ -97,7 +97,7 @@ export default function PostDetailPage() {
     if (!user) return router.push('/')
     try {
       const res = (await doFavour({
-        postId: postId as any,
+        postId: postId as unknown as number,
       })) as unknown as PostAPI.BaseResponseInteger
       if (res.code === 0) {
         const delta = res.data || 0

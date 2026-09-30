@@ -55,9 +55,9 @@ export function ImageUploader({
       } else {
         toast.error(res.message || '上传失败')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error)
-      toast.error(error.message || '上传失败，请重试')
+      toast.error((error instanceof Error ? error.message : '') || '上传失败，请重试')
     } finally {
       setLoading(false)
     }

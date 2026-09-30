@@ -1,0 +1,70 @@
+{
+  "version": "sorting-35bd1d49ff5e",
+  "sourceHash": "35bd1d49ff5e05e0e8d7ee2d130f4e2b79990afcb1493ef57386570ae636e74f",
+  "documents": [
+    {
+      "algorithmId": "bubble",
+      "name": "sorting-bubble.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:bubble",
+      "sourceType": "course",
+      "sha256": "215039c2c4c017749f58dc1f662c12ae0676f64a36a0c59affa62a8ab687b3bf"
+    },
+    {
+      "algorithmId": "selection",
+      "name": "sorting-selection.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:selection",
+      "sourceType": "course",
+      "sha256": "6b1c3adbd25dcb0c661ebe717917558ba05dba95f9c9e249483267cbae275e17"
+    },
+    {
+      "algorithmId": "insertion",
+      "name": "sorting-insertion.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:insertion",
+      "sourceType": "course",
+      "sha256": "7fc93cfa6e45a1fac90f44e6b13786a647dec8a8ce47b130e1ad83149f2c46de"
+    },
+    {
+      "algorithmId": "shell",
+      "name": "sorting-shell.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:shell",
+      "sourceType": "course",
+      "sha256": "a4cf7d461818db8e260661621a6e851df36dfb45621e2c5447542afdcea8eb3d"
+    },
+    {
+      "algorithmId": "merge",
+      "name": "sorting-merge.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:merge",
+      "sourceType": "course",
+      "sha256": "ac6de54b97dbb6378854d6d3e146ab9fee3982b4c993c9a26b62ae546cba3bcd"
+    },
+    {
+      "algorithmId": "quick",
+      "name": "sorting-quick.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:quick",
+      "sourceType": "course",
+      "sha256": "b54e66e1550d3822652eb1df5b48c2b21dfd270bbd4b201b768105096d8061d3"
+    },
+    {
+      "algorithmId": "heap",
+      "name": "sorting-heap.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:heap",
+      "sourceType": "course",
+      "sha256": "78f8f6f0982f96be88a529350daa0b881fd83a07c7f9bfa377286609696f16d7"
+    },
+    {
+      "algorithmId": "radix",
+      "name": "sorting-radix.md",
+      "version": "sorting-35bd1d49ff5e",
+      "bizTag": "sorting:radix",
+      "sourceType": "course",
+      "sha256": "11bc04270ebca92e085651d40fc7ed5e972bef6ebcde420c3b9366ecb5f4c558"
+    }
+  ]
+}

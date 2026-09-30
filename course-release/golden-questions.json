@@ -1,0 +1,61 @@
+{
+  "version": "sorting-35bd1d49ff5e",
+  "cases": [
+    {
+      "algorithmId": "bubble",
+      "question": "为什么有序输入只比较 n-1 次？",
+      "expectedAnswer": "一轮无交换提前结束",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-bubble.md"
+    },
+    {
+      "algorithmId": "insertion",
+      "question": "左侧前缀有序是否说明元素都已归位？",
+      "expectedAnswer": "后续插入可能继续移动",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-insertion.md"
+    },
+    {
+      "algorithmId": "merge",
+      "question": "为什么相等时先取左侧？剩余复制计比较吗？",
+      "expectedAnswer": "稳定性；剩余复制只计写入",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-merge.md"
+    },
+    {
+      "algorithmId": "quick",
+      "question": "有序输入的最坏时间和栈空间？",
+      "expectedAnswer": "O(n²) 和 O(n)",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-quick.md"
+    },
+    {
+      "algorithmId": "shell",
+      "question": "本页使用什么增量？平均复杂度可否套用其他序列？",
+      "expectedAnswer": "折半增量；不能",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-shell.md"
+    },
+    {
+      "algorithmId": "heap",
+      "question": "取出堆顶后已归位尾部是否继续堆化？",
+      "expectedAnswer": "仅修复缩小后的有效堆",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-heap.md"
+    },
+    {
+      "algorithmId": "radix",
+      "question": "能否悄悄把负数或小数变为整数再排序？",
+      "expectedAnswer": "拒绝非法输入；不改变问题",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-radix.md"
+    },
+    {
+      "algorithmId": "selection",
+      "question": "交换最小值是否可能改变相等元素的相对顺序？",
+      "expectedAnswer": "可能，因此不稳定",
+      "expectedVersion": "sorting-35bd1d49ff5e",
+      "expectedDocument": "sorting-selection.md"
+    }
+  ]
+}

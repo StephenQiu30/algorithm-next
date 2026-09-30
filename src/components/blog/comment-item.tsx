@@ -82,7 +82,7 @@ export function CommentItem({ comment, postId, onReplySuccess }: CommentItemProp
                     onClick={async () => {
                       if (!comment.id) return
                       try {
-                        const res = (await deletePostComment({ id: comment.id })) as any
+                        const res = await deletePostComment({ id: comment.id })
                         if (res.code === 0) {
                           onReplySuccess?.() // Trigger refresh
                         } else {

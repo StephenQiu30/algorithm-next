@@ -8,10 +8,11 @@ export interface BarProps {
   maxValue: number
   state: BarState
   dimmed?: boolean
+  elementId?: number
   showValue?: boolean
 }
 
-export function Bar({ value, maxValue, state, dimmed = false, showValue = true }: BarProps) {
+export function Bar({ value, maxValue, state, elementId, dimmed = false, showValue = true }: BarProps) {
   const heightPercent = maxValue > 0 ? (value / maxValue) * 100 : 5
   const h = Math.max(7, heightPercent)
 
@@ -70,6 +71,7 @@ export function Bar({ value, maxValue, state, dimmed = false, showValue = true }
             )}
           >
             {value}
+            {elementId !== undefined && <small className="block text-[9px]">#{elementId + 1}</small>}
           </span>
           {isSpec && (
             <motion.div
