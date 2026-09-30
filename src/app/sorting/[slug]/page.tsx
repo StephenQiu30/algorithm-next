@@ -1,8 +1,8 @@
+import { AlgorithmExplorer } from '@/components/sorting/AlgorithmExplorer'
+import { SORTING_ALGORITHMS } from '@/lib/sortingAlgorithms'
+import { notFound } from 'next/navigation'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { notFound } from 'next/navigation'
-import { SORTING_ALGORITHMS } from '@/lib/sortingAlgorithms'
-import { AlgorithmExplorer } from '@/components/sorting/AlgorithmExplorer'
 
 export default async function SortingAlgorithmPage({
   params,
@@ -14,12 +14,12 @@ export default async function SortingAlgorithmPage({
 
   if (!info) notFound()
 
-  const docPath = path.resolve(process.cwd(), 'src/app/sorting/_content', `${slug}.md`)
+  const docPath = path.resolve(process.cwd(), 'course-release', `sorting-${slug}.md`)
   let docContent = ''
   try {
     docContent = await readFile(docPath, 'utf8')
   } catch {
-    docContent = `# 文档暂缺\n\n路径：${docPath}`
+    docContent = '# 文档暂缺\n\n这份算法说明暂时无法加载，你仍可使用可视化实验室。'
   }
 
   return (

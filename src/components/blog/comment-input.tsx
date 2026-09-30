@@ -42,7 +42,7 @@ export function CommentInput({
     setSubmitting(true)
     try {
       const res = (await addPostComment({
-        postId: postId as any,
+        postId: postId as unknown as number,
         content,
         parentId,
       })) as unknown as PostAPI.BaseResponseLong

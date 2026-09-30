@@ -1,54 +1,34 @@
 'use client'
 
 import React from 'react'
-import { useSortingVisualizer } from '@/hooks/useSortingVisualizer'
-import { SORTING_ALGORITHMS, SortingAlgorithmId } from '@/lib/sortingAlgorithms'
+import { useRouter } from 'next/navigation'
+import { type SortingVisualizerState } from '@/hooks/useSortingVisualizer'
+import { SORTING_ALGORITHMS } from '@/lib/sortingAlgorithms'
 import { Bar, BarState } from './Bar'
 import { CodeHighlighter } from './CodeHighlighter'
-import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import {
-  Info,
-  Code2,
-  Sparkles,
-  Activity,
   Settings2,
   Play,
   Pause,
   StepForward,
   StepBack,
   Shuffle,
-  SlidersHorizontal,
-  ChevronRight,
+  RotateCcw,
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Slider } from '@/components/ui/slider'
 
-const ACTION_LABEL: Record<string, string> = {
-  compare: '比较',
-  swap: '交换',
-  overwrite: '写入',
-  pivot: '枢轴点',
-  markSorted: '归位',
-  done: '排序完成',
-}
-
-export function SortingVisualizer({
-  initialAlgorithmId,
-}: {
-  initialAlgorithmId?: SortingAlgorithmId
-}) {
+export function SortingVisualizer({ visualizer }: { visualizer: SortingVisualizerState }) {
   const scopeRef = React.useRef<HTMLDivElement>(null)
   const {
     array,
     size,
     setSize,
     algorithmId,
-    setAlgorithmId,
     speed,
     setSpeed,
     isPlaying,
@@ -56,7 +36,6 @@ export function SortingVisualizer({
     reset,
     activeIndices,
     sortedIndices,
-    algorithms,
     currentStep,
     totalSteps,
     stepForward,
@@ -64,7 +43,11 @@ export function SortingVisualizer({
     metrics,
     currentStepInfo,
     setArrayFromInput,
-  } = useSortingVisualizer(10, initialAlgorithmId)
+    generateArray,
+    isSorted,
+    elementIds,
+  } = visualizer
+  const router = useRouter()
 
   const maxValue = Math.max(...array, 1)
   const activeSet = React.useMemo(() => new Set(activeIndices), [activeIndices])
@@ -107,10 +90,10 @@ export function SortingVisualizer({
     const raw = arrayText.trim()
     if (!raw) return null
     const nums = raw
-      .split(/[\s,]+/)
+      .split(/[\s,，]+/)
       .filter(Boolean)
       .map(Number)
-    return nums.every(n => !isNaN(n)) ? nums : null
+    return nums.length >= 2 && nums.length <= 50 && nums.every(n => Number.isInteger(n) && n >= 1 && n <= 999) ? nums : null
   }, [arrayText])
 
   // Layout Animation
@@ -126,7 +109,7 @@ export function SortingVisualizer({
   )
 
   return (
-    <div ref={scopeRef} className="flex flex-col gap-6 lg:h-[calc(100vh-160px)]">
+    <div ref={scopeRef} data-sorting-step={currentStep} className="flex flex-col gap-6 lg:h-[calc(100vh-160px)]">
       <div className="grid h-full grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
         {/* Left Section (8/12): Board + Immersive Controls */}
         <div className="relative flex h-full flex-col gap-0 lg:col-span-8">
@@ -137,7 +120,7 @@ export function SortingVisualizer({
                 {SORTING_ALGORITHMS.map(algo => (
                   <button
                     key={algo.id}
-                    onClick={() => setAlgorithmId(algo.id)}
+                    onClick={() => router.push(`/sorting/${algo.id}`, { scroll: false })}
                     disabled={isPlaying}
                     className={cn(
                       'rounded-xl px-3 py-1.5 text-[11px] font-bold whitespace-nowrap transition-all',
@@ -155,7 +138,7 @@ export function SortingVisualizer({
             <div className="mx-2 h-4 w-[1px] bg-border" />
             <Popover>
               <PopoverTrigger asChild>
-                <button className="rounded-xl p-2 text-muted-foreground transition-colors hover:text-foreground">
+                <button aria-label="数组与播放设置" className="rounded-xl p-2 text-muted-foreground transition-colors hover:text-foreground">
                   <Settings2 size={16} />
                 </button>
               </PopoverTrigger>
@@ -188,8 +171,8 @@ export function SortingVisualizer({
                     <Slider
                       value={[size]}
                       onValueChange={([v]) => setSize(v)}
-                      max={100}
-                      min={10}
+                      max={50}
+                      min={2}
                       step={1}
                       disabled={isPlaying}
                     />
@@ -200,20 +183,29 @@ export function SortingVisualizer({
                     </span>
                     <div className="flex gap-2">
                       <input
+                        id="custom-array"
+                        aria-describedby="custom-array-help"
+                        aria-invalid={Boolean(arrayText.trim() && !parsedArray)}
                         value={arrayText}
                         onChange={e => setArrayText(e.target.value)}
                         placeholder="1, 5, 8..."
+                        aria-label="自定义数组：2–50 个 1–999 的整数"
                         className="flex-1 rounded-xl border border-border bg-muted px-3 py-2 text-xs font-bold text-foreground focus:ring-1 focus:ring-blue-500 focus:outline-none"
                       />
                       {parsedArray && (
                         <button
                           onClick={() => setArrayFromInput(parsedArray)}
+                          aria-label="应用自定义数组"
+                          disabled={isPlaying}
                           className="rounded-xl bg-blue-600 px-3 py-2 text-[10px] font-bold text-white"
                         >
-                          Apply
+                          应用
                         </button>
                       )}
                     </div>
+                    <p id="custom-array-help" className="text-xs text-muted-foreground" role={arrayText.trim() && !parsedArray ? 'alert' : undefined}>
+                      {arrayText.trim() && !parsedArray ? '请输入 2–50 个 1–999 的整数；原数组未改变。' : '支持逗号、中文逗号或空格分隔。'}
+                    </p>
                   </div>
                 </div>
               </PopoverContent>
@@ -241,17 +233,21 @@ export function SortingVisualizer({
                       {metrics.swaps}
                     </span>
                   </div>
+                  <div className="flex flex-col border-l border-border pl-4">
+                    <span className="text-[9px] font-bold tracking-widest text-muted-foreground uppercase">写入</span>
+                    <span className="text-lg font-bold text-foreground tabular-nums">{metrics.overwrites}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Visualization Area */}
-            <div className="flex flex-1 items-end justify-center gap-1.5 px-10 pt-40 pb-28 sm:gap-2">
+            <figure aria-label={`当前数组：${array.join('、')}`} className="flex flex-1 items-end justify-center gap-1.5 px-10 pt-40 pb-28 sm:gap-2">
               {array.map((value, idx) => {
                 let state: BarState = 'default'
-                if (sortedSet.has(idx)) state = 'sorted'
-                else if (activeSet.has(idx))
-                  state = (currentStepInfo?.action as BarState) || 'compare'
+                if (activeSet.has(idx))
+                  state = currentStepInfo?.action === 'swap' || currentStepInfo?.action === 'overwrite' || currentStepInfo?.action === 'pivot' ? currentStepInfo.action : 'compare'
+                else if (sortedSet.has(idx)) state = 'sorted'
                 const dimmed =
                   !!currentStepInfo?.range &&
                   (idx < currentStepInfo.range[0] || idx > currentStepInfo.range[1])
@@ -263,10 +259,11 @@ export function SortingVisualizer({
                     state={state}
                     dimmed={dimmed}
                     showValue={size <= 25}
+                    elementId={elementIds[idx]}
                   />
                 )
               })}
-            </div>
+            </figure>
 
             {/* Step Narrative - Integrated */}
             {currentStepInfo?.description && (
@@ -278,7 +275,7 @@ export function SortingVisualizer({
                       actionTone.rail
                     )}
                   />
-                  <p className="text-xs leading-snug font-semibold text-foreground">
+                  <p role="status" className="text-xs leading-snug font-semibold text-foreground">
                     {currentStepInfo.description}
                   </p>
                 </div>
@@ -289,16 +286,18 @@ export function SortingVisualizer({
             <div className="pointer-events-none absolute inset-x-0 bottom-8 z-40 flex justify-center">
               <div className="pointer-events-auto flex items-center gap-1 rounded-full bg-foreground/90 p-2 shadow-2xl backdrop-blur-2xl text-background">
                 <button
-                  onClick={reset}
+                  onClick={generateArray}
                   disabled={isPlaying}
                   className="rounded-xl p-3 text-background/60 transition-colors hover:text-background disabled:opacity-20"
-                  title="洗牌"
+                  title="重新生成数组" aria-label="重新生成数组"
                 >
                   <Shuffle size={16} />
                 </button>
+                <button onClick={reset} disabled={isPlaying} className="rounded-xl p-3 text-background/60 transition-colors hover:text-background disabled:opacity-20" title="回到初始数组" aria-label="回到初始数组"><RotateCcw size={16} /></button>
                 <div className="mx-1 h-4 w-[1px] bg-background/20" />
                 <button
                   onClick={stepBack}
+                  aria-label="上一步"
                   disabled={isPlaying || currentStep === 0}
                   className="rounded-full p-3.5 text-background/60 transition-colors hover:text-background disabled:opacity-20"
                 >
@@ -306,6 +305,7 @@ export function SortingVisualizer({
                 </button>
                 <button
                   onClick={handlePlayPause}
+                  aria-label={isPlaying ? '暂停' : isSorted ? '重播' : '播放'}
                   className={cn(
                     'flex h-12 w-12 items-center justify-center rounded-full transition-all active:scale-95',
                     isPlaying
@@ -321,7 +321,8 @@ export function SortingVisualizer({
                 </button>
                 <button
                   onClick={stepForward}
-                  disabled={isPlaying || currentStep === totalSteps}
+                  aria-label="下一步"
+                  disabled={isPlaying || isSorted}
                   className="rounded-full p-3.5 text-background/60 transition-colors hover:text-background disabled:opacity-20"
                 >
                   <StepForward size={18} />
@@ -332,7 +333,7 @@ export function SortingVisualizer({
                     {progressPercent}%
                   </span>
                   <div className="text-[9px] font-bold text-background/50 tabular-nums">
-                    Step {currentStep}
+                    {currentStep} / {totalSteps}
                   </div>
                 </div>
               </div>
@@ -350,6 +351,7 @@ export function SortingVisualizer({
 
         {/* Right Section (4/12): Code */}
         <div className="sv-side-panel flex h-full flex-col gap-0 lg:col-span-4">
+          <AlgorithmState step={currentStepInfo} array={array} />
           <div className="mb-4 flex items-center gap-2 pl-2">
             <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">
               源码执行同步
@@ -358,6 +360,73 @@ export function SortingVisualizer({
           <CodeHighlighter algorithmId={algorithmId} currentLine={currentStepInfo?.line} />
         </div>
       </div>
+    </div>
+  )
+}
+
+function AlgorithmState({
+  step,
+  array,
+}: {
+  step: SortingVisualizerState['currentStepInfo']
+  array: number[]
+}) {
+  if (!step) return null
+  return (
+    <div className="mt-6 space-y-3 text-[14px]" aria-live="polite">
+      {step.range && (
+        <p>
+          当前区间：[{step.range.join(', ')}]
+          {step.pivotIndex !== undefined &&
+            ` · 枢轴位置 ${step.pivotIndex}，值 ${array[step.pivotIndex]}`}
+        </p>
+      )}
+      {step.gap && (
+        <p>
+          当前增量 gap = {step.gap} · 同组位置相差 {step.gap}
+        </p>
+      )}
+      {step.localSortedIndices && (
+        <p>局部有序区间：[0, {step.localSortedIndices.length - 1}]，后续仍可移动</p>
+      )}
+      {step.auxiliary?.map(buffer => (
+        <div key={buffer.label}>
+          <strong>{buffer.label}：</strong>
+          {buffer.elements.map((element, i) => (
+            <span
+              key={i}
+              className={`mr-3 inline-block ${buffer.activeIndices.includes(i) ? 'text-primary font-semibold' : ''}`}
+            >
+              {element.value} (#{element.id + 1})
+            </span>
+          ))}
+        </div>
+      ))}
+      {step.buckets && (
+        <div>
+          <p>当前位权：{step.digitPlace}</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+            {step.buckets.map((bucket, digit) => (
+              <div key={digit}>
+                桶 {digit}：{bucket.map(e => `${e.value}(#${e.id + 1})`).join(' → ') || '空'}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {step.heapSize !== undefined && (
+        <div>
+          <p>有效堆大小：{step.heapSize}（堆外元素已归位）</p>
+          <ol className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {array.slice(0, step.heapSize).map((value, i) => (
+              <li key={i}>
+                节点 {i}：{value} · {i ? `父节点 ${Math.floor((i - 1) / 2)}` : '根'} · 孩子{' '}
+                {[2 * i + 1, 2 * i + 2].filter(k => k < step.heapSize!).join(', ') || '无'}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
     </div>
   )
 }

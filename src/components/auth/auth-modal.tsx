@@ -84,8 +84,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       } else {
         setError(res.message || '发送失败')
       }
-    } catch (err: any) {
-      setError(err.message || '发送失败，请重试')
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : '') || '发送失败，请重试')
     } finally {
       setLoading(false)
     }
@@ -113,8 +113,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       } else {
         setError(res.message || '登录失败')
       }
-    } catch (err: any) {
-      setError(err.message || '登录失败，请重试')
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : '') || '登录失败，请重试')
     } finally {
       setLoading(false)
     }
@@ -128,8 +128,8 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       } else {
         setError(res.message || '获取 GitHub 授权链接失败')
       }
-    } catch (err: any) {
-      setError(err.message || '操作失败，请重试')
+    } catch (err: unknown) {
+      setError((err instanceof Error ? err.message : '') || '操作失败，请重试')
     }
   }
 

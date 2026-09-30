@@ -247,7 +247,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="text-foreground/60 px-2 pt-2 text-sm leading-relaxed font-bold italic">
-                    "{user?.userProfile || '致力于构建更美好的数字化世界...'}"
+                    &quot;{user?.userProfile || '致力于构建更美好的数字化世界...'}&quot;
                   </div>
 
                   <div className="mt-8 grid grid-cols-3 gap-3">

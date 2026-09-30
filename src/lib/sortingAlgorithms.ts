@@ -1,20 +1,31 @@
-export type SortAction = 'compare' | 'swap' | 'overwrite' | 'pivot' | 'markSorted' | 'done'
-
-export type SortMetricsDelta = {
-  comparisons?: number
-  swaps?: number
-  overwrites?: number
-}
-
+export type SortAction =
+  | 'compare'
+  | 'swap'
+  | 'overwrite'
+  | 'pivot'
+  | 'markSorted'
+  | 'localSorted'
+  | 'bucket'
+  | 'done'
+export type SortMetricsDelta = { comparisons?: number; swaps?: number; overwrites?: number }
+export type SortElement = { value: number; id: number }
 export type SortStep = {
   array: number[]
+  elementIds: number[]
   activeIndices: number[]
   sortedIndices: number[]
+  localSortedIndices?: number[]
   action?: SortAction
   message?: string
-  description?: string // Detailed pedagogical explanation
-  line?: number // Current line in the pseudo-code
+  description?: string
+  line?: number
   range?: [number, number]
+  pivotIndex?: number
+  heapSize?: number
+  gap?: number
+  auxiliary?: { label: string; elements: SortElement[]; activeIndices: number[] }[]
+  buckets?: SortElement[][]
+  digitPlace?: number
   metricsDelta?: SortMetricsDelta
 }
 
@@ -81,7 +92,7 @@ export const SORTING_ALGORITHMS: SortingAlgorithmInfo[] = [
     shortName: '希尔',
     description:
       '通过将整个有序列分割成若干个子序列分别进行直接插入排序，待整个序列中的记录“基本有序”时，再对全部记录进行依次直接插入排序。',
-    timeComplexity: { best: 'O(n log n)', average: 'O(n log² n)', worst: 'O(n²)' },
+    timeComplexity: { best: 'O(n log n)', average: '取决于增量序列', worst: 'O(n²)' },
     spaceComplexity: 'O(1)',
     stability: '不稳定',
     tags: ['进阶', '插入', '原地'],
@@ -104,7 +115,7 @@ export const SORTING_ALGORITHMS: SortingAlgorithmInfo[] = [
     description:
       '通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序。',
     timeComplexity: { best: 'O(n log n)', average: 'O(n log n)', worst: 'O(n²)' },
-    spaceComplexity: 'O(log n)',
+    spaceComplexity: '平均 O(log n)，最坏 O(n)',
     stability: '不稳定',
     tags: ['经典', '分治', '交换'],
   },
@@ -124,8 +135,8 @@ export const SORTING_ALGORITHMS: SortingAlgorithmInfo[] = [
     name: '基数排序 (Radix Sort)',
     shortName: '基数',
     description: '透过键值的部份资讯，将要排序的元素分配至某些“桶”中，借以达到排序的作用。',
-    timeComplexity: { best: 'O(nk)', average: 'O(nk)', worst: 'O(nk)' },
-    spaceComplexity: 'O(n+k)',
+    timeComplexity: { best: 'O(d(n+b))', average: 'O(d(n+b))', worst: 'O(d(n+b))' },
+    spaceComplexity: 'O(n+b)，b=10',
     stability: '稳定',
     tags: ['特殊', '桶排序', '非比较'],
   },
@@ -139,538 +150,383 @@ export const SORTING_ALGORITHM_NAME_BY_ID = SORTING_ALGORITHMS.reduce(
   {} as Record<SortingAlgorithmId, string>
 )
 
-const pushStep = (
-  steps: SortStep[],
-  arr: number[],
-  activeIndices: number[],
-  sortedIndices: number[],
-  extra?: Omit<SortStep, 'array' | 'activeIndices' | 'sortedIndices'>
-) => {
-  steps.push({
-    array: [...arr],
-    activeIndices: [...activeIndices],
-    sortedIndices: [...sortedIndices],
-    ...extra,
-  })
+const CODE_LINES = {
+  bubble: [
+    ['start', 'function bubbleSort(a) {'],
+    ['outer', '  for (let end = a.length - 1; end > 0; end--) {'],
+    ['init', '    let changed = false;'],
+    ['compare', '    for (let j = 0; j < end; j++) if (a[j] > a[j + 1]) {'],
+    ['swap', '      swap(a, j, j + 1); changed = true;'],
+    ['close', '    }'],
+    ['mark', '    // end 已归位'],
+    ['exit', '    if (!changed) break;'],
+    ['end', '  }'],
+    ['done', '}'],
+  ],
+  selection: [
+    ['start', 'function selectionSort(a) {'],
+    ['outer', '  for (let i = 0; i < a.length; i++) {'],
+    ['pivot', '    let min = i;'],
+    ['compare', '    for (let j = i + 1; j < a.length; j++) if (a[j] < a[min]) {'],
+    ['min', '      min = j;'],
+    ['close', '    }'],
+    ['swap', '    if (min !== i) swap(a, i, min);'],
+    ['mark', '    // i 已归位'],
+    ['end', '  }'],
+    ['done', '}'],
+  ],
+  insertion: [
+    ['start', 'function insertionSort(a) {'],
+    ['outer', '  for (let i = 1; i < a.length; i++) {'],
+    ['init', '    let j = i;'],
+    ['compare', '    while (j > 0) { if (a[j - 1] <= a[j]) break;'],
+    ['swap', '      swap(a, j - 1, j); j--;'],
+    ['close', '    }'],
+    ['local', '    // [0, i] 局部有序，后续仍可移动'],
+    ['end', '  }'],
+    ['done', '}'],
+  ],
+  shell: [
+    ['start', 'function shellSort(a) {'],
+    ['gap', '  for (let gap = Math.floor(a.length / 2); gap > 0; gap = Math.floor(gap / 2)) {'],
+    ['outer', '    for (let i = gap; i < a.length; i++) {'],
+    ['init', '      let j = i;'],
+    ['compare', '      while (j >= gap) { if (a[j - gap] <= a[j]) break;'],
+    ['swap', '        swap(a, j - gap, j); j -= gap;'],
+    ['close', '      }'],
+    ['end', '    }'],
+    ['endgap', '  }'],
+    ['done', '}'],
+  ],
+  merge: [
+    ['start', 'function mergeSort(a, lo = 0, hi = a.length - 1) {'],
+    ['base', '  if (lo >= hi) return;'],
+    ['split', '  const mid = Math.floor((lo + hi) / 2);'],
+    ['recurse', '  mergeSort(a, lo, mid); mergeSort(a, mid + 1, hi);'],
+    ['buffers', '  const left = a.slice(lo, mid + 1), right = a.slice(mid + 1, hi + 1);'],
+    ['init', '  let i = 0, j = 0, k = lo;'],
+    ['loop', '  while (i < left.length && j < right.length) {'],
+    ['compare', '    if (left[i] <= right[j]) {'],
+    ['overwriteLeft', '      a[k++] = left[i++];'],
+    ['otherwise', '    } else {'],
+    ['overwriteRight', '      a[k++] = right[j++];'],
+    ['endIf', '    }'],
+    ['close', '  }'],
+    ['remainder', '  while (i < left.length) a[k++] = left[i++];'],
+    ['remainderRight', '  while (j < right.length) a[k++] = right[j++];'],
+    ['done', '}'],
+  ],
+  quick: [
+    ['start', 'function quickSort(a, lo = 0, hi = a.length - 1) {'],
+    ['base', '  if (lo >= hi) return;'],
+    ['pivot', '  const pivot = a[hi]; let i = lo;'],
+    ['compare', '  for (let j = lo; j < hi; j++) if (a[j] < pivot) {'],
+    ['swap', '    if (i !== j) swap(a, i, j); i++;'],
+    ['close', '  }'],
+    ['pivotSwap', '  if (i !== hi) swap(a, i, hi);'],
+    ['mark', '  // i 的枢轴已归位'],
+    ['recurse', '  quickSort(a, lo, i - 1); quickSort(a, i + 1, hi);'],
+    ['done', '}'],
+  ],
+  heap: [
+    ['start', 'function heapSort(a) {'],
+    ['sift', '  function sift(root, size) {'],
+    ['init', '    while (2 * root + 1 < size) { let largest = root;'],
+    ['compareLeft', '      const left = 2 * root + 1; if (a[left] > a[largest]) largest = left;'],
+    [
+      'compareRight',
+      '      const right = left + 1; if (right < size && a[right] > a[largest]) largest = right;',
+    ],
+    ['base', '      if (largest === root) break;'],
+    ['swap', '      swap(a, root, largest); root = largest;'],
+    ['close', '    }'],
+    ['endsift', '  }'],
+    ['build', '  for (let i = Math.floor(a.length / 2) - 1; i >= 0; i--) sift(i, a.length);'],
+    ['outer', '  for (let end = a.length - 1; end > 0; end--) {'],
+    ['extract', '    swap(a, 0, end); sift(0, end);'],
+    ['end', '  }'],
+    ['done', '}'],
+  ],
+  radix: [
+    ['start', 'function radixSort(a) { // 非负安全整数；保留元素原始身份'],
+    ['init', '  const max = Math.max(0, ...a);'],
+    ['digit', '  for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {'],
+    ['buckets', '    const buckets = Array.from({ length: 10 }, () => []);'],
+    ['bucket', '    for (const x of a) buckets[Math.floor(x / exp) % 10].push(x);'],
+    [
+      'overwrite',
+      '    const output = buckets.flat(); for (let i = 0; i < a.length; i++) a[i] = output[i];',
+    ],
+    ['end', '  }'],
+    ['done', '}'],
+  ],
+} as const
+export const SORTING_CODE = Object.fromEntries(
+  Object.entries(CODE_LINES).map(([id, lines]) => [id, lines.map(([, code]) => code).join('\n')])
+) as Record<SortingAlgorithmId, string>
+const lineFor = (id: SortingAlgorithmId, tag: string) =>
+  CODE_LINES[id].findIndex(([key]) => key === tag) + 1
+
+/** Reject invalid data instead of silently changing the problem being demonstrated. */
+export function validateSortInput(input: number[], radix = false) {
+  if (input.length > 50 || input.some(value => !Number.isFinite(value)))
+    throw new RangeError('数组最多 50 个有限数值')
+  if (radix && input.some(value => !Number.isSafeInteger(value) || value < 0))
+    throw new RangeError('基数排序仅支持非负安全整数')
 }
 
-export const bubbleSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const sortedIndices: number[] = []
-  const n = arr.length
-
-  for (let i = 0; i < n; i++) {
-    for (let j = 0; j < n - i - 1; j++) {
-      pushStep(steps, arr, [j, j + 1], sortedIndices, {
-        action: 'compare',
-        message: `比较 ${arr[j]} 与 ${arr[j + 1]}`,
-        description: `正在比较相邻的两个元素 ${arr[j]} 和 ${arr[j + 1]}。如果左边的比右边大，就需要交换它们。`,
-        line: 4,
-        metricsDelta: { comparisons: 1 },
-      })
-      if (arr[j] > arr[j + 1]) {
-        ;[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
-        pushStep(steps, arr, [j, j + 1], sortedIndices, {
-          action: 'swap',
-          message: `交换 ${arr[j + 1]} 与 ${arr[j]}`,
-          description: `因为 ${arr[j + 1]} > ${arr[j]}，它们的位置不对，所以交换它们，让较大的元素向右“冒泡”。`,
-          line: 5,
-          metricsDelta: { swaps: 1 },
-        })
-      }
-    }
-    sortedIndices.push(n - i - 1)
-    pushStep(steps, arr, [], sortedIndices, {
-      action: 'markSorted',
-      message: `元素 ${arr[n - i - 1]} 已归位`,
-      description: `本轮遍历结束，最大的元素 ${arr[n - i - 1]} 已经移动到了它最终的正确位置。`,
-      line: 2,
+class Trace {
+  elements: SortElement[]
+  steps: SortStep[] = []
+  sorted: number[] = []
+  constructor(
+    public id: SortingAlgorithmId,
+    input: number[]
+  ) {
+    validateSortInput(input, id === 'radix')
+    this.elements = input.map((value, id) => ({ value, id }))
+  }
+  emit(
+    action: SortAction,
+    tag: string,
+    active: number[],
+    message: string,
+    extra: Partial<SortStep> = {}
+  ) {
+    this.steps.push({
+      array: this.elements.map(e => e.value),
+      elementIds: this.elements.map(e => e.id),
+      activeIndices: [...active],
+      sortedIndices: [...this.sorted],
+      action,
+      message,
+      description: message,
+      line: lineFor(this.id, tag),
+      ...extra,
     })
   }
-  pushStep(steps, arr, [], sortedIndices, {
-    action: 'done',
-    message: '排序完成',
-    description: '所有的元素都已经按照从小到大的顺序排列好了！',
-    line: 9,
-  })
-  return steps
-}
-
-export const selectionSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const sortedIndices: number[] = []
-  const n = arr.length
-
-  for (let i = 0; i < n; i++) {
-    let minIdx = i
-    pushStep(steps, arr, [i], sortedIndices, {
-      action: 'compare',
-      message: `假设 ${arr[i]} 为当前最小`,
-      description: `从位置 ${i} 开始，我们先假设当前位置的数字 ${arr[i]} 是剩余序列中最小的。`,
-      line: 3,
-    })
-
-    for (let j = i + 1; j < n; j++) {
-      pushStep(steps, arr, [minIdx, j], sortedIndices, {
-        action: 'compare',
-        message: `比较 ${arr[j]} 与 最小值 ${arr[minIdx]}`,
-        description: `扫描剩余序列，寻找是否还有比 ${arr[minIdx]} 更小的数。`,
-        line: 5,
-        metricsDelta: { comparisons: 1 },
-      })
-      if (arr[j] < arr[minIdx]) {
-        minIdx = j
-        pushStep(steps, arr, [minIdx], sortedIndices, {
-          action: 'compare',
-          message: `找到新的最小值 ${arr[minIdx]}`,
-          description: `找到了一个更小的数 ${arr[minIdx]}，记录下它的位置。`,
-          line: 6,
-        })
-      }
-    }
-    if (minIdx !== i) {
-      ;[arr[i], arr[minIdx]] = [arr[minIdx], arr[i]]
-      pushStep(steps, arr, [i, minIdx], sortedIndices, {
-        action: 'swap',
-        message: `将最小值 ${arr[i]} 换到位置 ${i}`,
-        description: `扫描结束，我们将找到的最小值 ${arr[i]} 与起始位置的数进行交换。`,
-        line: 9,
-        metricsDelta: { swaps: 1 },
-      })
-    }
-    sortedIndices.push(i)
-    pushStep(steps, arr, [], sortedIndices, {
-      action: 'markSorted',
-      message: `位置 ${i} 的元素已归位`,
-      description: `现在，位置 ${i} 上的元素已经是正确顺序中的最小值。`,
-      line: 2,
-    })
+  compare(a: number, b: number, tag = 'compare', extra: Partial<SortStep> = {}) {
+    this.emit(
+      'compare',
+      tag,
+      [a, b],
+      `比较 ${this.elements[a].value} 与 ${this.elements[b].value}`,
+      { metricsDelta: { comparisons: 1 }, ...extra }
+    )
+    return this.elements[a].value - this.elements[b].value
   }
-  pushStep(steps, arr, [], sortedIndices, {
-    action: 'done',
-    message: '排序完成',
-    description: '每一轮都选出了剩余序列中的最小值，整个数组已经有序了！',
-    line: 11,
-  })
-  return steps
+  swap(a: number, b: number, tag = 'swap', extra: Partial<SortStep> = {}) {
+    if (a === b) return
+    const message = `交换 ${this.elements[a].value} 与 ${this.elements[b].value}`
+    ;[this.elements[a], this.elements[b]] = [this.elements[b], this.elements[a]]
+    this.emit('swap', tag, [a, b], message, { metricsDelta: { swaps: 1 }, ...extra })
+  }
+  done() {
+    this.sorted = this.elements.map((_, i) => i)
+    this.emit('done', 'done', [], '排序完成；相同数值的原始编号可用于观察稳定性。')
+    return this.steps
+  }
 }
 
-export const insertionSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const sortedIndices: number[] = []
-  const n = arr.length
-
-  for (let i = 0; i < n; i++) {
+export function bubbleSort(input: number[]): SortStep[] {
+  const t = new Trace('bubble', input)
+  for (let end = input.length - 1; end > 0; end--) {
+    let changed = false
+    for (let j = 0; j < end; j++)
+      if (t.compare(j, j + 1) > 0) {
+        t.swap(j, j + 1)
+        changed = true
+      }
+    t.sorted.push(end)
+    t.emit('markSorted', 'mark', [], `位置 ${end} 已归位`)
+    if (!changed) break
+  }
+  return t.done()
+}
+export function selectionSort(input: number[]): SortStep[] {
+  const t = new Trace('selection', input)
+  for (let i = 0; i < input.length; i++) {
+    let min = i
+    t.emit('pivot', 'pivot', [i], `从位置 ${i} 开始寻找最小值`)
+    for (let j = i + 1; j < input.length; j++)
+      if (t.compare(j, min) < 0) {
+        min = j
+        t.emit('pivot', 'min', [min], `记录更小值 ${t.elements[min].value}`)
+      }
+    t.swap(i, min)
+    t.sorted.push(i)
+    t.emit('markSorted', 'mark', [], `位置 ${i} 已归位`)
+  }
+  return t.done()
+}
+export function insertionSort(input: number[]): SortStep[] {
+  const t = new Trace('insertion', input)
+  for (let i = 1; i < input.length; i++) {
     let j = i
-    pushStep(steps, arr, [i], sortedIndices, {
-      action: 'compare',
-      message: `准备插入 ${arr[i]}`,
-      description: `准备将元素 ${arr[i]} 插入到左侧已经排好序的区域中。`,
-      line: 2,
-    })
-
-    while (j > 0 && arr[j - 1] > arr[j]) {
-      pushStep(steps, arr, [j - 1, j], sortedIndices, {
-        action: 'compare',
-        message: `比较 ${arr[j - 1]} 与 ${arr[j]}`,
-        description: `因为 ${arr[j - 1]} 比我们要插入的数大，所以需要把它后移一位，腾出空间。`,
-        line: 4,
-        metricsDelta: { comparisons: 1 },
-      })
-      ;[arr[j - 1], arr[j]] = [arr[j], arr[j - 1]]
-      pushStep(steps, arr, [j - 1, j], sortedIndices, {
-        action: 'swap',
-        message: `向左移动 ${arr[j - 1]}`,
-        description: `交换两个相邻位置的内容。`,
-        line: 5,
-        metricsDelta: { swaps: 1 },
-      })
+    while (j > 0) {
+      if (t.compare(j - 1, j) <= 0) break
+      t.swap(j - 1, j)
       j--
     }
-    sortedIndices.push(i)
-    pushStep(steps, arr, [], sortedIndices, {
-      action: 'markSorted',
-      message: `元素已插入`,
-      description: `现在，元素已经找到了在当前有序区域中正确位置并成功插入。`,
-      line: 8,
+    t.emit('localSorted', 'local', [], `[0, ${i}] 局部有序；后续插入仍可能移动这些元素。`, {
+      localSortedIndices: Array.from({ length: i + 1 }, (_, k) => k),
     })
   }
-  pushStep(
-    steps,
-    arr,
-    [],
-    Array.from({ length: n }, (_, i) => i),
-    {
-      action: 'done',
-      message: '排序完成',
-      description: '所有的元素都已经像整理扑克牌一样，一张一张插入到了正确的地方。',
-      line: 11,
-    }
-  )
-  return steps
+  return t.done()
 }
-
-export const mergeSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const n = arr.length
-
-  const merge = (left: number, mid: number, right: number) => {
-    const leftArr = arr.slice(left, mid + 1)
-    const rightArr = arr.slice(mid + 1, right + 1)
-
-    let i = 0,
-      j = 0,
-      k = left
-
-    while (i < leftArr.length && j < rightArr.length) {
-      pushStep(steps, arr, [left + i, mid + 1 + j], [], {
-        action: 'compare',
-        message: `比较 ${leftArr[i]} 与 ${rightArr[j]}`,
-        description: `分治法：正在合并两个有序子数组。比较左侧的 ${leftArr[i]} 和右侧的 ${rightArr[j]}。`,
-        line: 11, // Map to if (left[i] < right[j])
-        range: [left, right],
-        metricsDelta: { comparisons: 1 },
-      })
-      if (leftArr[i] <= rightArr[j]) {
-        arr[k] = leftArr[i]
-        i++
-      } else {
-        arr[k] = rightArr[j]
-        j++
-      }
-      pushStep(steps, arr, [k], [], {
-        action: 'overwrite',
-        message: `将较小值 ${arr[k]} 写入合并后的数组`,
-        description: `将两个数中的较小值放入临时存储空间，以保持合并后的顺序。`,
-        line: 12,
-        range: [left, right],
-        metricsDelta: { overwrites: 1 },
-      })
-      k++
-    }
-
-    while (i < leftArr.length) {
-      pushStep(steps, arr, [left + i], [], {
-        action: 'compare',
-        message: `取左侧剩余元素 ${leftArr[i]}`,
-        description: `右侧数组已空，直接将左侧剩余的元素依次放入合并后的数组。`,
-        line: 15,
-        range: [left, right],
-        metricsDelta: { comparisons: 1 },
-      })
-      arr[k] = leftArr[i]
-      pushStep(steps, arr, [k], [], {
-        action: 'overwrite',
-        message: `写入 ${arr[k]}`,
-        description: `合并剩余元素。`,
-        line: 15,
-        range: [left, right],
-        metricsDelta: { overwrites: 1 },
-      })
-      i++
-      k++
-    }
-
-    while (j < rightArr.length) {
-      pushStep(steps, arr, [mid + 1 + j], [], {
-        action: 'compare',
-        message: `取右侧剩余元素 ${rightArr[j]}`,
-        description: `左侧数组已空，直接将右侧剩余的元素依次放入合并后的数组。`,
-        line: 15,
-        range: [left, right],
-        metricsDelta: { comparisons: 1 },
-      })
-      arr[k] = rightArr[j]
-      pushStep(steps, arr, [k], [], {
-        action: 'overwrite',
-        message: `写入 ${arr[k]}`,
-        description: `合并剩余元素。`,
-        line: 15,
-        range: [left, right],
-        metricsDelta: { overwrites: 1 },
-      })
-      j++
-      k++
-    }
-  }
-
-  const mergeSortHelper = (left: number, right: number) => {
-    if (left >= right) return
-    const mid = Math.floor((left + right) / 2)
-    mergeSortHelper(left, mid)
-    mergeSortHelper(mid + 1, right)
-    merge(left, mid, right)
-  }
-
-  mergeSortHelper(0, n - 1)
-  pushStep(
-    steps,
-    arr,
-    [],
-    Array.from({ length: n }, (_, i) => i),
-    {
-      action: 'done',
-      message: '排序完成',
-      description: '通过不断的拆分与合并，所有的元素都已经递归地排列整齐了。',
-      line: 6,
-    }
-  )
-  return steps
-}
-
-export const quickSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const n = arr.length
-  const sortedIndices: number[] = []
-
-  const partition = (low: number, high: number): number => {
-    const pivot = arr[high]
-    let i = low - 1
-    pushStep(steps, arr, [high], sortedIndices, {
-      action: 'pivot',
-      message: `选择枢轴 ${pivot}`,
-      description: `快速排序的核心：分区。我们选择区间末尾的 ${pivot} 作为枢轴，准备将小于它的数移到左边。`,
-      line: 10,
-      range: [low, high],
-    })
-
-    for (let j = low; j < high; j++) {
-      pushStep(steps, arr, [j, high], sortedIndices, {
-        action: 'compare',
-        message: `比较 ${arr[j]} 与 枢轴 ${pivot}`,
-        description: `正在通过比较，决定元素 ${arr[j]} 应该放在枢轴的哪一侧。`,
-        line: 13,
-        range: [low, high],
-        metricsDelta: { comparisons: 1 },
-      })
-      if (arr[j] < pivot) {
-        i++
-        ;[arr[i], arr[j]] = [arr[j], arr[i]]
-        pushStep(steps, arr, [i, j], sortedIndices, {
-          action: 'swap',
-          message: `由于 ${arr[i]} < 枢轴，将其移到左侧`,
-          description: `枢轴左侧存储所有小于它的数，所以我们进行一次交换。`,
-          line: 15,
-          range: [low, high],
-          metricsDelta: { swaps: 1 },
-        })
-      }
-    }
-    ;[arr[i + 1], arr[high]] = [arr[high], arr[i + 1]]
-    pushStep(steps, arr, [i + 1, high], sortedIndices, {
-      action: 'swap',
-      message: `枢轴 ${arr[i + 1]} 归位`,
-      description: `分区完成！现在枢轴已经到了它最终的正确位置，左侧都比它小，右侧都比它大。`,
-      line: 18,
-      range: [low, high],
-      metricsDelta: { swaps: 1 },
-    })
-    return i + 1
-  }
-
-  const quickSortHelper = (low: number, high: number) => {
-    if (low < high) {
-      const pi = partition(low, high)
-      sortedIndices.push(pi)
-      quickSortHelper(low, pi - 1)
-      quickSortHelper(pi + 1, high)
-    } else if (low === high) {
-      sortedIndices.push(low)
-    }
-  }
-
-  quickSortHelper(0, n - 1)
-  pushStep(
-    steps,
-    arr,
-    [],
-    Array.from({ length: n }, (_, i) => i),
-    {
-      action: 'done',
-      message: '排序完成',
-    }
-  )
-  return steps
-}
-
-export const shellSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const n = arr.length
-  const sortedApprox: number[] = []
-
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    for (let i = gap; i < n; i++) {
+export function shellSort(input: number[]): SortStep[] {
+  const t = new Trace('shell', input)
+  for (let gap = Math.floor(input.length / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    t.emit('pivot', 'gap', [], `当前增量 gap = ${gap}`, { gap })
+    for (let i = gap; i < input.length; i++) {
       let j = i
-      while (j - gap >= 0) {
-        pushStep(steps, arr, [j - gap, j], sortedApprox, {
-          action: 'compare',
-          message: `按步长 ${gap} 比较`,
-          description: `希尔排序：使用步长 ${gap} 进行分组插入排序。比较间隔为 ${gap} 的两个元素。`,
-          line: 7,
-          metricsDelta: { comparisons: 1 },
-        })
-        if (arr[j - gap] <= arr[j]) break
-        ;[arr[j - gap], arr[j]] = [arr[j], arr[j - gap]]
-        pushStep(steps, arr, [j - gap, j], sortedApprox, {
-          action: 'swap',
-          message: `交换间隔元素`,
-          description: `间隔为 ${gap} 的元素顺序不对，进行交换。`,
-          line: 8,
-          metricsDelta: { swaps: 1 },
-        })
+      while (j >= gap) {
+        if (t.compare(j - gap, j, 'compare', { gap }) <= 0) break
+        t.swap(j - gap, j, 'swap', { gap })
         j -= gap
       }
     }
   }
-  pushStep(
-    steps,
-    arr,
-    [],
-    Array.from({ length: n }, (_, i) => i),
-    {
-      action: 'done',
-      message: '排序完成',
-      description: '通过多次不同步长的预排序，数组最终完成了排序。',
-      line: 12,
-    }
-  )
-  return steps
+  return t.done()
 }
-
-export const heapSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray]
-  const n = arr.length
-  const sortedIndices: number[] = []
-
-  const siftDown = (heapSize: number, root: number) => {
-    let largest = root
-    const left = 2 * root + 1
-    const right = 2 * root + 2
-
-    if (left < heapSize) {
-      pushStep(steps, arr, [left, largest], sortedIndices, {
-        action: 'compare',
-        message: `比较根节点与左孩子`,
-        description: `堆化过程：比较父节点与左子节点 ${arr[left]}，确保父节点是最大的。`,
-        line: 11,
-        metricsDelta: { comparisons: 1 },
-      })
-      if (arr[left] > arr[largest]) largest = left
-    }
-    if (right < heapSize) {
-      pushStep(steps, arr, [right, largest], sortedIndices, {
-        action: 'compare',
-        message: `比较当前最大值与右孩子`,
-        description: `继续比较当前最大值与右子节点 ${arr[right]}。`,
-        line: 12,
-        metricsDelta: { comparisons: 1 },
-      })
-      if (arr[right] > arr[largest]) largest = right
-    }
-    if (largest !== root) {
-      ;[arr[root], arr[largest]] = [arr[largest], arr[root]]
-      pushStep(steps, arr, [root, largest], sortedIndices, {
-        action: 'swap',
-        message: `交换父子节点`,
-        description: `子节点更大，交换它们以维持大顶堆的性质。`,
-        line: 14,
-        metricsDelta: { swaps: 1 },
-      })
-      siftDown(heapSize, largest)
+export function mergeSort(input: number[]): SortStep[] {
+  const t = new Trace('merge', input)
+  const sort = (lo: number, hi: number) => {
+    if (lo >= hi) return
+    const mid = Math.floor((lo + hi) / 2)
+    sort(lo, mid)
+    sort(mid + 1, hi)
+    const left = t.elements.slice(lo, mid + 1),
+      right = t.elements.slice(mid + 1, hi + 1)
+    let i = 0,
+      j = 0,
+      k = lo
+    const buffers = () => [
+      {
+        label: '左侧辅助数组',
+        elements: left.map(e => ({ ...e })),
+        activeIndices: i < left.length ? [i] : [],
+      },
+      {
+        label: '右侧辅助数组',
+        elements: right.map(e => ({ ...e })),
+        activeIndices: j < right.length ? [j] : [],
+      },
+    ]
+    while (i < left.length || j < right.length) {
+      const both = i < left.length && j < right.length
+      if (both)
+        t.emit(
+          'compare',
+          'compare',
+          [],
+          `在辅助数组比较 ${left[i].value} 与 ${right[j].value}；相等时先取左侧以保持稳定。`,
+          { range: [lo, hi], auxiliary: buffers(), metricsDelta: { comparisons: 1 } }
+        )
+      const takeLeft = j >= right.length || (i < left.length && left[i].value <= right[j].value)
+      const extra = {
+        range: [lo, hi] as [number, number],
+        auxiliary: buffers(),
+        metricsDelta: { overwrites: 1 },
+      }
+      t.elements[k] = takeLeft ? left[i++] : right[j++]
+      t.emit(
+        'overwrite',
+        both
+          ? takeLeft
+            ? 'overwriteLeft'
+            : 'overwriteRight'
+          : takeLeft
+            ? 'remainder'
+            : 'remainderRight',
+        [k],
+        `将辅助数组的 ${t.elements[k].value} 写入位置 ${k}；剩余复制不计为比较。`,
+        extra
+      )
+      k++
     }
   }
-
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) siftDown(n, i)
-
-  for (let end = n - 1; end > 0; end--) {
-    ;[arr[0], arr[end]] = [arr[end], arr[0]]
-    sortedIndices.push(end)
-    pushStep(steps, arr, [0, end], sortedIndices, {
-      action: 'swap',
-      message: `取堆顶最大值 ${arr[end]}`,
-      description: `将当前堆中最大的元素（堆顶）与末尾元素交换，并将其从堆中移除。`,
-      line: 4,
-      metricsDelta: { swaps: 1 },
-    })
-    siftDown(end, 0)
-  }
-  sortedIndices.push(0)
-  pushStep(
-    steps,
-    arr,
-    [],
-    Array.from({ length: n }, (_, i) => i),
-    { action: 'done', message: '排序完成' }
-  )
-  return steps
+  sort(0, input.length - 1)
+  return t.done()
 }
-
-export const radixSort = (initialArray: number[]): SortStep[] => {
-  const steps: SortStep[] = []
-  const arr = [...initialArray].map(v => Math.max(0, Math.floor(v)))
-  const n = arr.length
-  if (n <= 1) {
-    pushStep(
-      steps,
-      arr,
-      [],
-      Array.from({ length: n }, (_, i) => i),
-      { action: 'done', message: '排序完成' }
-    )
-    return steps
+export function quickSort(input: number[]): SortStep[] {
+  const t = new Trace('quick', input)
+  const sort = (lo: number, hi: number) => {
+    if (lo > hi) return
+    if (lo === hi) {
+      t.sorted.push(lo)
+      return
+    }
+    let i = lo
+    const extra = { range: [lo, hi] as [number, number], pivotIndex: hi }
+    t.emit('pivot', 'pivot', [hi], `选择末尾元素 ${t.elements[hi].value} 为枢轴`, extra)
+    for (let j = lo; j < hi; j++)
+      if (t.compare(j, hi, 'compare', extra) < 0) {
+        t.swap(i, j, 'swap', extra)
+        i++
+      }
+    t.swap(i, hi, 'pivotSwap', { range: [lo, hi], pivotIndex: i })
+    t.sorted.push(i)
+    t.emit('markSorted', 'mark', [i], `枢轴位置 ${i} 已归位`, { range: [lo, hi], pivotIndex: i })
+    sort(lo, i - 1)
+    sort(i + 1, hi)
   }
-
-  const max = Math.max(...arr)
+  sort(0, input.length - 1)
+  return t.done()
+}
+export function heapSort(input: number[]): SortStep[] {
+  const t = new Trace('heap', input)
+  const sift = (start: number, size: number) => {
+    let root = start
+    while (2 * root + 1 < size) {
+      let largest = root
+      const left = 2 * root + 1,
+        right = left + 1
+      if (t.compare(left, largest, 'compareLeft', { heapSize: size }) > 0) largest = left
+      if (right < size && t.compare(right, largest, 'compareRight', { heapSize: size }) > 0)
+        largest = right
+      if (largest === root) break
+      t.swap(root, largest, 'swap', { heapSize: size })
+      root = largest
+    }
+  }
+  for (let i = Math.floor(input.length / 2) - 1; i >= 0; i--) sift(i, input.length)
+  for (let end = input.length - 1; end > 0; end--) {
+    t.swap(0, end, 'extract', { heapSize: end })
+    t.sorted.push(end)
+    sift(0, end)
+  }
+  return t.done()
+}
+export function radixSort(input: number[]): SortStep[] {
+  const t = new Trace('radix', input),
+    max = Math.max(0, ...input)
   for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-    const output = new Array<number>(n)
-    const count = new Array<number>(10).fill(0)
-
-    for (let i = 0; i < n; i++) {
-      const digit = Math.floor(arr[i] / exp) % 10
-      count[digit]++
+    const buckets: SortElement[][] = Array.from({ length: 10 }, () => [])
+    for (let i = 0; i < t.elements.length; i++) {
+      const e = t.elements[i],
+        digit = Math.floor(e.value / exp) % 10
+      buckets[digit].push({ ...e })
+      t.emit(
+        'bucket',
+        'bucket',
+        [i],
+        `按 ${exp} 位的数字 ${digit} 放入桶 ${digit}（桶内顺序不变）`,
+        { digitPlace: exp, buckets: buckets.map(b => b.map(e => ({ ...e }))) }
+      )
     }
-    for (let i = 1; i < 10; i++) count[i] += count[i - 1]
-
-    for (let i = n - 1; i >= 0; i--) {
-      const digit = Math.floor(arr[i] / exp) % 10
-      output[count[digit] - 1] = arr[i]
-      count[digit]--
-    }
-
-    for (let i = 0; i < n; i++) {
-      arr[i] = output[i]
-      pushStep(steps, arr, [i], [], {
-        action: 'overwrite',
-        message: `按第 ${exp} 位搬运元素`,
-        description: `非比较排序：正在根据数字的第 ${exp} 位（个、十、百...）将元素放回原数组。`,
-        line: 4,
+    const output = buckets.flat()
+    for (let i = 0; i < output.length; i++) {
+      t.elements[i] = output[i]
+      t.emit('overwrite', 'overwrite', [i], `按桶号收集 ${output[i].value}`, {
+        digitPlace: exp,
+        buckets: buckets.map(b => b.map(e => ({ ...e }))),
         metricsDelta: { overwrites: 1 },
       })
     }
   }
-
-  pushStep(
-    steps,
-    arr,
-    [],
-    Array.from({ length: n }, (_, i) => i),
-    {
-      action: 'done',
-      message: '排序完成',
-      description: '从低位到高位依次排列，最终实现了整体有序。',
-      line: 6,
-    }
-  )
-  return steps
+  return t.done()
 }
-
 export const SORTING_ALGORITHM_MAP: Record<SortingAlgorithmId, (arr: number[]) => SortStep[]> = {
   bubble: bubbleSort,
   selection: selectionSort,
@@ -681,5 +537,4 @@ export const SORTING_ALGORITHM_MAP: Record<SortingAlgorithmId, (arr: number[]) =
   heap: heapSort,
   radix: radixSort,
 }
-
 export const SORTING_ALGORITHM_IDS = SORTING_ALGORITHMS.map(a => a.id)

@@ -110,18 +110,14 @@ export function MarkdownEditor({
   }
 
   const toolbarItems = [
-    { icon: Bold, label: '粗体', action: () => insertText('**', '**') },
-    { icon: Italic, label: '斜体', action: () => insertText('*', '*') },
-    { icon: Type, label: '标题', action: () => insertText('### ') },
-    { icon: ListIcon, label: '无序列表', action: () => insertText('- ') },
-    { icon: ListOrdered, label: '有序列表', action: () => insertText('1. ') },
-    { icon: Code, label: '代码块', action: () => insertText('```\n', '\n```') },
-    { icon: LinkIcon, label: '链接', action: () => insertText('[', '](url)') },
-    {
-      icon: ImageIcon,
-      label: '图片',
-      action: () => fileInputRef.current?.click(),
-    },
+    { icon: Bold, label: '粗体', before: '**', after: '**' },
+    { icon: Italic, label: '斜体', before: '*', after: '*' },
+    { icon: Type, label: '标题', before: '### ', after: '' },
+    { icon: ListIcon, label: '无序列表', before: '- ', after: '' },
+    { icon: ListOrdered, label: '有序列表', before: '1. ', after: '' },
+    { icon: Code, label: '代码块', before: '```\n', after: '\n```' },
+    { icon: LinkIcon, label: '链接', before: '[', after: '](url)' },
+    { icon: ImageIcon, label: '图片', before: '', after: '', upload: true },
   ]
 
   return (
@@ -156,7 +152,8 @@ export function MarkdownEditor({
               variant="ghost"
               size="icon"
               className="text-muted-foreground hover:bg-primary/10 hover:text-primary h-8 w-8 rounded-lg"
-              onClick={item.action}
+              onClick={() => { if (item.upload) fileInputRef.current?.click(); else insertText(item.before, item.after) }}
+              aria-label={item.label}
               title={item.label}
             >
               <item.icon className="h-4 w-4" />
@@ -166,7 +163,7 @@ export function MarkdownEditor({
 
         <div className="flex items-center gap-2 pl-4">
           {/* View Switcher using Radix Tabs */}
-          <Tabs value={view} onValueChange={v => setView(v as any)} className="hidden lg:block">
+          <Tabs value={view} onValueChange={v => setView(v as 'edit' | 'preview' | 'split')} className="hidden lg:block">
             <TabsList className="bg-muted/10 h-8 p-1">
               <TabsTrigger
                 value="edit"

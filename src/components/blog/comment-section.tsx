@@ -21,7 +21,7 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
   const treeComments = React.useMemo(() => {
     if (!flatComments.length) return []
 
-    const commentMap = new Map<any, PostAPI.PostCommentVO>()
+    const commentMap = new Map<string, PostAPI.PostCommentVO>()
     const roots: PostAPI.PostCommentVO[] = []
 
     // First pass: create a map of all comments
@@ -55,7 +55,7 @@ export function CommentSection({ postId, onTotalChange }: CommentSectionProps) {
     try {
       // Sort by createTime descending to show newest first
       const res = await listPostCommentVoByPage({
-        postId: postId as any,
+        postId: postId as unknown as number,
         current: 1,
         pageSize: 20,
       })

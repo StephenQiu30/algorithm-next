@@ -1,8 +1,7 @@
 import React from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { atomDark, prism } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { SortingAlgorithmId } from '@/lib/sortingAlgorithms'
-import { cn } from '@/lib/utils'
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { SORTING_CODE, SortingAlgorithmId } from '@/lib/sortingAlgorithms'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 interface CodeHighlighterProps {
@@ -11,121 +10,11 @@ interface CodeHighlighterProps {
   theme?: 'dark' | 'light'
 }
 
-const ALGORITHM_CODE: Record<SortingAlgorithmId, string> = {
-  bubble: `function bubbleSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        swap(arr, j, j + 1);
-      }
-    }
-  }
-}`,
-  selection: `function selectionSort(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    let minIdx = i;
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j] < arr[minIdx]) {
-        minIdx = j;
-      }
-    }
-    swap(arr, i, minIdx);
-  }
-}`,
-  insertion: `function insertionSort(arr) {
-  for (let i = 1; i < arr.length; i++) {
-    let key = arr[i];
-    let j = i - 1;
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j = j - 1;
-    }
-    arr[j + 1] = key;
-  }
-}`,
-  merge: `function mergeSort(arr, low, high) {
-  if (low < high) {
-    let mid = (low + high) / 2;
-    mergeSort(arr, low, mid);
-    mergeSort(arr, mid + 1, high);
-    merge(arr, low, mid, high);
-  }
-}
-
-function merge(arr, low, mid, high) {
-  // Comparing and merging...
-  if (left[i] < right[j]) {
-    arr[k] = left[i++];
-  } else {
-    arr[k] = right[j++];
-  }
-}`,
-  quick: `function quickSort(arr, low, high) {
-  if (low < high) {
-    let pi = partition(arr, low, high);
-    quickSort(arr, low, pi - 1);
-    quickSort(arr, pi + 1, high);
-  }
-}
-
-function partition(arr, low, high) {
-  let pivot = arr[high];
-  let i = low - 1;
-  for (let j = low; j < high; j++) {
-    if (arr[j] < pivot) {
-      swap(arr, ++i, j);
-    }
-  }
-  swap(arr, i + 1, high);
-  return i + 1;
-}`,
-  heap: `function heapSort(arr) {
-  buildMaxHeap(arr);
-  for (let i = arr.length - 1; i > 0; i--) {
-    swap(arr, 0, i);
-    maxHeapify(arr, 0, i);
-  }
-}
-
-function maxHeapify(arr, i, size) {
-  let largest = i;
-  // Compare with children...
-  if (left < size && arr[left] > arr[largest])
-    largest = left;
-  if (right < size && arr[right] > arr[largest])
-    largest = right;
-  if (largest !== i) {
-    swap(arr, i, largest);
-    maxHeapify(arr, largest, size);
-  }
-}`,
-  shell: `function shellSort(arr) {
-  for (let gap = n/2; gap > 0; gap /= 2) {
-    for (let i = gap; i < n; i++) {
-      let temp = arr[i];
-      let j;
-      for (j = i; j>=gap && arr[j-gap]>temp; j-=gap) {
-        arr[j] = arr[j - gap];
-      }
-      arr[j] = temp;
-    }
-  }
-}`,
-  radix: `function radixSort(arr) {
-  const max = Math.max(...arr);
-  for (let exp = 1; max / exp > 0; exp *= 10) {
-    // Counting sort by digit
-    countSort(arr, exp);
-  }
-}`,
-}
-
 export function CodeHighlighter({
   algorithmId,
   currentLine,
-  theme = 'dark',
 }: CodeHighlighterProps) {
-  const code = ALGORITHM_CODE[algorithmId] || '// No code available'
+  const code = SORTING_CODE[algorithmId] || '// No code available'
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[32px] bg-card border border-transparent shadow-[0_8px_40px_rgba(0,0,0,0.03)] transition-all duration-500 dark:border-white/5 dark:shadow-none">

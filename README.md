@@ -58,7 +58,7 @@ pnpm run dev
 
 ## 开发说明
 
-- 排序算法实现与执行步骤主要位于 `src/lib/algorithms/` 和 `src/lib/sortingAlgorithms.ts`。
+- 排序算法实现与执行步骤统一位于 `src/lib/sortingAlgorithms.ts`；`src/lib/algorithms/` 保留兼容导出。
 - 可视化组件位于 `src/components/sorting/`。
 - RAG、用户登录和后端请求配置请结合 `algorithm-cloud` 的 API 地址检查 `src/api/` 与 `src/lib/`。
 
@@ -73,3 +73,9 @@ pnpm run dev
 ## 维护者
 
 [StephenQiu30](https://github.com/StephenQiu30)
+
+## 教学回归与课程发布
+
+提交前运行 `npm run typecheck`、`npm run lint`、`npm test`、`npm run course:check` 和 `npm run build`。
+
+课程发布、数据库迁移与集成验收说明见 [docs/teaching-repair.md](docs/teaching-repair.md)。

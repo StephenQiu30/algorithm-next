@@ -105,7 +105,7 @@ const HeroSection = memo(() => {
                   <div 
                     key={i} 
                     className="group relative w-full rounded-t-[10px] bg-muted transition-all duration-500 hover:bg-muted-foreground/30" 
-                    style={{ '--base-h': `${h}%`, height: `${h}%`, animation: i % 2 === 0 ? 'bar-bob 4s ease-in-out infinite' : 'bar-bob 5s ease-in-out infinite reverse' } as any}
+                    style={{ '--base-h': `${h}%`, height: `${h}%`, animation: i % 2 === 0 ? 'bar-bob 4s ease-in-out infinite' : 'bar-bob 5s ease-in-out infinite reverse' } as React.CSSProperties}
                   >
                     {i === 3 && (
                       <div className="absolute inset-x-0 bottom-0 top-0 rounded-t-[10px] bg-[#007AFF] shadow-[0_0_20px_rgba(0,122,255,0.5)]" />
@@ -230,7 +230,7 @@ const FeaturesSection = memo(() => {
                 <p><span className="text-pink-500">let</span> i <span className="text-[#007AFF]">=</span> <span className="text-amber-500">0</span>;</p>
                 <p><span className="text-emerald-500">while</span> (i <span className="text-[#007AFF]">&lt;</span> arr.length) {'{'}</p>
                 <p className="pl-4 rounded bg-[#007AFF]/20 py-0.5"><span className="text-[#007AFF] font-bold">swap</span>(arr, i, min);</p>
-                <p className="pl-4 text-zinc-500">// Operation completed</p>
+                <p className="pl-4 text-zinc-500">{'// Operation completed'}</p>
                 <p>{'}'}</p>
               </div>
               <div className="absolute -bottom-4 -right-4 h-32 w-32 rounded-full bg-[#007AFF]/20 blur-[40px]" />

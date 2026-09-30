@@ -1,5 +1,6 @@
 'use client'
 
+import { isAxiosError } from 'axios'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { ThemeProvider } from '@/components/theme/theme-provider'
@@ -30,7 +31,7 @@ function AuthLoader({ children }: { children: React.ReactNode }) {
           dispatch(clearLoginUser())
         }
       } catch (error) {
-        const status = (error as any)?.response?.status
+        const status = isAxiosError(error) ? error.response?.status : undefined
         if (status !== 401 && status !== 403) {
           console.error('获取用户信息失败:', error)
         }

@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig } from 'axios'
-import { toast } from 'sonner'
+import axios, { AxiosRequestConfig, isAxiosError } from 'axios'
 import JSONBig from 'json-bigint'
+import { toast } from 'sonner'
 
 const JSONBigStr = JSONBig({ storeAsString: true })
 
@@ -17,7 +17,7 @@ const axiosInstance = axios.create({
     data => {
       try {
         return JSONBigStr.parse(data)
-      } catch (err) {
+      } catch {
         return data
       }
     },
@@ -58,9 +58,10 @@ axiosInstance.interceptors.response.use(
   },
   // 非 2xx 响应触发
   function (error) {
-    const config = ((error as any)?.config || {}) as AxiosRequestConfig & RequestExtras
+    const config = (isAxiosError(error) ? error.config || {} : {}) as AxiosRequestConfig &
+      RequestExtras
     const method = (config.method || 'get').toLowerCase()
-    const status = (error as any)?.response?.status as number | undefined
+    const status = isAxiosError(error) ? error.response?.status : undefined
     const silent = (config.silent ?? true) || method === 'get' || status === 401 || status === 403
 
     // 处理响应错误
@@ -84,8 +85,20 @@ axiosInstance.interceptors.response.use(
  * @param url 请求地址
  * @param config 请求配置
  */
-const request = <T>(url: string, config: AxiosRequestConfig): Promise<T> => {
-  return axiosInstance(url, config) as Promise<T>
+const request = <T>(
+  url: string,
+  config: AxiosRequestConfig & { requestType?: 'form' }
+): Promise<T> => {
+  const { requestType, ...axiosConfig } = config
+  if (requestType === 'form') {
+    // Browser supplies the multipart boundary for the generated FormData body.
+    const headers =
+      axiosConfig.headers instanceof axios.AxiosHeaders
+        ? axiosConfig.headers.toJSON()
+        : axiosConfig.headers
+    axiosConfig.headers = { ...headers, 'Content-Type': undefined }
+  }
+  return axiosInstance(url, axiosConfig) as Promise<T>
 }
 
 export default request
